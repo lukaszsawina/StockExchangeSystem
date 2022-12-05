@@ -1,0 +1,14 @@
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\bin\Debug\net6.0\CurrencyExchangeLibrary.deps.json
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\bin\Debug\net6.0\CurrencyExchangeLibrary.dll
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\bin\Debug\net6.0\CurrencyExchangeLibrary.pdb
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\obj\Debug\net6.0\CurrencyExchangeLibrary.csproj.AssemblyReference.cache
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\obj\Debug\net6.0\CurrencyExchangeLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\obj\Debug\net6.0\CurrencyExchangeLibrary.AssemblyInfoInputs.cache
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\obj\Debug\net6.0\CurrencyExchangeLibrary.AssemblyInfo.cs
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\obj\Debug\net6.0\CurrencyExchangeLibrary.csproj.CoreCompileInputs.cache
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\obj\Debug\net6.0\CurrencyExchangeLibrary.dll
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\obj\Debug\net6.0\refint\CurrencyExchangeLibrary.dll
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\obj\Debug\net6.0\CurrencyExchangeLibrary.pdb
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\obj\Debug\net6.0\ref\CurrencyExchangeLibrary.dll
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\bin\Debug\net6.0\CurrencyExchangeLibrary.runtimeconfig.json
+C:\dev\C#\StockExchangeSystem_Server\StockExchangeSystem_Server\CurrencyExchangeLibrary\obj\Debug\net6.0\CurrencyExchangeLibrary.genruntimeconfig.cache
