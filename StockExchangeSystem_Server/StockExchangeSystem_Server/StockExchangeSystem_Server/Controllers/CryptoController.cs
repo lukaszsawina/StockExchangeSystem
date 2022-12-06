@@ -99,6 +99,22 @@ namespace StockExchangeSystem_Server.Controllers
                 
             return Ok("Succesfully created");
         }
+        [HttpPut("refresh/current/{symbol}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> RefreshCurrentCryptoAsync(string symbol)
+        {
+            if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await _cryptoRepository.UpdateCryptoCurrentAsync(symbol);
+
+            return Ok();
+        }
         [HttpPut("refresh/{symbol}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -111,7 +127,7 @@ namespace StockExchangeSystem_Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _cryptoRepository.UpdateCryptoCurrentAsync(symbol);
+            await _cryptoRepository.UpdateCryptoModelAsync(symbol);
 
             return Ok();
         }

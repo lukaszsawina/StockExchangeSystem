@@ -28,6 +28,11 @@ namespace CurrencyExchangeLibrary.Repository
             _apiKey = apiKey;
         }
 
+        public async Task<List<string>> GetCryptoCodesAsync()
+        {
+            return cryptosList;
+        }
+
         public async Task<List<CryptoOutModel>> GetCryptosAsync()
         {
             var cryptos = new List<CryptoOutModel>();
@@ -83,7 +88,6 @@ namespace CurrencyExchangeLibrary.Repository
                     crypto.OHLCVData.Add(newOHCLV);
 
                 }
-                
 
                 return await CreateAsync(crypto);
             }

@@ -23,17 +23,11 @@ namespace CurrencyExchangeLibrary.Data
 
         public async Task<string> GetKeyAsync()
         {
-            if(ApiKey.TimeUsed >= 5)
-            {
-                while (ApiKey.LastUsed > DateTime.Now.AddMinutes(-1))
-                    await Task.Delay(200);
 
-                ApiKey.TimeUsed = 0;
-            }
-            
+            while (ApiKey.LastUsed > DateTime.Now.AddSeconds(-20))
+                await Task.Delay(200);
 
             ApiKey.LastUsed = DateTime.Now;
-            ApiKey.TimeUsed++;
             return ApiKey.key;
         }
 
