@@ -17,7 +17,7 @@ namespace CurrencyExchangeLibrary.Repository
 {
     public class CryptoRepository : ICryptoRepository
     {
-        private List<string> cryptosList = new List<string>{ "BTC", "ETH" };
+        private List<string> cryptosList = new List<string>{ "BTC", "ETH", "DOGE" };
 
         private readonly DataContext _context;
         private readonly IAPIKeyLogic _apiKey;

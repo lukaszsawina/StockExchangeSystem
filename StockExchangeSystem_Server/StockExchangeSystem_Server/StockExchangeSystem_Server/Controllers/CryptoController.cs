@@ -2,12 +2,15 @@
 using CurrencyExchangeLibrary.Models.Crypto;
 using CurrencyExchangeLibrary.Models.OHLC;
 using CurrencyExchangeLibrary.Models.OUTPUT;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace StockExchangeSystem_Server.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
+    [EnableCors("http://mywebclient.azurewebsites.net")]
     public class CryptoController : Controller
     {
         private readonly ICryptoRepository _cryptoRepository;

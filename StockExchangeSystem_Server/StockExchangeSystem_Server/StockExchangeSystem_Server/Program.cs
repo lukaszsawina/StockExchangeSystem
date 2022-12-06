@@ -45,6 +45,12 @@ timer.Interval = 300000;
 timer.Elapsed += timer_Elapsed;
 timer.Start();
 
+app.UseCors(builder =>
+{
+    builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader();
+});
 
 app.UseHttpsRedirection();
 
