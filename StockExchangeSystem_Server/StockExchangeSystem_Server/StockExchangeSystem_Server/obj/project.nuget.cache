@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "V8R0a1DzHgYAbnAZHoCEQKO4sDtVjqNeIP6EhIMY1GMpUBm7qucruDfKccpQKcLaXAPoMR1aF+rKeghEOFYRbw==",
+  "dgSpecHash": "9GLvTtQlLw9r4boqBy+3ahwktb0zCXKIjyoIsgjMC09/bETkJKG0Q/RnIzm3uFUcCR45DzXXDVLFP21sGN9Jpg==",
   "success": true,
-  "projectFilePath": "C:\\dev\\C#\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\StockExchangeSystem_Server.csproj",
+  "projectFilePath": "C:\\dev\\C#\\StockExchangeSystem\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\StockExchangeSystem_Server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lukis\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\lukis\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

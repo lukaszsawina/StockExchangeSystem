@@ -3344,11 +3344,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\dev\\C#\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\CurrencyExchangeLibrary\\CurrencyExchangeLibrary.csproj",
+      "projectUniqueName": "C:\\dev\\C#\\StockExchangeSystem\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\CurrencyExchangeLibrary\\CurrencyExchangeLibrary.csproj",
       "projectName": "CurrencyExchangeLibrary",
-      "projectPath": "C:\\dev\\C#\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\CurrencyExchangeLibrary\\CurrencyExchangeLibrary.csproj",
+      "projectPath": "C:\\dev\\C#\\StockExchangeSystem\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\CurrencyExchangeLibrary\\CurrencyExchangeLibrary.csproj",
       "packagesPath": "C:\\Users\\lukis\\.nuget\\packages\\",
-      "outputPath": "C:\\dev\\C#\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\CurrencyExchangeLibrary\\obj\\",
+      "outputPath": "C:\\dev\\C#\\StockExchangeSystem\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\CurrencyExchangeLibrary\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\lukis\\AppData\\Roaming\\NuGet\\NuGet.Config",

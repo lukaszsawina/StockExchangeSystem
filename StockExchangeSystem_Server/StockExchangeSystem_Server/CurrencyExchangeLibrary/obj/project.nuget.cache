@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "9W3vlbiaGVr2GV0Y60fjgclWi4nmiGpcsKAn5p9xx8wiitQHHANEQcLWe5IuGu6hats0swKSJ8hxg7z3oKJamQ==",
+  "dgSpecHash": "+Kw+zVh9LjWd12uMc2j+zkZEMkBTeggpdvCnLjEShQGuqGciVHQkTkcT/CYolh++efiahYK+wj1zUoHjFEHmFw==",
   "success": true,
-  "projectFilePath": "C:\\dev\\C#\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\CurrencyExchangeLibrary\\CurrencyExchangeLibrary.csproj",
+  "projectFilePath": "C:\\dev\\C#\\StockExchangeSystem\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\CurrencyExchangeLibrary\\CurrencyExchangeLibrary.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lukis\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\lukis\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
