@@ -17,27 +17,26 @@ namespace CurrencyExchangeLibrary.Repository
 {
     public class CryptoRepository : ICryptoRepository
     {
-        private List<string> cryptosList = new List<string>{ "BTC", "ETH", "DOGE" };
 
         private readonly DataContext _context;
         private readonly IAPIKeyLogic _apiKey;
+
+        private readonly int cryptoAmound = 100;
 
         public CryptoRepository(DataContext context, IAPIKeyLogic apiKey)
         {
             _context = context;
             _apiKey = apiKey;
         }
-
         public async Task<List<string>> GetCryptoCodesAsync()
         {
-            return cryptosList;
+            return await _context.Crypto.Select(x=>x.MetaData.DCCode).ToListAsync();
         }
-
         public async Task<List<CryptoOutModel>> GetCryptosAsync()
         {
             var cryptos = new List<CryptoOutModel>();
             
-            foreach(var c in cryptosList)
+            foreach(var c in await GetCryptoCodesAsync())
             {
 
                 cryptos.Add(await GetCryptoOutput(c));
@@ -45,7 +44,6 @@ namespace CurrencyExchangeLibrary.Repository
 
             return cryptos;
         }
-
         private async Task<CryptoOutModel> GetCryptoOutput(string symbol)
         {
             var cryptoData = await _context.CryptoData.Where(x => x.DCCode == symbol).FirstAsync();
@@ -63,13 +61,11 @@ namespace CurrencyExchangeLibrary.Repository
 
             return output;
         }
-
         public async Task<bool> CreateAsync(CryptoModel newCrypto)
         {
             await _context.AddAsync(newCrypto);
             return await SaveAsync();
         }
-
         public async Task<bool> CreateCryptoAsync(string symbol)
         {
             string QUERY_URL = $"https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol={symbol}&market=USD&apikey=H8T0LC277CGD8MKO";
@@ -80,8 +76,13 @@ namespace CurrencyExchangeLibrary.Repository
                 var crypto = JsonConvert.DeserializeObject<CryptoModel>(client.DownloadString(queryUri));
                 JObject cryptoObj = JObject.Parse(client.DownloadString(queryUri));
 
+
+                int k = 0;
                 foreach (var i in cryptoObj.Last.First)
                 {
+                    if (k++ > cryptoAmound)
+                        break;
+
                     OHLCVModel newOHCLV = i.First.ToObject<OHLCVModel>();
                     newOHCLV.Time = DateTime.Parse(i.ToString().Split(':')[0].Replace('"', ' '));
                     newOHCLV.Symbol = symbol;
@@ -103,27 +104,37 @@ namespace CurrencyExchangeLibrary.Repository
                 JObject cryptoObj = JObject.Parse(client.DownloadString(queryUri));
                 DateTime latestOHLCV = (await GetLatestOHLCVAsync(symbol)).Time;
 
+                int new_element_count = 0;
+                int counter_to_delete = 0;
+                List<OHLCVModel> elementsToAdd = new List<OHLCVModel>();
+                List<OHLCVModel> elementsToRemove = new List<OHLCVModel>();
+
                 foreach (var i in cryptoObj.Last.First)
                 {
                     OHLCVModel newOHLCV = i.First.ToObject<OHLCVModel>();
                     newOHLCV.Time = DateTime.Parse(i.ToString().Split(':')[0].Replace('"', ' '));
 
+
                     if (newOHLCV.Time == latestOHLCV)
                         break;
 
+                    new_element_count++;
                     newOHLCV.Symbol = symbol;
-                    CreateOHCLVAsync(newOHLCV).Wait();
+                    elementsToAdd.Add(newOHLCV);
+
                 }
+
+                this.CreateOHCLVAsync(elementsToAdd);
+                _context.OHLCVData.RemoveRange(_context.OHLCVData.Where(x => x.Symbol == symbol && x.Time < elementsToAdd.First().Time.AddDays(-cryptoAmound)));
 
                 return await SaveAsync();
             }
         }
-        public async Task<bool> CreateOHCLVAsync(OHLCVModel newOHCl)
+        public async Task<bool> CreateOHCLVAsync(List<OHLCVModel> newOHCl)
         {
-            await _context.AddAsync(newOHCl);
+            await _context.OHLCVData.AddRangeAsync(newOHCl);
             return await SaveAsync();
         }
-
         public async Task<CryptoModel> GetCryptoAsync(string symbol)
         {
             CryptoModel crypto = new CryptoModel();
@@ -131,8 +142,6 @@ namespace CurrencyExchangeLibrary.Repository
             crypto.OHLCVData = await _context.OHLCVData.Where(x => x.Symbol == symbol).ToListAsync();
             return crypto;
         }
-
-
         public async Task<OHLCVModel> GetLatestOHLCVAsync(string symbol)
         {
             return await _context.OHLCVData.Where(s => s.Symbol == symbol).OrderByDescending(x=>x.Time).FirstAsync();
@@ -147,7 +156,6 @@ namespace CurrencyExchangeLibrary.Repository
 
             return saved > 0 ? true : false;
         }
-
         public async Task<bool> UpdateCryptoCurrentAsync(string symbol)
         {
             string QUERY_URL = $"https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={symbol}&to_currency=USD&apikey={await _apiKey.GetKeyAsync()}";
@@ -165,12 +173,10 @@ namespace CurrencyExchangeLibrary.Repository
                 return await SaveAsync();
             }
         }
-
         public async Task<bool> CryptoExistAsync(string symbol)
         {
             return await _context.Crypto.AnyAsync(x => x.MetaData.DCCode == symbol);
         }
-
         public async Task<CryptoModel> GetWeeklyCryptoAsync(string symbol)
         {
             CryptoModel crypto = new CryptoModel();
@@ -191,7 +197,6 @@ namespace CurrencyExchangeLibrary.Repository
 
             return crypto;
         }
-
         public async Task<CryptoModel> GetMonthlyCryptoAsync(string symbol)
         {
             CryptoModel crypto = new CryptoModel();
