@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,15 @@ namespace CurrencyExchangeLibrary.Data
 {
     public class APIKeyLogic : IAPIKeyLogic
     {
+        private readonly ILogger<APIKeyLogic> _logger;
+
         public static APIKeyModel ApiKey { get; set; }
 
-        public APIKeyLogic()
+        public APIKeyLogic(ILogger<APIKeyLogic> logger)
         {
             if (ApiKey is null)
                 InitKeys();
+            _logger = logger;
         }
 
         private void InitKeys()
@@ -23,17 +27,15 @@ namespace CurrencyExchangeLibrary.Data
 
         public async Task<string> GetKeyAsync()
         {
-            if(ApiKey.TimeUsed >= 5)
+            _logger.LogInformation("Attempt to get API Key");
+            while (ApiKey.LastUsed > DateTime.Now.AddSeconds(-20))
             {
-                while (ApiKey.LastUsed > DateTime.Now.AddMinutes(-1))
-                    await Task.Delay(200);
-
-                ApiKey.TimeUsed = 0;
+                await Task.Delay(200);
             }
-            
+
 
             ApiKey.LastUsed = DateTime.Now;
-            ApiKey.TimeUsed++;
+            _logger.LogInformation("Api key recived");
             return ApiKey.key;
         }
 

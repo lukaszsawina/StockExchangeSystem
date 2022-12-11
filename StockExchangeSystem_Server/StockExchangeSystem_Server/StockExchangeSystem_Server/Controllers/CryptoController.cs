@@ -2,19 +2,24 @@
 using CurrencyExchangeLibrary.Models.Crypto;
 using CurrencyExchangeLibrary.Models.OHLC;
 using CurrencyExchangeLibrary.Models.OUTPUT;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace StockExchangeSystem_Server.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
+    [EnableCors("http://mywebclient.azurewebsites.net")]
     public class CryptoController : Controller
     {
         private readonly ICryptoRepository _cryptoRepository;
+        private readonly ILogger<CryptoController> _logger;
 
-        public CryptoController(ICryptoRepository cryptoRepository)
+        public CryptoController(ICryptoRepository cryptoRepository, ILogger<CryptoController> logger)
         {
             _cryptoRepository = cryptoRepository;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -26,6 +31,8 @@ namespace StockExchangeSystem_Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+
+            _logger.LogInformation("All crypto was send");
             return Ok(crypto);
         }
 
@@ -99,6 +106,22 @@ namespace StockExchangeSystem_Server.Controllers
                 
             return Ok("Succesfully created");
         }
+        [HttpPut("refresh/current/{symbol}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> RefreshCurrentCryptoAsync(string symbol)
+        {
+            if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await _cryptoRepository.UpdateCryptoCurrentAsync(symbol);
+
+            return Ok();
+        }
         [HttpPut("refresh/{symbol}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -111,7 +134,7 @@ namespace StockExchangeSystem_Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _cryptoRepository.UpdateCryptoCurrentAsync(symbol);
+            await _cryptoRepository.UpdateCryptoModelAsync(symbol);
 
             return Ok();
         }
