@@ -14,10 +14,12 @@ namespace StockExchangeSystem_Server.Controllers
     public class CryptoController : Controller
     {
         private readonly ICryptoRepository _cryptoRepository;
+        private readonly ILogger<CryptoController> _logger;
 
-        public CryptoController(ICryptoRepository cryptoRepository)
+        public CryptoController(ICryptoRepository cryptoRepository, ILogger<CryptoController> logger)
         {
             _cryptoRepository = cryptoRepository;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -29,6 +31,8 @@ namespace StockExchangeSystem_Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+
+            _logger.LogInformation("All crypto was send");
             return Ok(crypto);
         }
 

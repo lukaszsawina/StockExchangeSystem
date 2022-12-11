@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CurrencyExchangeLibrary
+namespace StockExchangeSystem_Server.PeriodicServices
 {
     public interface IRefreshLogic
     {

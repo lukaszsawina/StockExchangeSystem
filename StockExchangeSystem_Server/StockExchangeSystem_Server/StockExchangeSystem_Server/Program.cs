@@ -3,16 +3,35 @@ using CurrencyExchangeLibrary.Data;
 using CurrencyExchangeLibrary.Interfaces;
 using CurrencyExchangeLibrary.Repository;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using StockExchangeSystem_Server.PeriodicServices;
+
+IConfiguration configuration = new ConfigurationBuilder()
+                            .AddJsonFile("appsettings.json")
+                            .Build();
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(configuration)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog();
+
 // Add services to the container.
+builder.Services.AddSingleton<PeriodicHostedService>();
 builder.Services.AddScoped<ICryptoRepository, CryptoRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAPIKeyLogic, APIKeyLogic>();
 builder.Services.AddScoped<IRefreshLogic, RefreshLogic>();
+
+builder.Services.AddHostedService(
+    provider => provider.GetRequiredService<PeriodicHostedService>());
+
+
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -30,21 +49,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var refresher = scope.ServiceProvider.GetRequiredService<IRefreshLogic>();
-
-        refresher.Refresh();
-    }
-}
-
-System.Timers.Timer timer = new System.Timers.Timer();
-timer.Interval = 300000;
-timer.Elapsed += timer_Elapsed;
-timer.Start();
-
 app.UseCors(builder =>
 {
     builder.AllowAnyOrigin()
@@ -52,10 +56,28 @@ app.UseCors(builder =>
            .AllowAnyHeader();
 });
 
+
+
 app.UseHttpsRedirection();
+
+app.UseSerilogRequestLogging();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+try
+{
+    Log.Information("App is running");
+    app.Run();
+}
+catch(Exception ex)
+{
+    Log.Fatal(ex, "The application failed to start correctyly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
+
+
