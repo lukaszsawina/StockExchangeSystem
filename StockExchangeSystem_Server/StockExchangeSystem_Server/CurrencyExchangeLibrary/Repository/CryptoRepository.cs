@@ -44,7 +44,7 @@ namespace CurrencyExchangeLibrary.Repository
 
             return cryptos;
         }
-        private async Task<CryptoOutModel> GetCryptoOutput(string symbol)
+        private async Task<CryptoOutModel> GetCryptoOutputAsync(string symbol)
         {
             var cryptoData = await _context.CryptoData.Where(x => x.DCCode == symbol).FirstAsync();
             var crypto = await _context.Crypto.Where(s => s.MetaData.DCCode == symbol).FirstOrDefaultAsync();
@@ -130,7 +130,7 @@ namespace CurrencyExchangeLibrary.Repository
                 return await SaveAsync();
             }
         }
-        public async Task<bool> CreateOHCLVAsync(List<OHLCVModel> newOHCl)
+        public async Task<bool> CreateOHCLVAsync(List<OHLCVModel> newOHLC)
         {
             await _context.OHLCVData.AddRangeAsync(newOHCl);
             return await SaveAsync();

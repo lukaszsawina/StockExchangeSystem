@@ -8,7 +8,6 @@ namespace CurrencyExchangeLibrary.Data
 {
     public interface IAPIKeyLogic
     {
-        static List<APIKeyModel> ApiKeys { get; set; } = new List<APIKeyModel>();
         Task<string> GetKeyAsync();
     }
 }
