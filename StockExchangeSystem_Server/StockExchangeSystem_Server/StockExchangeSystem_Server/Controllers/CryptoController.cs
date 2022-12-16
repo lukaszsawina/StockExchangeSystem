@@ -4,7 +4,7 @@ using CurrencyExchangeLibrary.Models.OHLC;
 using CurrencyExchangeLibrary.Models.OUTPUT;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-
+using StockExchangeSystem_Server.PeriodicServices;
 
 namespace StockExchangeSystem_Server.Controllers
 {
@@ -15,25 +15,57 @@ namespace StockExchangeSystem_Server.Controllers
     {
         private readonly ICryptoRepository _cryptoRepository;
         private readonly ILogger<CryptoController> _logger;
+        private readonly IRefreshLogic _refreshLogic;
 
-        public CryptoController(ICryptoRepository cryptoRepository, ILogger<CryptoController> logger)
+        public CryptoController(ICryptoRepository cryptoRepository, ILogger<CryptoController> logger, IRefreshLogic refreshLogic)
         {
             _cryptoRepository = cryptoRepository;
             _logger = logger;
+            _refreshLogic = refreshLogic;
+        }
+
+
+        [HttpPut]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> RefreshAllCrypto()
+        {
+            try
+            {
+                _logger.LogInformation("Refreshing all crypto");
+                await _refreshLogic.StartUpAppRefresh();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Exception while refreshing all cryptos");
+                throw new Exception("Error");
+            }
+            return Ok();
+            
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CryptoOutModel>))]
         public async Task<IActionResult> GetCryptosAsync()
         {
-            var crypto = await _cryptoRepository.GetCryptosAsync();
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                _logger.LogInformation("Attempting to receive all crypto from database");
+                var crypto = await _cryptoRepository.GetCryptosAsync();
 
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            _logger.LogInformation("All crypto was send");
-            return Ok(crypto);
+                _logger.LogInformation("All crypto was send");
+                return Ok(crypto);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+            
         }
 
         [HttpGet("{symbol}")]
@@ -41,15 +73,28 @@ namespace StockExchangeSystem_Server.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetCryptoAsync(string symbol)
         {
-            if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
-                return NotFound();
+            try
+            {
+                if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
 
-            var crypto = await _cryptoRepository.GetCryptoAsync(symbol);
+                _logger.LogInformation("Attempting to receive {code} data from database",symbol);
+                var crypto = await _cryptoRepository.GetCryptoAsync(symbol);
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            return Ok(crypto);
+                return Ok(crypto);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+            
         }
 
         [HttpGet("WEEKLY/{symbol}")]
@@ -57,15 +102,28 @@ namespace StockExchangeSystem_Server.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetWeeklyCryptoAsync(string symbol)
         {
-            if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
-                return NotFound();
 
-            var crypto = await _cryptoRepository.GetWeeklyCryptoAsync(symbol);
+            try
+            {
+                if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                _logger.LogInformation("Attempting to receive  {code} weekly data from database", symbol);
+                var crypto = await _cryptoRepository.GetWeeklyCryptoAsync(symbol);
 
-            return Ok(crypto);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                return Ok(crypto);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
         }
 
         [HttpGet("MONTHLY/{symbol}")]
@@ -73,15 +131,27 @@ namespace StockExchangeSystem_Server.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetMonthlyCryptoAsync(string symbol)
         {
-            if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
-                return NotFound();
+            try
+            {
+                if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
 
-            var crypto = await _cryptoRepository.GetMonthlyCryptoAsync(symbol);
+                _logger.LogInformation("Attempting to receive  {code} monthly data from database", symbol);
+                var crypto = await _cryptoRepository.GetMonthlyCryptoAsync(symbol);
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            return Ok(crypto);
+                return Ok(crypto);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
         }
 
         [HttpPost]
@@ -89,22 +159,33 @@ namespace StockExchangeSystem_Server.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateCrypto([FromBody] string symbol)
         {
-            if(await _cryptoRepository.CryptoExistAsync(symbol))
+            try
             {
-                ModelState.AddModelError("", "Crypto already exist");
-                return StatusCode(422, ModelState);
+                if (await _cryptoRepository.CryptoExistAsync(symbol))
+                {
+                    _logger.LogInformation("Crypto already exist in database");
+                    ModelState.AddModelError("", "Crypto already exist");
+                    return StatusCode(422, ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                if (!(await _cryptoRepository.CreateCryptoAsync(symbol)))
+                {
+                    _logger.LogInformation("Something went wrong while saving data in database");
+                    ModelState.AddModelError("", "Something went wrong while adding crypto");
+                    return StatusCode(500, ModelState);
+                }
+
+                return Ok("Succesfully created");
             }
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if(!(await _cryptoRepository.CreateCryptoAsync(symbol)))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Something went wrong while adding crypto");
-                return StatusCode(500, ModelState);
+                _logger.LogError(ex, "Something went wrong while saving data in database");
+                throw new Exception("Error");
             }
-                
-            return Ok("Succesfully created");
+            
         }
         [HttpPut("refresh/current/{symbol}")]
         [ProducesResponseType(204)]
@@ -112,15 +193,28 @@ namespace StockExchangeSystem_Server.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> RefreshCurrentCryptoAsync(string symbol)
         {
-            if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
-                return NotFound();
+            try
+            {
+                if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            await _cryptoRepository.UpdateCryptoCurrentAsync(symbol);
+                _logger.LogInformation("Refreshing {code} current value in database", symbol);
+                await _cryptoRepository.UpdateCryptoCurrentAsync(symbol);
 
-            return Ok();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while refreshing data");
+                throw new Exception("Error");
+            }
+            
         }
         [HttpPut("refresh/{symbol}")]
         [ProducesResponseType(204)]
@@ -128,15 +222,28 @@ namespace StockExchangeSystem_Server.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> RefreshCryptoAsync(string symbol)
         {
-            if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
-                return NotFound();
+            try
+            {
+                if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            await _cryptoRepository.UpdateCryptoModelAsync(symbol);
+                _logger.LogInformation("Refreshing {code} data in database", symbol);
+                await _cryptoRepository.UpdateCryptoModelAsync(symbol);
 
-            return Ok();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while refreshing data");
+                throw new Exception("Error");
+            }
+            
         }
     }
 }

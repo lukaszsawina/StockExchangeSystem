@@ -11,8 +11,8 @@ namespace CurrencyExchangeLibrary.Interfaces
 {
     public interface ICryptoRepository
     {
-        Task<List<string>> GetCryptoCodesAsync();
         //Get
+        Task<List<string>> GetCryptoCodesAsync();
         Task<List<CryptoOutModel>> GetCryptosAsync();
         Task<CryptoModel> GetCryptoAsync(string symbol);
         Task<OHLCVModel> GetLatestOHLCVAsync(string symbol);

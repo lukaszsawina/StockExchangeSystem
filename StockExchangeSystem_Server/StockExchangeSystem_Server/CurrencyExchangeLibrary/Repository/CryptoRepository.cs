@@ -44,7 +44,7 @@ namespace CurrencyExchangeLibrary.Repository
 
             return cryptos;
         }
-        private async Task<CryptoOutModel> GetCryptoOutput(string symbol)
+        private async Task<CryptoOutModel> GetCryptoOutputAsync(string symbol)
         {
             var cryptoData = await _context.CryptoData.Where(x => x.DCCode == symbol).FirstAsync();
             var crypto = await _context.Crypto.Where(s => s.MetaData.DCCode == symbol).FirstOrDefaultAsync();
@@ -105,7 +105,6 @@ namespace CurrencyExchangeLibrary.Repository
                 DateTime latestOHLCV = (await GetLatestOHLCVAsync(symbol)).Time;
 
                 int new_element_count = 0;
-                int counter_to_delete = 0;
                 List<OHLCVModel> elementsToAdd = new List<OHLCVModel>();
                 List<OHLCVModel> elementsToRemove = new List<OHLCVModel>();
 
@@ -124,13 +123,14 @@ namespace CurrencyExchangeLibrary.Repository
 
                 }
 
-                this.CreateOHCLVAsync(elementsToAdd);
-                _context.OHLCVData.RemoveRange(_context.OHLCVData.Where(x => x.Symbol == symbol && x.Time < elementsToAdd.First().Time.AddDays(-cryptoAmound)));
+                await this.CreateOHCLVAsync(elementsToAdd);
+                if(new_element_count > 0)
+                    _context.OHLCVData.RemoveRange(_context.OHLCVData.Where(x => x.Symbol == symbol && x.Time < elementsToAdd.First().Time.AddDays(-cryptoAmound)));
 
                 return await SaveAsync();
             }
         }
-        public async Task<bool> CreateOHCLVAsync(List<OHLCVModel> newOHCl)
+        public async Task<bool> CreateOHCLVAsync(List<OHLCVModel> newOHLC)
         {
             await _context.OHLCVData.AddRangeAsync(newOHCl);
             return await SaveAsync();
