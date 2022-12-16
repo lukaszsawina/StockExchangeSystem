@@ -2,7 +2,7 @@
 {
     public class PeriodicHostedService : BackgroundService
     {
-        private readonly TimeSpan _period = TimeSpan.FromSeconds(90);
+        private readonly TimeSpan _period = TimeSpan.FromMinutes(15);
         private readonly IServiceScopeFactory _factory;
         private readonly ILogger<PeriodicHostedService> _logger;
 

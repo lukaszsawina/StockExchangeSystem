@@ -9,5 +9,6 @@ namespace StockExchangeSystem_Server.PeriodicServices
     public interface IRefreshLogic
     {
         Task Refresh();
+        Task StartUpAppRefresh();
     }
 }

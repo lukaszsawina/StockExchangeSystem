@@ -105,7 +105,6 @@ namespace CurrencyExchangeLibrary.Repository
                 DateTime latestOHLCV = (await GetLatestOHLCVAsync(symbol)).Time;
 
                 int new_element_count = 0;
-                int counter_to_delete = 0;
                 List<OHLCVModel> elementsToAdd = new List<OHLCVModel>();
                 List<OHLCVModel> elementsToRemove = new List<OHLCVModel>();
 
@@ -124,8 +123,9 @@ namespace CurrencyExchangeLibrary.Repository
 
                 }
 
-                this.CreateOHCLVAsync(elementsToAdd);
-                _context.OHLCVData.RemoveRange(_context.OHLCVData.Where(x => x.Symbol == symbol && x.Time < elementsToAdd.First().Time.AddDays(-cryptoAmound)));
+                await this.CreateOHCLVAsync(elementsToAdd);
+                if(new_element_count > 0)
+                    _context.OHLCVData.RemoveRange(_context.OHLCVData.Where(x => x.Symbol == symbol && x.Time < elementsToAdd.First().Time.AddDays(-cryptoAmound)));
 
                 return await SaveAsync();
             }
