@@ -179,9 +179,6 @@ namespace CurrencyExchangeLibrary.Migrations
                     b.Property<decimal>("CloseUSD")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("CurrencyModelID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -196,8 +193,6 @@ namespace CurrencyExchangeLibrary.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Symbol", "Time");
-
-                    b.HasIndex("CurrencyModelID");
 
                     b.ToTable("OHLCCryptoData");
 
@@ -217,6 +212,9 @@ namespace CurrencyExchangeLibrary.Migrations
                     b.Property<decimal>("CloseUSD")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("CurrencyModelID")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("High")
                         .HasColumnType("decimal(18,2)");
 
@@ -227,6 +225,8 @@ namespace CurrencyExchangeLibrary.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Symbol", "Time");
+
+                    b.HasIndex("CurrencyModelID");
 
                     b.ToTable("OHLCCurrenciesData");
                 });
@@ -289,7 +289,7 @@ namespace CurrencyExchangeLibrary.Migrations
                     b.Navigation("MetaData");
                 });
 
-            modelBuilder.Entity("CurrencyExchangeLibrary.Models.OHLC.OHLCCryptoModel", b =>
+            modelBuilder.Entity("CurrencyExchangeLibrary.Models.OHLC.OHLCCurrencyModel", b =>
                 {
                     b.HasOne("CurrencyExchangeLibrary.Models.Currency.CurrencyModel", null)
                         .WithMany("OHLCData")

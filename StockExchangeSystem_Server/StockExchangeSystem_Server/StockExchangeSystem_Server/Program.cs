@@ -21,6 +21,7 @@ builder.Host.UseSerilog();
 // Add services to the container.
 builder.Services.AddSingleton<PeriodicHostedService>();
 builder.Services.AddScoped<ICryptoRepository, CryptoRepository>();
+builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAPIKeyLogic, APIKeyLogic>();

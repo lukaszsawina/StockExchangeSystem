@@ -16,6 +16,6 @@ namespace CurrencyExchangeLibrary.Models.Currency
         public decimal CurrentValue { get; set; }
         [JsonProperty("Meta Data")]
         public CurrencyDataModel MetaData { get; set; }
-        public List<OHLCCryptoModel> OHLCData { get; set; } = new List<OHLCCryptoModel>();
+        public List<OHLCCurrencyModel> OHLCData { get; set; } = new List<OHLCCurrencyModel>();
     }
 }

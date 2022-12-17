@@ -30,7 +30,7 @@ namespace CurrencyExchangeLibrary.Data
             _logger.LogInformation("Attempt to get API Key");
             while (ApiKey.LastUsed > DateTime.Now.AddSeconds(-20))
             {
-                await Task.Delay(200);
+                await Task.Delay(500);
             }
 
 

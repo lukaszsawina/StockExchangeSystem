@@ -1,5 +1,6 @@
 ﻿using CurrencyExchangeLibrary.Data;
 using CurrencyExchangeLibrary.Interfaces;
+using CurrencyExchangeLibrary.Models;
 using CurrencyExchangeLibrary.Models.Crypto;
 using CurrencyExchangeLibrary.Models.OHLC;
 using CurrencyExchangeLibrary.Models.OUTPUT;
@@ -61,9 +62,9 @@ namespace CurrencyExchangeLibrary.Repository
 
             return output;
         }
-        public async Task<bool> CreateAsync(CryptoModel newCrypto)
+        private async Task<bool> CreateAsync(CryptoModel newCrypto)
         {
-            await _context.AddAsync(newCrypto);
+            await _context.Crypto.AddAsync(newCrypto);
             return await SaveAsync();
         }
         public async Task<bool> CreateCryptoAsync(string symbol)
@@ -166,7 +167,7 @@ namespace CurrencyExchangeLibrary.Repository
             using (WebClient client = new WebClient())
             {
 
-                RealTimeCryptoModel crypto = JsonConvert.DeserializeObject<RealTimeCryptoModel>(client.DownloadString(queryUri));
+                RealTimeModel crypto = JsonConvert.DeserializeObject<RealTimeModel>(client.DownloadString(queryUri));
 
                 var output = await _context.Crypto.Where(s => s.MetaData.DCCode == symbol).FirstOrDefaultAsync();
                 output.CurrentValue = crypto.value.ExchangeRate;
