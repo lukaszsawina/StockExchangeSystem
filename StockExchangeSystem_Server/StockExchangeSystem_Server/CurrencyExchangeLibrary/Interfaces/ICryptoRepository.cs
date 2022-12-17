@@ -15,14 +15,14 @@ namespace CurrencyExchangeLibrary.Interfaces
         Task<List<string>> GetCryptoCodesAsync();
         Task<List<CryptoOutModel>> GetCryptosAsync();
         Task<CryptoModel> GetCryptoAsync(string symbol);
-        Task<OHLCVModel> GetLatestOHLCVAsync(string symbol);
+        Task<OHLCVCryptoModel> GetLatestOHLCVAsync(string symbol);
         Task<bool> CryptoExistAsync(string symbol);
         Task<CryptoModel> GetWeeklyCryptoAsync(string symbol);
         Task<CryptoModel> GetMonthlyCryptoAsync(string symbol);
 
         //Post
         Task<bool> CreateCryptoAsync(string symbol);
-        Task<bool> CreateOHCLVAsync(List<OHLCVModel> updatedCrypto);
+        Task<bool> CreateOHCLVAsync(List<OHLCVCryptoModel> updatedCrypto);
 
         //Put
         Task<bool> UpdateCryptoCurrentAsync(string symbol);

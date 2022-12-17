@@ -1,14 +1,10 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CurrencyExchangeLibrary.Models.OHLC
 {
-    public class OHLCVModel : OHLCModel
+    public class OHLCVCryptoModel : OHLCCryptoModel
     {
+        
         [JsonProperty("5. volume")]
         public decimal Volume { get; set; }
         [JsonProperty("6. market cap (USD)")]

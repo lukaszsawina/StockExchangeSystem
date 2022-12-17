@@ -39,7 +39,7 @@ namespace CurrencyExchangeLibrary.Repository
             foreach(var c in await GetCryptoCodesAsync())
             {
 
-                cryptos.Add(await GetCryptoOutput(c));
+                cryptos.Add(await GetCryptoOutputAsync(c));
             }
 
             return cryptos;
@@ -68,7 +68,7 @@ namespace CurrencyExchangeLibrary.Repository
         }
         public async Task<bool> CreateCryptoAsync(string symbol)
         {
-            string QUERY_URL = $"https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol={symbol}&market=USD&apikey=H8T0LC277CGD8MKO";
+            string QUERY_URL = $"https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol={symbol}&market=USD&apikey={await _apiKey.GetKeyAsync()}";
             Uri queryUri = new Uri(QUERY_URL);
 
             using (WebClient client = new WebClient())
@@ -83,10 +83,10 @@ namespace CurrencyExchangeLibrary.Repository
                     if (k++ > cryptoAmound)
                         break;
 
-                    OHLCVModel newOHCLV = i.First.ToObject<OHLCVModel>();
+                    OHLCVCryptoModel newOHCLV = i.First.ToObject<OHLCVCryptoModel>();
                     newOHCLV.Time = DateTime.Parse(i.ToString().Split(':')[0].Replace('"', ' '));
                     newOHCLV.Symbol = symbol;
-                    crypto.OHLCVData.Add(newOHCLV);
+                    crypto.OHLCVCryptoData.Add(newOHCLV);
 
                 }
 
@@ -105,12 +105,12 @@ namespace CurrencyExchangeLibrary.Repository
                 DateTime latestOHLCV = (await GetLatestOHLCVAsync(symbol)).Time;
 
                 int new_element_count = 0;
-                List<OHLCVModel> elementsToAdd = new List<OHLCVModel>();
-                List<OHLCVModel> elementsToRemove = new List<OHLCVModel>();
+                List<OHLCVCryptoModel> elementsToAdd = new List<OHLCVCryptoModel>();
+                List<OHLCVCryptoModel> elementsToRemove = new List<OHLCVCryptoModel>();
 
                 foreach (var i in cryptoObj.Last.First)
                 {
-                    OHLCVModel newOHLCV = i.First.ToObject<OHLCVModel>();
+                    OHLCVCryptoModel newOHLCV = i.First.ToObject<OHLCVCryptoModel>();
                     newOHLCV.Time = DateTime.Parse(i.ToString().Split(':')[0].Replace('"', ' '));
 
 
@@ -123,32 +123,34 @@ namespace CurrencyExchangeLibrary.Repository
 
                 }
 
-                await this.CreateOHCLVAsync(elementsToAdd);
                 if(new_element_count > 0)
-                    _context.OHLCVData.RemoveRange(_context.OHLCVData.Where(x => x.Symbol == symbol && x.Time < elementsToAdd.First().Time.AddDays(-cryptoAmound)));
+                {
+                    await this.CreateOHCLVAsync(elementsToAdd);
+                    _context.OHLCVCryptoData.RemoveRange(_context.OHLCVCryptoData.Where(x => x.Symbol == symbol && x.Time < elementsToAdd.First().Time.AddDays(-cryptoAmound)));
+                }
 
                 return await SaveAsync();
             }
         }
-        public async Task<bool> CreateOHCLVAsync(List<OHLCVModel> newOHLC)
+        public async Task<bool> CreateOHCLVAsync(List<OHLCVCryptoModel> newOHLC)
         {
-            await _context.OHLCVData.AddRangeAsync(newOHCl);
+            await _context.OHLCVCryptoData.AddRangeAsync(newOHLC);
             return await SaveAsync();
         }
         public async Task<CryptoModel> GetCryptoAsync(string symbol)
         {
             CryptoModel crypto = new CryptoModel();
             crypto.MetaData = await _context.CryptoData.Where(x => x.DCCode == symbol).FirstAsync();
-            crypto.OHLCVData = await _context.OHLCVData.Where(x => x.Symbol == symbol).ToListAsync();
+            crypto.OHLCVCryptoData = await _context.OHLCVCryptoData.Where(x => x.Symbol == symbol).ToListAsync();
             return crypto;
         }
-        public async Task<OHLCVModel> GetLatestOHLCVAsync(string symbol)
+        public async Task<OHLCVCryptoModel> GetLatestOHLCVAsync(string symbol)
         {
-            return await _context.OHLCVData.Where(s => s.Symbol == symbol).OrderByDescending(x=>x.Time).FirstAsync();
+            return await _context.OHLCVCryptoData.Where(s => s.Symbol == symbol).OrderByDescending(x=>x.Time).FirstAsync();
         }
-        private async Task<OHLCVModel> GetOHLCVFromDayAsync(string symbol, DateTime day)
+        private async Task<OHLCVCryptoModel> GetOHLCVFromDayAsync(string symbol, DateTime day)
         {
-            return await _context.OHLCVData.Where(s => (s.Symbol == symbol) && (s.Time == day)).FirstOrDefaultAsync();
+            return await _context.OHLCVCryptoData.Where(s => (s.Symbol == symbol) && (s.Time == day)).FirstOrDefaultAsync();
         }
         public async Task<bool> SaveAsync()
         {
@@ -181,17 +183,17 @@ namespace CurrencyExchangeLibrary.Repository
         {
             CryptoModel crypto = new CryptoModel();
             crypto.MetaData = await _context.CryptoData.Where(x => x.DCCode == symbol).FirstAsync();
-            List<OHLCVModel> listOfOHLCV = await _context.OHLCVData.Where(x => x.Symbol == symbol).ToListAsync();
+            List<OHLCVCryptoModel> listOfOHLCV = await _context.OHLCVCryptoData.Where(x => x.Symbol == symbol).ToListAsync();
 
             foreach(var i in listOfOHLCV)
             {
                 if (i.Time.DayOfWeek == DayOfWeek.Sunday)
-                    crypto.OHLCVData.Add(i);
+                    crypto.OHLCVCryptoData.Add(i);
             }
 
             if (DateTime.Today.DayOfWeek != DayOfWeek.Sunday)
             {
-                crypto.OHLCVData.Add(listOfOHLCV.Last());
+                crypto.OHLCVCryptoData.Add(listOfOHLCV.Last());
                 listOfOHLCV.Remove(listOfOHLCV.Last());
             }
 
@@ -201,17 +203,17 @@ namespace CurrencyExchangeLibrary.Repository
         {
             CryptoModel crypto = new CryptoModel();
             crypto.MetaData = await _context.CryptoData.Where(x => x.DCCode == symbol).FirstAsync();
-            List<OHLCVModel> listOfOHLCV = await _context.OHLCVData.Where(x => x.Symbol == symbol).ToListAsync();
+            List<OHLCVCryptoModel> listOfOHLCV = await _context.OHLCVCryptoData.Where(x => x.Symbol == symbol).ToListAsync();
 
             foreach (var i in listOfOHLCV)
             {
                 if ((int)i.Time.Day - DateTime.DaysInMonth(i.Time.Year, i.Time.Month) == 0)
-                    crypto.OHLCVData.Add(i);
+                    crypto.OHLCVCryptoData.Add(i);
             }
 
             if ((int)DateTime.Today.Day - DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month) != 0)
             {
-                crypto.OHLCVData.Add(listOfOHLCV.Last());
+                crypto.OHLCVCryptoData.Add(listOfOHLCV.Last());
                 listOfOHLCV.Remove(listOfOHLCV.Last());
             }
 

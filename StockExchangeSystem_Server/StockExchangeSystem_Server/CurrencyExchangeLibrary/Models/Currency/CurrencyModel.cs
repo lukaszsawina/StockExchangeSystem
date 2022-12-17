@@ -6,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CurrencyExchangeLibrary.Models.Crypto
+namespace CurrencyExchangeLibrary.Models.Currency
 {
-    public class CryptoModel
+    public class CurrencyModel
     {
         [JsonIgnore]
         public int ID { get; set; }
         [JsonIgnore]
         public decimal CurrentValue { get; set; }
         [JsonProperty("Meta Data")]
-        public CryptoDataModel MetaData { get; set; }
-        public List<OHLCVCryptoModel> OHLCVCryptoData { get; set; } = new List<OHLCVCryptoModel>();
+        public CurrencyDataModel MetaData { get; set; }
+        public List<OHLCCryptoModel> OHLCData { get; set; } = new List<OHLCCryptoModel>();
     }
 }

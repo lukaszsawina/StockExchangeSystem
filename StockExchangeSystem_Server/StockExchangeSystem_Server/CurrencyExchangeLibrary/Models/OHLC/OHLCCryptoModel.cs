@@ -9,7 +9,7 @@ namespace CurrencyExchangeLibrary.Models.OHLC
 {
 
 
-    public class OHLCModel
+    public class OHLCCryptoModel
     {
         [JsonIgnore]
         public string Symbol { get; set; }
