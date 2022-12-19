@@ -28,6 +28,7 @@ namespace CurrencyExchangeLibrary.Repository
             _apiKey = apiKey;
         }
 
+
         public async Task<bool> CreateCurrencyAsync(string symbol)
         {
 
@@ -150,6 +151,50 @@ namespace CurrencyExchangeLibrary.Repository
             }
 
             return currencies;
+        }
+
+        public async Task<CurrencyModel> GetWeeklyCurrencyAsync(string symbol)
+        {
+            CurrencyModel currency = new CurrencyModel(); 
+            currency.MetaData = await _context.CurrencyData.Where(x => x.fromSymbol == symbol).FirstAsync();
+            List<OHLCCurrencyModel> listOfOHLC = await _context.OHLCCurrenciesData.Where(x => x.Symbol == symbol).ToListAsync();
+
+            foreach (var i in listOfOHLC)
+            {
+                if (i.Time.DayOfWeek == DayOfWeek.Monday)
+                    currency.OHLCData.Add(i);
+            }
+
+            if (DateTime.Today.DayOfWeek != DayOfWeek.Monday)
+            {
+                currency.OHLCData.Add(listOfOHLC.Last());
+                listOfOHLC.Remove(listOfOHLC.Last());
+            }
+
+            return currency;
+        }
+
+        public async Task<CurrencyModel> GetMonthlyCurrencyAsync(string symbol)
+        {
+            CurrencyModel currency = new CurrencyModel();
+            currency.MetaData = await _context.CurrencyData.Where(x => x.fromSymbol == symbol).FirstAsync();
+            List<OHLCCurrencyModel> listOfOHLC = await _context.OHLCCurrenciesData.Where(x => x.Symbol == symbol).ToListAsync();
+
+            foreach (var i in listOfOHLC)
+            {
+                if ((int)i.Time.Day - DateTime.DaysInMonth(i.Time.Year, i.Time.Month) == 0)
+                    currency.OHLCData.Add(i);
+            }
+
+            if ((int)DateTime.Today.Day - DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month) != 0)
+            {
+                currency.OHLCData.Add(listOfOHLC.Last());
+                listOfOHLC.Remove(listOfOHLC.Last());
+            }
+
+
+
+            return currency;
         }
     }
 }

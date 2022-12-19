@@ -15,6 +15,8 @@ namespace CurrencyExchangeLibrary.Interfaces
         Task<List<CurrencyOutModel>> GetCurrenciesAsync();
         Task<CurrencyModel> GetCurrencyAsync(string symbol);
         Task<bool> CurrencyExistAsync(string symbol);
+        Task<CurrencyModel> GetWeeklyCurrencyAsync(string symbol);
+        Task<CurrencyModel> GetMonthlyCurrencyAsync(string symbol);
         //Post
         Task<bool> CreateCurrencyAsync(string symbol);
         //Put

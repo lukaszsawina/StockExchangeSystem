@@ -181,6 +181,14 @@ namespace StockExchangeSystem_Server.Controllers
                     return StatusCode(500, ModelState);
                 }
 
+                if (!(await _cryptoRepository.UpdateCryptoCurrentAsync(symbol)))
+                {
+                    _logger.LogInformation("Something went wrong while saving data in database");
+                    ModelState.AddModelError("", "Something went wrong while adding crypto");
+                    return StatusCode(500, ModelState);
+                }
+                
+
                 return Ok("Succesfully created");
             }
             catch (Exception ex)

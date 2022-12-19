@@ -139,5 +139,61 @@ namespace StockExchangeSystem_Server.Controllers
             }
 
         }
+        [HttpGet("WEEKLY/{symbol}")]
+        [ProducesResponseType(200, Type = typeof(CurrencyModel))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetWeeklyCryptoAsync(string symbol)
+        {
+
+            try
+            {
+                if (!(await _currencyRepository.CurrencyExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Attempting to receive {code} weekly data from database", symbol);
+                var crypto = await _currencyRepository.GetWeeklyCurrencyAsync(symbol);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                return Ok(crypto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+        }
+
+        [HttpGet("MONTHLY/{symbol}")]
+        [ProducesResponseType(200, Type = typeof(CurrencyModel))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetMonthlyCryptoAsync(string symbol)
+        {
+            try
+            {
+                if (!(await _currencyRepository.CurrencyExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Attempting to receive {code} monthly data from database", symbol);
+                var crypto = await _currencyRepository.GetMonthlyCurrencyAsync(symbol);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                return Ok(crypto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+        }
     }
 }

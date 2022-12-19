@@ -92,6 +92,8 @@ namespace CurrencyExchangeLibrary.Repository
                 }
 
                 return await CreateAsync(crypto);
+            
+            
             }
         }
         public async Task<bool> UpdateCryptoModelAsync(string symbol)
