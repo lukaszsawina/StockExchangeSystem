@@ -20,7 +20,7 @@ namespace CurrencyExchangeLibrary.Repository
     {
         private readonly DataContext _context;
         private readonly IAPIKeyLogic _apiKey;
-        private readonly int currencyAmound = 100;
+        private readonly int currencyAmound = 260;
 
         public CurrencyRepository(DataContext context, IAPIKeyLogic apiKey)
         {
@@ -196,5 +196,55 @@ namespace CurrencyExchangeLibrary.Repository
 
             return currency;
         }
+
+        public async Task<bool> UpdateCurrencyModelAsync(string symbol)
+        {
+            string QUERY_URL = $"https://www.alphavantage.co/query?function=FX_DAILY&from_symbol={symbol}&to_symbol=USD&apikey={await _apiKey.GetKeyAsync()}";
+            Uri queryUri = new Uri(QUERY_URL);
+
+            using (WebClient client = new WebClient())
+            {
+                var currency = JsonConvert.DeserializeObject<CurrencyModel>(client.DownloadString(queryUri));
+                JObject currencyObj = JObject.Parse(client.DownloadString(queryUri));
+                DateTime latestOHLCV = (await GetLatestOHLCAsync(symbol)).Time;
+
+                int new_element_count = 0;
+                List<OHLCCurrencyModel> elementsToAdd = new List<OHLCCurrencyModel>();
+                List<OHLCCurrencyModel> elementsToRemove = new List<OHLCCurrencyModel>();
+
+                foreach (var i in currencyObj.Last.First)
+                {
+                    OHLCCurrencyModel newOHLCV = i.First.ToObject<OHLCCurrencyModel>();
+                    newOHLCV.Time = DateTime.Parse(i.ToString().Split(':')[0].Replace('"', ' '));
+
+
+                    if (newOHLCV.Time == latestOHLCV)
+                        break;
+
+                    new_element_count++;
+                    newOHLCV.Symbol = symbol;
+                    elementsToAdd.Add(newOHLCV);
+
+                }
+
+                if (new_element_count > 0)
+                {
+                    await CreateOHLCAsync(elementsToAdd);
+                    _context.OHLCCurrenciesData.RemoveRange(_context.OHLCCurrenciesData.Where(x => x.Symbol == symbol && x.Time < elementsToAdd.First().Time.AddDays(-currencyAmound)));
+                }
+
+                return await SaveAsync();
+            }
+        }
+        public async Task<OHLCCurrencyModel> GetLatestOHLCAsync(string symbol)
+        {
+            return await _context.OHLCCurrenciesData.Where(s => s.Symbol == symbol).OrderByDescending(x => x.Time).FirstAsync();
+        }
+        public async Task<bool> CreateOHLCAsync(List<OHLCCurrencyModel> newOHLC)
+        {
+            await _context.OHLCCurrenciesData.AddRangeAsync(newOHLC);
+            return await SaveAsync();
+        }
+
     }
 }

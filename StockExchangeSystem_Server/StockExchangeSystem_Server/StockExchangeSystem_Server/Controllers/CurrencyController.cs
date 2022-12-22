@@ -99,6 +99,12 @@ namespace StockExchangeSystem_Server.Controllers
                     ModelState.AddModelError("", "Something went wrong while adding currency");
                     return StatusCode(500, ModelState);
                 }
+                if (!(await _currencyRepository.UpdateCurrencyValueAsync(symbol)))
+                {
+                    _logger.LogInformation("Something went wrong while saving data in database");
+                    ModelState.AddModelError("", "Something went wrong while adding currency");
+                    return StatusCode(500, ModelState);
+                }
 
                 return Ok("Succesfully created");
             }
@@ -129,6 +135,35 @@ namespace StockExchangeSystem_Server.Controllers
 
                 _logger.LogInformation("Refreshing {code} current value in database", symbol);
                 await _currencyRepository.UpdateCurrencyValueAsync(symbol);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while refreshing data");
+                throw new Exception("Error");
+            }
+
+        }
+        [HttpPut("refresh/{symbol}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> RefreshCurrencyAsync(string symbol)
+        {
+            try
+            {
+                if (!(await _currencyRepository.CurrencyExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                _logger.LogInformation("Refreshing {code} data in database", symbol);
+                await _currencyRepository.UpdateCurrencyModelAsync(symbol);
 
                 return Ok();
             }

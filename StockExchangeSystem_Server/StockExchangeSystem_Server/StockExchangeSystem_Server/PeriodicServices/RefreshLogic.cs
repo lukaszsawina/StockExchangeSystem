@@ -11,25 +11,48 @@ namespace StockExchangeSystem_Server.PeriodicServices
     public class RefreshLogic : IRefreshLogic
     {
         private readonly ICryptoRepository _cryptoRepository;
+        private readonly ICurrencyRepository _currencyRepository;
         private readonly ILogger<RefreshLogic> _logger;
 
-        public RefreshLogic(ICryptoRepository cryptoRepository, ILogger<RefreshLogic> logger)
+        public RefreshLogic(ICryptoRepository cryptoRepository, ICurrencyRepository currencyRepository, ILogger<RefreshLogic> logger)
         {
             _cryptoRepository = cryptoRepository;
+            _currencyRepository = currencyRepository;
             _logger = logger;
         }
 
         public async Task Refresh()
         {
-
-            var cryptosSymbol = await _cryptoRepository.GetCryptoCodesAsync();
-            foreach (var c in cryptosSymbol.Select((symbol, index) => (symbol, index)))
+            try
             {
-                _logger.LogInformation("Refreshing crypto current value with code: {code} | {current}/{whole}",c.symbol,c.index,cryptosSymbol.Count);
-                await _cryptoRepository.UpdateCryptoCurrentAsync(c.symbol);
+                await RefreshCrypto();
+                await RefreshCurrency();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while data was refreshing");
+                throw new Exception();
             }
         }
 
+        private async Task RefreshCrypto()
+        {
+            var cryptosSymbol = await _cryptoRepository.GetCryptoCodesAsync();
+            foreach (var c in cryptosSymbol.Select((symbol, index) => (symbol, index)))
+            {
+                _logger.LogInformation("Refreshing crypto current value with code: {code} | {current}/{whole}", c.symbol, c.index, cryptosSymbol.Count);
+                await _cryptoRepository.UpdateCryptoCurrentAsync(c.symbol);
+            }
+        }
+        private async Task RefreshCurrency()
+        {
+            var currenciesSymbols = await _currencyRepository.GetCurrenciesCodesAsync();
+            foreach (var c in currenciesSymbols.Select((symbol, index) => (symbol, index)))
+            {
+                _logger.LogInformation("Refreshing currency current value with code: {code} | {current}/{whole}", c.symbol, c.index, currenciesSymbols.Count);
+                await _currencyRepository.UpdateCurrencyValueAsync(c.symbol);
+            }
+        }
         public async Task StartUpAppRefresh()
         {
 

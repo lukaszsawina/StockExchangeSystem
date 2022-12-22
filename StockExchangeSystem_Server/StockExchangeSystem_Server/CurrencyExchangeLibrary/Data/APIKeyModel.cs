@@ -13,7 +13,7 @@ namespace CurrencyExchangeLibrary.Data
         public APIKeyModel(string newKey)
         {
             key = newKey;
-            LastUsed = DateTime.Now;
+            LastUsed = DateTime.Now.AddSeconds(-20);
         }
         public APIKeyModel()
         {

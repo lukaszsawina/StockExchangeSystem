@@ -1,4 +1,5 @@
 ﻿using CurrencyExchangeLibrary.Models.Currency;
+using CurrencyExchangeLibrary.Models.OHLC;
 using CurrencyExchangeLibrary.Models.OUTPUT;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,13 @@ namespace CurrencyExchangeLibrary.Interfaces
         Task<bool> CurrencyExistAsync(string symbol);
         Task<CurrencyModel> GetWeeklyCurrencyAsync(string symbol);
         Task<CurrencyModel> GetMonthlyCurrencyAsync(string symbol);
+        Task<OHLCCurrencyModel> GetLatestOHLCAsync(string symbol);
         //Post
         Task<bool> CreateCurrencyAsync(string symbol);
+        Task<bool> CreateOHLCAsync(List<OHLCCurrencyModel> newOHLC);
         //Put
         Task<bool> UpdateCurrencyValueAsync(string symbol);
+        Task<bool> UpdateCurrencyModelAsync(string symbol);
 
         Task<bool> SaveAsync();
 
