@@ -18,6 +18,7 @@ namespace StockExchangeSystem_Server.Controllers
             _logger = logger;
         }
 
+        //Get
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<StockOutModel>))]
         public async Task<IActionResult> GetStocksAsync()
@@ -45,7 +46,7 @@ namespace StockExchangeSystem_Server.Controllers
         [HttpGet("{symbol}")]
         [ProducesResponseType(200, Type = typeof(StockModel))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetCryptoAsync(string symbol)
+        public async Task<IActionResult> GetStockAsync(string symbol)
         {
             try
             {
@@ -71,6 +72,65 @@ namespace StockExchangeSystem_Server.Controllers
 
         }
 
+        [HttpGet("WEEKLY/{symbol}")]
+        [ProducesResponseType(200, Type = typeof(StockModel))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetWeeklyStockAsync(string symbol)
+        {
+
+            try
+            {
+                if (!(await _stockRepository.StockExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Attempting to receive  {code} weekly data from database", symbol);
+                var crypto = await _stockRepository.GetWeeklyStockAsync(symbol);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                return Ok(crypto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+        }
+
+        [HttpGet("MONTHLY/{symbol}")]
+        [ProducesResponseType(200, Type = typeof(StockModel))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetMonthlyStockAsync(string symbol)
+        {
+            try
+            {
+                if (!(await _stockRepository.StockExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Attempting to receive {code} monthly data from database", symbol);
+                var crypto = await _stockRepository.GetMonthlyStockAsync(symbol);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                return Ok(crypto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+        }
+        [HttpPut("refresh/{symbol}")]
+
+        //Post
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -113,6 +173,8 @@ namespace StockExchangeSystem_Server.Controllers
             }
 
         }
+
+        //Put
         [HttpPut("refresh/current/{symbol}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -132,6 +194,35 @@ namespace StockExchangeSystem_Server.Controllers
 
                 _logger.LogInformation("Refreshing {code} current value in database", symbol);
                 await _stockRepository.UpdateStockCurrentAsync(symbol);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while refreshing data");
+                throw new Exception("Error");
+            }
+
+        }
+
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> RefreshStockAsync(string symbol)
+        {
+            try
+            {
+                if (!(await _stockRepository.StockExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                _logger.LogInformation("Refreshing {code} data in database", symbol);
+                await _stockRepository.UpdateStockModelAsync(symbol);
 
                 return Ok();
             }

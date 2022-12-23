@@ -28,7 +28,115 @@ namespace CurrencyExchangeLibrary.Repository
             _apiKey = apiKey;
         }
 
+        //Get
+        public async Task<List<CurrencyOutModel>> GetCurrenciesAsync()
+        {
+            var currencies = new List<CurrencyOutModel>();
 
+            foreach (var c in await GetCurrenciesCodesAsync())
+            {
+
+                currencies.Add(await GetCurrencyOutModelAsync(c));
+            }
+
+            return currencies;
+        }
+        public async Task<CurrencyOutModel> GetCurrencyOutModelAsync(string symbol)
+        {
+            try
+            {
+
+                var currencyData = await _context.CurrencyData.Where(x => x.fromSymbol == symbol).FirstAsync();
+                var currency = await _context.Currency.Where(s => s.MetaData.fromSymbol == symbol).FirstOrDefaultAsync();
+                var ohlcW = await GetOHLCFromDayAsync(symbol, DateTime.Today.AddDays(-7));
+                var ohlcM = await GetOHLCFromDayAsync(symbol, DateTime.Today.AddDays(-30));
+
+                var output = new CurrencyOutModel();
+                var PLNUSD = await _context.Currency.Where(s => s.MetaData.fromSymbol == "PLN").FirstOrDefaultAsync();
+
+                output.Symbol = currencyData.fromSymbol;
+                output.inUSD = currency.CurrentValue;
+                output.WeekChange = (ohlcW.CloseUSD - currency.CurrentValue) / ohlcW.CloseUSD * 100;
+                output.MonthChange = (ohlcM.CloseUSD - currency.CurrentValue) / ohlcM.CloseUSD * 100;
+
+                return output;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("no PLN in database");
+            }
+        }
+        public async Task<CurrencyModel> GetCurrencyAsync(string symbol)
+        {
+            CurrencyModel currency = new CurrencyModel();
+            currency.MetaData = await _context.CurrencyData.Where(x => x.fromSymbol == symbol).FirstAsync();
+            currency.OHLCData = await _context.OHLCCurrenciesData.Where(x => x.Symbol == symbol).ToListAsync();
+            return currency;
+        }
+        public async Task<bool> CurrencyExistAsync(string symbol)
+        {
+            return await _context.Currency.AnyAsync(x => x.MetaData.fromSymbol == symbol);
+        }
+        public async Task<CurrencyModel> GetWeeklyCurrencyAsync(string symbol)
+        {
+            CurrencyModel currency = new CurrencyModel(); 
+            currency.MetaData = await _context.CurrencyData.Where(x => x.fromSymbol == symbol).FirstAsync();
+            List<OHLCCurrencyModel> listOfOHLC = await _context.OHLCCurrenciesData.Where(x => x.Symbol == symbol).ToListAsync();
+
+            foreach (var i in listOfOHLC)
+            {
+                if (i.Time.DayOfWeek == DayOfWeek.Monday)
+                    currency.OHLCData.Add(i);
+            }
+
+            if (DateTime.Today.DayOfWeek != DayOfWeek.Monday)
+            {
+                currency.OHLCData.Add(listOfOHLC.Last());
+                listOfOHLC.Remove(listOfOHLC.Last());
+            }
+
+            return currency;
+        }
+        public async Task<CurrencyModel> GetMonthlyCurrencyAsync(string symbol)
+        {
+            CurrencyModel currency = new CurrencyModel();
+            currency.MetaData = await _context.CurrencyData.Where(x => x.fromSymbol == symbol).FirstAsync();
+            List<OHLCCurrencyModel> listOfOHLC = await _context.OHLCCurrenciesData.Where(x => x.Symbol == symbol).ToListAsync();
+
+            foreach (var i in listOfOHLC)
+            {
+                if ((int)i.Time.Day - DateTime.DaysInMonth(i.Time.Year, i.Time.Month) == 0)
+                    currency.OHLCData.Add(i);
+            }
+
+            if ((int)DateTime.Today.Day - DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month) != 0)
+            {
+                currency.OHLCData.Add(listOfOHLC.Last());
+                listOfOHLC.Remove(listOfOHLC.Last());
+            }
+
+
+
+            return currency;
+        }
+        public async Task<OHLCCurrencyModel> GetLatestOHLCAsync(string symbol)
+        {
+            return await _context.OHLCCurrenciesData.Where(s => s.Symbol == symbol).OrderByDescending(x => x.Time).FirstAsync();
+        }
+        private async Task<OHLCCurrencyModel> GetOHLCFromDayAsync(string symbol, DateTime day)
+        {
+            var output = await _context.OHLCCurrenciesData.Where(s => (s.Symbol == symbol) && (s.Time == day)).FirstOrDefaultAsync();
+            while(output == null)
+                output = await _context.OHLCCurrenciesData.Where(s => (s.Symbol == symbol) && (s.Time == day.AddDays(-1))).FirstOrDefaultAsync();
+
+            return output;
+        }
+        public async Task<List<string>> GetCurrenciesCodesAsync()
+        {
+            return await _context.CurrencyData.Select(x => x.fromSymbol).ToListAsync();
+        }
+        
+        //Post
         public async Task<bool> CreateCurrencyAsync(string symbol)
         {
 
@@ -58,37 +166,18 @@ namespace CurrencyExchangeLibrary.Repository
             }
 
         }
-
         private async Task<bool> CreateAsync(CurrencyModel newCurrency)
         {
             await _context.Currency.AddAsync(newCurrency);
             return await SaveAsync();
         }
-
-        public async Task<CurrencyModel> GetCurrencyAsync(string symbol)
+        public async Task<bool> CreateOHLCAsync(List<OHLCCurrencyModel> newOHLC)
         {
-            CurrencyModel currency = new CurrencyModel();
-            currency.MetaData = await _context.CurrencyData.Where(x => x.fromSymbol == symbol).FirstAsync();
-            currency.OHLCData = await _context.OHLCCurrenciesData.Where(x => x.Symbol == symbol).ToListAsync();
-            return currency;
+            await _context.OHLCCurrenciesData.AddRangeAsync(newOHLC);
+            return await SaveAsync();
         }
 
-        public async Task<bool> SaveAsync()
-        {
-            var saved = await _context.SaveChangesAsync();
-            return saved > 0 ? true : false;
-        }
-
-        public async Task<bool> CurrencyExistAsync(string symbol)
-        {
-            return await _context.Currency.AnyAsync(x => x.MetaData.fromSymbol == symbol);
-        }
-
-        public async Task<List<string>> GetCurrenciesCodesAsync()
-        {
-            return await _context.CurrencyData.Select(x => x.fromSymbol).ToListAsync();
-        }
-
+        //Put
         public async Task<bool> UpdateCurrencyValueAsync(string symbol)
         {
             string QUERY_URL = $"https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={symbol}&to_currency=USD&apikey={await _apiKey.GetKeyAsync()}";
@@ -106,97 +195,6 @@ namespace CurrencyExchangeLibrary.Repository
                 return await SaveAsync();
             }
         }
-
-        public async Task<CurrencyOutModel> GetCurrencyOutModelAsync(string symbol)
-        {
-            try
-            {
-
-                var currencyData = await _context.CurrencyData.Where(x => x.fromSymbol == symbol).FirstAsync();
-                var currency = await _context.Currency.Where(s => s.MetaData.fromSymbol == symbol).FirstOrDefaultAsync();
-                var ohlcW = await GetOHLCFromDayAsync(symbol, DateTime.Today.AddDays(-7));
-                var ohlcM = await GetOHLCFromDayAsync(symbol, DateTime.Today.AddDays(-30));
-
-                var output = new CurrencyOutModel();
-                var PLNUSD = await _context.Currency.Where(s => s.MetaData.fromSymbol == "PLN").FirstOrDefaultAsync();
-
-                output.Symbol = currencyData.fromSymbol;
-                output.inUSD = currency.CurrentValue;
-                output.WeekChange = (ohlcW.CloseUSD - currency.CurrentValue) / ohlcW.CloseUSD * 100;
-                output.MonthChange = (ohlcM.CloseUSD - currency.CurrentValue) / ohlcM.CloseUSD * 100;
-
-                return output;
-            }
-            catch(Exception ex)
-            {
-                throw new Exception("no PLN in database");
-            }
-        }
-        private async Task<OHLCCurrencyModel> GetOHLCFromDayAsync(string symbol, DateTime day)
-        {
-            var output = await _context.OHLCCurrenciesData.Where(s => (s.Symbol == symbol) && (s.Time == day)).FirstOrDefaultAsync();
-            while(output == null)
-                output = await _context.OHLCCurrenciesData.Where(s => (s.Symbol == symbol) && (s.Time == day.AddDays(-1))).FirstOrDefaultAsync();
-
-            return output;
-        }
-        public async Task<List<CurrencyOutModel>> GetCurrenciesAsync()
-        {
-            var currencies = new List<CurrencyOutModel>();
-
-            foreach (var c in await GetCurrenciesCodesAsync())
-            {
-
-                currencies.Add(await GetCurrencyOutModelAsync(c));
-            }
-
-            return currencies;
-        }
-
-        public async Task<CurrencyModel> GetWeeklyCurrencyAsync(string symbol)
-        {
-            CurrencyModel currency = new CurrencyModel(); 
-            currency.MetaData = await _context.CurrencyData.Where(x => x.fromSymbol == symbol).FirstAsync();
-            List<OHLCCurrencyModel> listOfOHLC = await _context.OHLCCurrenciesData.Where(x => x.Symbol == symbol).ToListAsync();
-
-            foreach (var i in listOfOHLC)
-            {
-                if (i.Time.DayOfWeek == DayOfWeek.Monday)
-                    currency.OHLCData.Add(i);
-            }
-
-            if (DateTime.Today.DayOfWeek != DayOfWeek.Monday)
-            {
-                currency.OHLCData.Add(listOfOHLC.Last());
-                listOfOHLC.Remove(listOfOHLC.Last());
-            }
-
-            return currency;
-        }
-
-        public async Task<CurrencyModel> GetMonthlyCurrencyAsync(string symbol)
-        {
-            CurrencyModel currency = new CurrencyModel();
-            currency.MetaData = await _context.CurrencyData.Where(x => x.fromSymbol == symbol).FirstAsync();
-            List<OHLCCurrencyModel> listOfOHLC = await _context.OHLCCurrenciesData.Where(x => x.Symbol == symbol).ToListAsync();
-
-            foreach (var i in listOfOHLC)
-            {
-                if ((int)i.Time.Day - DateTime.DaysInMonth(i.Time.Year, i.Time.Month) == 0)
-                    currency.OHLCData.Add(i);
-            }
-
-            if ((int)DateTime.Today.Day - DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month) != 0)
-            {
-                currency.OHLCData.Add(listOfOHLC.Last());
-                listOfOHLC.Remove(listOfOHLC.Last());
-            }
-
-
-
-            return currency;
-        }
-
         public async Task<bool> UpdateCurrencyModelAsync(string symbol)
         {
             string QUERY_URL = $"https://www.alphavantage.co/query?function=FX_DAILY&from_symbol={symbol}&to_symbol=USD&apikey={await _apiKey.GetKeyAsync()}";
@@ -236,14 +234,10 @@ namespace CurrencyExchangeLibrary.Repository
                 return await SaveAsync();
             }
         }
-        public async Task<OHLCCurrencyModel> GetLatestOHLCAsync(string symbol)
+        public async Task<bool> SaveAsync()
         {
-            return await _context.OHLCCurrenciesData.Where(s => s.Symbol == symbol).OrderByDescending(x => x.Time).FirstAsync();
-        }
-        public async Task<bool> CreateOHLCAsync(List<OHLCCurrencyModel> newOHLC)
-        {
-            await _context.OHLCCurrenciesData.AddRangeAsync(newOHLC);
-            return await SaveAsync();
+            var saved = await _context.SaveChangesAsync();
+            return saved > 0 ? true : false;
         }
 
     }

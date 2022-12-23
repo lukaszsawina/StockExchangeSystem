@@ -12,12 +12,14 @@ namespace StockExchangeSystem_Server.PeriodicServices
     {
         private readonly ICryptoRepository _cryptoRepository;
         private readonly ICurrencyRepository _currencyRepository;
+        private readonly IStockRepository _stockRepository;
         private readonly ILogger<RefreshLogic> _logger;
 
-        public RefreshLogic(ICryptoRepository cryptoRepository, ICurrencyRepository currencyRepository, ILogger<RefreshLogic> logger)
+        public RefreshLogic(ICryptoRepository cryptoRepository, ICurrencyRepository currencyRepository, IStockRepository stockRepository, ILogger<RefreshLogic> logger)
         {
             _cryptoRepository = cryptoRepository;
             _currencyRepository = currencyRepository;
+            _stockRepository = stockRepository;
             _logger = logger;
         }
 
@@ -51,6 +53,15 @@ namespace StockExchangeSystem_Server.PeriodicServices
             {
                 _logger.LogInformation("Refreshing currency current value with code: {code} | {current}/{whole}", c.symbol, c.index, currenciesSymbols.Count);
                 await _currencyRepository.UpdateCurrencyValueAsync(c.symbol);
+            }
+        }
+        private async Task RefreshStock()
+        {
+            var stockSymbols = await _stockRepository.GetStocksCodesAsync();
+            foreach (var c in stockSymbols.Select((symbol, index) => (symbol, index)))
+            {
+                _logger.LogInformation("Refreshing stock current value with code: {code} | {current}/{whole}", c.symbol, c.index, stockSymbols.Count);
+                await _stockRepository.UpdateStockCurrentAsync(c.symbol);
             }
         }
         public async Task StartUpAppRefresh()

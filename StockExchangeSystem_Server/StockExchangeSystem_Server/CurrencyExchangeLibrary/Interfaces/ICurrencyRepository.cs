@@ -12,13 +12,13 @@ namespace CurrencyExchangeLibrary.Interfaces
     public interface ICurrencyRepository
     {
         //Get
-        Task<List<string>> GetCurrenciesCodesAsync();
         Task<List<CurrencyOutModel>> GetCurrenciesAsync();
         Task<CurrencyModel> GetCurrencyAsync(string symbol);
         Task<bool> CurrencyExistAsync(string symbol);
         Task<CurrencyModel> GetWeeklyCurrencyAsync(string symbol);
         Task<CurrencyModel> GetMonthlyCurrencyAsync(string symbol);
         Task<OHLCCurrencyModel> GetLatestOHLCAsync(string symbol);
+        Task<List<string>> GetCurrenciesCodesAsync();
         //Post
         Task<bool> CreateCurrencyAsync(string symbol);
         Task<bool> CreateOHLCAsync(List<OHLCCurrencyModel> newOHLC);
