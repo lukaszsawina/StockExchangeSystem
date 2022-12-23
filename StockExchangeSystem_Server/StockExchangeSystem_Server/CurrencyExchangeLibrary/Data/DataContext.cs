@@ -2,6 +2,7 @@
 using CurrencyExchangeLibrary.Models.Crypto;
 using CurrencyExchangeLibrary.Models.Currency;
 using CurrencyExchangeLibrary.Models.OHLC;
+using CurrencyExchangeLibrary.Models.Stock;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,10 @@ namespace CurrencyExchangeLibrary.Data
         public DbSet<CurrencyModel> Currency { get; set; }
         public DbSet<CurrencyDataModel> CurrencyData { get; set; }
         public DbSet<OHLCCurrencyModel> OHLCCurrenciesData { get; set; }
+        //Stock
+        public DbSet<StockModel> Stock { get; set; }
+        public DbSet<StockDataModel> StockData { get; set; }
+        public DbSet<OHLCVStockModel> OHLCVStockData { get; set; }
         //Account
         public DbSet<AccountModel> Account { get; set; }
         public DbSet<UserModel> User { get; set; }
@@ -43,6 +48,13 @@ namespace CurrencyExchangeLibrary.Data
             modelBuilder.Entity<CurrencyDataModel>().HasKey("ID");
             modelBuilder.Entity<CurrencyModel>().HasKey("ID");
             modelBuilder.Entity<OHLCCurrencyModel>().HasKey(u => new
+            {
+                u.Symbol,
+                u.Time
+            });
+            modelBuilder.Entity<StockModel>().HasKey("ID");
+            modelBuilder.Entity<StockDataModel>().HasKey("ID");
+            modelBuilder.Entity<OHLCVStockModel>().HasKey(u => new
             {
                 u.Symbol,
                 u.Time

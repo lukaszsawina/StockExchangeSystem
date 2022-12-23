@@ -231,6 +231,88 @@ namespace CurrencyExchangeLibrary.Migrations
                     b.ToTable("OHLCCurrenciesData");
                 });
 
+            modelBuilder.Entity("CurrencyExchangeLibrary.Models.OHLC.OHLCVStockModel", b =>
+                {
+                    b.Property<string>("Symbol")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Close")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("High")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Low")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Open")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("StockModelID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Volume")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Symbol", "Time");
+
+                    b.HasIndex("StockModelID");
+
+                    b.ToTable("OHLCVStockData");
+                });
+
+            modelBuilder.Entity("CurrencyExchangeLibrary.Models.Stock.StockDataModel", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Information")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastRefreshed")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Symbol")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TimeZone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("StockData");
+                });
+
+            modelBuilder.Entity("CurrencyExchangeLibrary.Models.Stock.StockModel", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<decimal>("CurrentValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("MetaDataID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("MetaDataID");
+
+                    b.ToTable("Stock");
+                });
+
             modelBuilder.Entity("CurrencyExchangeLibrary.Models.Account.UserModel", b =>
                 {
                     b.HasBaseType("CurrencyExchangeLibrary.Models.Account.AccountModel");
@@ -296,6 +378,24 @@ namespace CurrencyExchangeLibrary.Migrations
                         .HasForeignKey("CurrencyModelID");
                 });
 
+            modelBuilder.Entity("CurrencyExchangeLibrary.Models.OHLC.OHLCVStockModel", b =>
+                {
+                    b.HasOne("CurrencyExchangeLibrary.Models.Stock.StockModel", null)
+                        .WithMany("OHLCVData")
+                        .HasForeignKey("StockModelID");
+                });
+
+            modelBuilder.Entity("CurrencyExchangeLibrary.Models.Stock.StockModel", b =>
+                {
+                    b.HasOne("CurrencyExchangeLibrary.Models.Stock.StockDataModel", "MetaData")
+                        .WithMany()
+                        .HasForeignKey("MetaDataID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MetaData");
+                });
+
             modelBuilder.Entity("CurrencyExchangeLibrary.Models.OHLC.OHLCVCryptoModel", b =>
                 {
                     b.HasOne("CurrencyExchangeLibrary.Models.Crypto.CryptoModel", null)
@@ -311,6 +411,11 @@ namespace CurrencyExchangeLibrary.Migrations
             modelBuilder.Entity("CurrencyExchangeLibrary.Models.Currency.CurrencyModel", b =>
                 {
                     b.Navigation("OHLCData");
+                });
+
+            modelBuilder.Entity("CurrencyExchangeLibrary.Models.Stock.StockModel", b =>
+                {
+                    b.Navigation("OHLCVData");
                 });
 #pragma warning restore 612, 618
         }
