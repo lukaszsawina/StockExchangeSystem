@@ -1,5 +1,6 @@
 ﻿using CurrencyExchangeLibrary.Models.Account;
 using CurrencyExchangeLibrary.Models.Crypto;
+using CurrencyExchangeLibrary.Models.Currency;
 using CurrencyExchangeLibrary.Models.OHLC;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,9 +20,13 @@ namespace CurrencyExchangeLibrary.Data
 
         //Crypto
         public DbSet<CryptoModel> Crypto { get; set; }
-        public DbSet<OHLCModel> OHLCData { get; set; }
-        public DbSet<OHLCVModel> OHLCVData { get; set; }
+        public DbSet<OHLCCryptoModel> OHLCCryptoData { get; set; }
+        public DbSet<OHLCVCryptoModel> OHLCVCryptoData { get; set; }
         public DbSet<CryptoDataModel> CryptoData { get; set; }
+        //Currency
+        public DbSet<CurrencyModel> Currency { get; set; }
+        public DbSet<CurrencyDataModel> CurrencyData { get; set; }
+        public DbSet<OHLCCurrencyModel> OHLCCurrenciesData { get; set; }
         //Account
         public DbSet<AccountModel> Account { get; set; }
         public DbSet<UserModel> User { get; set; }
@@ -30,7 +35,14 @@ namespace CurrencyExchangeLibrary.Data
         {
             modelBuilder.Entity<CryptoDataModel>().HasKey("ID");
             modelBuilder.Entity<CryptoModel>().HasKey("ID");
-            modelBuilder.Entity<OHLCModel>().HasKey(u => new
+            modelBuilder.Entity<OHLCCryptoModel>().HasKey(u => new
+            {
+                u.Symbol,
+                u.Time
+            });
+            modelBuilder.Entity<CurrencyDataModel>().HasKey("ID");
+            modelBuilder.Entity<CurrencyModel>().HasKey("ID");
+            modelBuilder.Entity<OHLCCurrencyModel>().HasKey(u => new
             {
                 u.Symbol,
                 u.Time

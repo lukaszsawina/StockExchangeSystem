@@ -33,7 +33,8 @@ namespace StockExchangeSystem_Server.Controllers
             try
             {
                 _logger.LogInformation("Refreshing all crypto");
-                await _refreshLogic.StartUpAppRefresh();
+                if((await _cryptoRepository.GetLatestOHLCVAsync("BTC")).Time < DateTime.Today)
+                    await _refreshLogic.StartUpAppRefresh();
             }
             catch(Exception ex)
             {
@@ -139,7 +140,7 @@ namespace StockExchangeSystem_Server.Controllers
                     return NotFound();
                 }
 
-                _logger.LogInformation("Attempting to receive  {code} monthly data from database", symbol);
+                _logger.LogInformation("Attempting to receive {code} monthly data from database", symbol);
                 var crypto = await _cryptoRepository.GetMonthlyCryptoAsync(symbol);
 
                 if (!ModelState.IsValid)
@@ -161,6 +162,8 @@ namespace StockExchangeSystem_Server.Controllers
         {
             try
             {
+
+                _logger.LogInformation("Attempting to add new crypto {code}", symbol);
                 if (await _cryptoRepository.CryptoExistAsync(symbol))
                 {
                     _logger.LogInformation("Crypto already exist in database");
@@ -177,6 +180,14 @@ namespace StockExchangeSystem_Server.Controllers
                     ModelState.AddModelError("", "Something went wrong while adding crypto");
                     return StatusCode(500, ModelState);
                 }
+
+                if (!(await _cryptoRepository.UpdateCryptoCurrentAsync(symbol)))
+                {
+                    _logger.LogInformation("Something went wrong while saving data in database");
+                    ModelState.AddModelError("", "Something went wrong while adding crypto");
+                    return StatusCode(500, ModelState);
+                }
+                
 
                 return Ok("Succesfully created");
             }
