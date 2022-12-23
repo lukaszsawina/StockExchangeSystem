@@ -32,12 +32,15 @@ namespace StockExchangeSystem_Server.PeriodicServices
 
         public async Task StartUpAppRefresh()
         {
+
             var cryptosSymbol = await _cryptoRepository.GetCryptoCodesAsync();
             foreach (var c in cryptosSymbol.Select((symbol, index) => (symbol, index)))
             {
-                _logger.LogInformation("Refreshing crypto data with code: {code} | {current}/{whole}", c.symbol, c.index, cryptosSymbol.Count);
+                _logger.LogInformation("Refreshing crypto data with code: {code} | {current}/{whole}", c.symbol, c.index + 1, cryptosSymbol.Count);
                 await _cryptoRepository.UpdateCryptoModelAsync(c.symbol);
+               
             }
+            
         }
     }
 }
