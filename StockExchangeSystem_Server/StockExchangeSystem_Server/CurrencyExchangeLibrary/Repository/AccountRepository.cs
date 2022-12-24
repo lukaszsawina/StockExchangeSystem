@@ -19,6 +19,20 @@ namespace CurrencyExchangeLibrary.Repository
             _context = context;
         }
 
+        //Get
+        public async Task<List<AccountModel>> GetAccountsAsync()
+        {
+            return await _context.Account.ToListAsync();
+        }
+        public async Task<AccountModel> GetAccountAsync(int id)
+        {
+            return await _context.Account.Where(x => x.ID == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<AccountModel> GetAccountAsync(string email)
+        {
+            return await _context.Account.Where(x => x.Email == email).FirstOrDefaultAsync();
+        }
         public async Task<bool> AccountExistAsync(int id)
         {
             return await _context.Account.AnyAsync(x => x.ID == id);
@@ -29,19 +43,24 @@ namespace CurrencyExchangeLibrary.Repository
             return await _context.Account.AnyAsync(x => x.Email == email);
         }
 
-        public async Task<AccountModel> GetAccountAsync(int id)
+        public async Task<bool> LoginAsync(string email, string password)
         {
-            return await _context.Account.Where(x => x.ID == id).FirstOrDefaultAsync();
+            return await _context.Account.AnyAsync(x => x.Email == email && x.Password == password);
         }
 
-        public async Task<AccountModel> GetAccountAsync(string email)
+        //Post
+
+        //Put
+        public async Task<bool> UpdateAccountAsync(AccountModel account)
         {
-            return await _context.Account.Where(x => x.Email == email).FirstOrDefaultAsync();
+            _context.Account.Update(account);
+            return await SaveAsync();
         }
 
-        public async Task<List<AccountModel>> GetAccountsAsync()
+        public async Task<bool> SaveAsync()
         {
-            return await _context.Account.ToListAsync();
+            var saved = await _context.SaveChangesAsync();
+            return saved > 0 ? true : false;
         }
     }
 }

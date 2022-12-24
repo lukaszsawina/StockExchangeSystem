@@ -22,11 +22,11 @@ builder.Host.UseSerilog();
 builder.Services.AddSingleton<PeriodicHostedService>();
 builder.Services.AddScoped<ICryptoRepository, CryptoRepository>();
 builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAPIKeyLogic, APIKeyLogic>();
 builder.Services.AddScoped<IRefreshLogic, RefreshLogic>();
 builder.Services.AddScoped<IStockRepository, StockRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 builder.Services.AddHostedService(
     provider => provider.GetRequiredService<PeriodicHostedService>());

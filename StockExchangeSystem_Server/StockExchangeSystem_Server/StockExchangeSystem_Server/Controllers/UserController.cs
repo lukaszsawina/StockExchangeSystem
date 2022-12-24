@@ -10,23 +10,35 @@ namespace StockExchangeSystem_Server.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IAccountRepository _accountRepository;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserRepository userRepository, IAccountRepository accountRepository)
+        public UserController(IUserRepository userRepository, IAccountRepository accountRepository, ILogger<UserController> logger)
         {
             _userRepository = userRepository;
             _accountRepository = accountRepository;
+            _logger = logger;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<UserModel>))]
         public async Task<IActionResult> GetUsersAsync()
         {
-            var users = await _userRepository.GetUsersAsync();
+            try
+            {
+                _logger.LogInformation("Attempting to receive all users from database");
+                var users = await _userRepository.GetUsersAsync();
 
-            if (!ModelState.IsValid)
-                return BadRequest();
+                if (!ModelState.IsValid)
+                    return BadRequest();
 
-            return Ok(users);
+                _logger.LogInformation("All users were send");
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while showing all users");
+                throw new Exception("Error");
+            }
         }
 
         [HttpGet("{id}")]
@@ -34,15 +46,27 @@ namespace StockExchangeSystem_Server.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetUserAsync(int id)
         {
-            if (!(await _accountRepository.AccountExistAsync(id)))
-                return NotFound();
+            try
+            {
+                if (!(await _accountRepository.AccountExistAsync(id)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", id);
+                    return NotFound();
+                }
 
-            UserModel user = await _userRepository.GetUserAsync(id);
+                _logger.LogInformation("Attempting to receive {code} data from database", id);
+                var user = await _userRepository.GetUserAsync(id);
 
-            if (!ModelState.IsValid)
-                return BadRequest();
+                if (!ModelState.IsValid)
+                    return BadRequest();
 
-            return Ok(user);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while showing user {id}", id);
+                throw new Exception("Error");
+            }
         }
 
         [HttpGet("email/{email}")]
@@ -50,15 +74,27 @@ namespace StockExchangeSystem_Server.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetUserAsync(string email)
         {
-            if (!(await _accountRepository.AccountExistAsync(email)))
-                return NotFound();
+            try
+            {
+                if (!(await _accountRepository.AccountExistAsync(email)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", email);
+                    return NotFound();
+                }
 
-            var user = _userRepository.GetUserAsync(email);
+                _logger.LogInformation("Attempting to receive {code} data from database", email);
+                var user = _userRepository.GetUserAsync(email);
 
-            if (!ModelState.IsValid)
-                return BadRequest();
+                if (!ModelState.IsValid)
+                    return BadRequest();
 
-            return Ok(user);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while showing user {email}", email);
+                throw new Exception("Error");
+            }
         }
 
         [HttpPost]
@@ -66,27 +102,41 @@ namespace StockExchangeSystem_Server.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateUserAsync([FromBody] UserModel user)
         {
-            if (user == null)
-                return BadRequest(ModelState);
-
-            if(await _accountRepository.AccountExistAsync(user.ID))
+            try
             {
-                ModelState.AddModelError("", "User already exist");
-                return BadRequest();
+                if (user == null)
+                {
+                    _logger.LogInformation("Invalid form data");
+                    return BadRequest(ModelState);
+                }
+
+                if(await _accountRepository.AccountExistAsync(user.ID))
+                {
+                    _logger.LogInformation("{code} already exist in database", user.Email);
+
+                    ModelState.AddModelError("", "User already exist");
+                    return BadRequest();
+                }
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                user.CreateTime = DateTime.Today;
+
+                _logger.LogInformation("Attempt to add new User: {email}",user.Email);
+                if (!(await _userRepository.CreateUserAsync(user)))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving");
+                    return StatusCode(500, ModelState);
+                }
+
+                return Ok("Succesfully created");
             }
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            user.CreateTime = DateTime.Today;
-
-            if (!(await _userRepository.CreateUserAsync(user)))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
+                _logger.LogError(ex, "Error while adding user {email}", user.Email);
+                throw new Exception("Error");
             }
-
-            return Ok("Succesfully created");
         }
 
         [HttpPut("{id}")]
@@ -95,22 +145,43 @@ namespace StockExchangeSystem_Server.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UserModel user)
         {
-            if(user == null)
-                return BadRequest(ModelState);
-
-            if (id != user.ID)
-                return BadRequest(ModelState);
-
-            if (!(await _accountRepository.AccountExistAsync(id)))
-                return NotFound();
-
-            if (!await _userRepository.UpdateUserAsync(user))
+            try
             {
-                ModelState.AddModelError("", "Something went wrong updating");
-                return StatusCode(500, ModelState);
-            }
+                if(user == null)
+                {
+                    _logger.LogInformation("Invalid form data");
+                    return BadRequest(ModelState);
+                }
 
-            return NoContent();
+                if (id != user.ID)
+                {
+                    _logger.LogInformation("Invalid ID");
+                    return BadRequest(ModelState);
+                }
+
+                if (!(await _accountRepository.AccountExistAsync(id)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", user.Email);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Attempt to update User: {email}", user.Email);
+
+                if (!await _userRepository.UpdateUserAsync(user))
+                {
+                    ModelState.AddModelError("", "Something went wrong updating");
+                    return StatusCode(500, ModelState);
+                }
+                _logger.LogInformation("User updated");
+
+                return NoContent();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while logging account {email}", user.Email);
+                throw new Exception("Error");
+            }
         }
 
         [HttpDelete("{id}")]
@@ -119,21 +190,36 @@ namespace StockExchangeSystem_Server.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteUserAsync(int id)
         {
-            if (!(await _accountRepository.AccountExistAsync(id)))
-                return NotFound();
-
-            var userToDelete = await _userRepository.GetUserAsync(id);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (!(await _userRepository.DeleteUserAsync(userToDelete)))
+            try
             {
-                ModelState.AddModelError("", "Something went wrong deleting category");
-                return BadRequest(ModelState);
-            }
+                if (!(await _accountRepository.AccountExistAsync(id)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", id);
+                    return NotFound();
+                }
 
-            return NoContent();
+                _logger.LogInformation("Attempt to recive {id} data from database", id);
+                var userToDelete = await _userRepository.GetUserAsync(id);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                _logger.LogInformation("Attempt to delete {id} data from database", id);
+                if (!(await _userRepository.DeleteUserAsync(userToDelete)))
+                {
+                    _logger.LogInformation("Attempt to recive {id} data from database", id);
+
+                    ModelState.AddModelError("", "Something went wrong deleting category");
+                    return BadRequest(ModelState);
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while logging account {email}", id);
+                throw new Exception("Error");
+            }
         }
     }
 }

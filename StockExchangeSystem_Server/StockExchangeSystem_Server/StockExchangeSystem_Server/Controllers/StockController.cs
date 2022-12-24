@@ -128,7 +128,6 @@ namespace StockExchangeSystem_Server.Controllers
                 throw new Exception("Error");
             }
         }
-        [HttpPut("refresh/{symbol}")]
 
         //Post
         [HttpPost]
@@ -205,6 +204,7 @@ namespace StockExchangeSystem_Server.Controllers
 
         }
 
+        [HttpPut("refresh/{symbol}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
