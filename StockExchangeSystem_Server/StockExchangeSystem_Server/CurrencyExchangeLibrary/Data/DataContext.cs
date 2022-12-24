@@ -59,6 +59,9 @@ namespace CurrencyExchangeLibrary.Data
                 u.Symbol,
                 u.Time
             });
+
+            modelBuilder.Entity<AccountModel>().HasKey("ID");
+
         }
     }
 }
