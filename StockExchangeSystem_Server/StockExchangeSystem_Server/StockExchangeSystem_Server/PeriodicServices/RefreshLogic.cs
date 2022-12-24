@@ -29,6 +29,7 @@ namespace StockExchangeSystem_Server.PeriodicServices
             {
                 await RefreshCrypto();
                 await RefreshCurrency();
+                await RefreshStock();
             }
             catch(Exception ex)
             {
