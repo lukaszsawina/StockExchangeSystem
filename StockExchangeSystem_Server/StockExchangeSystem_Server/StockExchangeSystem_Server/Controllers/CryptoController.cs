@@ -24,27 +24,7 @@ namespace StockExchangeSystem_Server.Controllers
             _refreshLogic = refreshLogic;
         }
 
-
-        [HttpPut]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> RefreshAllCrypto()
-        {
-            try
-            {
-                _logger.LogInformation("Refreshing all crypto");
-                if((await _cryptoRepository.GetLatestOHLCVAsync("BTC")).Time < DateTime.Today)
-                    await _refreshLogic.StartUpAppRefresh();
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, "Exception while refreshing all cryptos");
-                throw new Exception("Error");
-            }
-            return Ok();
-            
-        }
-
+        //Get
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CryptoOutModel>))]
         public async Task<IActionResult> GetCryptosAsync()
@@ -155,6 +135,8 @@ namespace StockExchangeSystem_Server.Controllers
             }
         }
 
+
+        //Post
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -198,6 +180,8 @@ namespace StockExchangeSystem_Server.Controllers
             }
             
         }
+
+        //Put
         [HttpPut("refresh/current/{symbol}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
