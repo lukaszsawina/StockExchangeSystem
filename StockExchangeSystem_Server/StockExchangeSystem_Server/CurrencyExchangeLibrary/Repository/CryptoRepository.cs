@@ -22,7 +22,7 @@ namespace CurrencyExchangeLibrary.Repository
         private readonly DataContext _context;
         private readonly IAPIKeyLogic _apiKey;
 
-        private readonly int cryptoAmound = 100;
+        private readonly int cryptoAmound = 365;
 
         public CryptoRepository(DataContext context, IAPIKeyLogic apiKey)
         {
