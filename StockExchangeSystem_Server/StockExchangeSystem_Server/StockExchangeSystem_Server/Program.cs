@@ -28,8 +28,8 @@ builder.Services.AddScoped<IRefreshLogic, RefreshLogic>();
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
-builder.Services.AddHostedService(
-    provider => provider.GetRequiredService<PeriodicHostedService>());
+//builder.Services.AddHostedService(
+//    provider => provider.GetRequiredService<PeriodicHostedService>());
 
 
 builder.Services.AddControllers();
