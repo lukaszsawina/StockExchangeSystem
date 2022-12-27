@@ -10,7 +10,7 @@ $api_url = 'https://localhost:7070/api/Crypto';
                 <div class="row g-4">
                     <div class="col-sm-12 col-xl-12">
                         <div class="bg-secondary rounded d-flex align-items-center p-4">
-                            <i class="fa-brands fa-bitcoin fa-3x text-primary" onclick="userAction()"></i>
+                            <i class="fa-brands fa-bitcoin fa-3x text-primary"></i>
                             <div class="ms-3">
                                 <h1 class="text-body mb-2">Kryptowaluty</p>
                                 <h6 class="mb-0">Inwestycje w kryptowaluty uznawane są za ryzykowne, ale jednocześnie dające szanse na osiągnięcie wręcz niewyobrażalnych zysków.</h6>
@@ -23,8 +23,6 @@ $api_url = 'https://localhost:7070/api/Crypto';
 
             <?php
                 $response = GetAPI($api_url,false);
-                
-                
             ?>
 
 
@@ -47,6 +45,7 @@ $api_url = 'https://localhost:7070/api/Crypto';
                                             <th scope="col">Cał. wol.</th>
                                             <th scope="col">Zm. (24h)</th>
                                             <th scope="col">Zm. (7d)</th>
+                                            <th scope="col">Info.</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tableBody">
@@ -60,13 +59,14 @@ $api_url = 'https://localhost:7070/api/Crypto';
                                             <tr id="<?php echo $c->symbol;?>" class="krypto">
                                             <td><input id="<?php echo $c->symbol."chk";?>" class="kryptocheck" type="checkbox"></td>
                                             <th scope="row"><?php echo $i;?></th>
-                                            <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" loading="lazy" alt="BTC logo"></td>
+                                            <td><img class="coin-logo" src="https://cryptoicons.org/api/icon/<?php echo strtolower($c->symbol);?>/200" loading="lazy" alt="BTC logo"></td>
                                             <td><?php echo $c->name;?></td>
                                             <td id="symbol"><?php echo $c->symbol;?></td>
                                             <td><?php echo number_format($c->value,2, ',', ' ');?></td>
                                             <td><?php echo number_format($c->volume,2, ',', ' ');?></td>
                                             <td><?php echo number_format($c->changeDay,2, ',', ' ')."%";?></td>
                                             <td><?php echo number_format($c->changeWeek,2, ',', ' ')."%";?></td>
+                                            <td><a href="strona_krypto.php?c=<?php echo $c->symbol;?>" type="button" class="btn btn-primary shadow-none">More</a></td>
                                         </tr>           
                                             <?php
                                             $i++;
@@ -89,9 +89,9 @@ $api_url = 'https://localhost:7070/api/Crypto';
                             <div class="ChartTop mb-4">
                                 <text>Single Line Chart</text>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-primary" onclick="changeChartType('D')">Daily</button>
-                                    <button type="button" class="btn btn-primary" onclick="changeChartType('W')">Weekly</button>
-                                    <button type="button" class="btn btn-primary" onclick="changeChartType('M')">Monthly</button>
+                                    <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('D')" id="Daily">Daily</button>
+                                    <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('W')" id="Weekly">Weekly</button>
+                                    <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('M')" id="Monthly">Monthly</button>
                                 </div>
                             </div>
                             
@@ -135,6 +135,7 @@ $api_url = 'https://localhost:7070/api/Crypto';
     var chartType = false;
 
     $( document ).ready(function() {
+            document.getElementById("Daily").classList.add("active");
             setChartxValues();
         })
 
@@ -173,7 +174,9 @@ $api_url = 'https://localhost:7070/api/Crypto';
         }
         xValues = xValues.reverse();
         myChart3.data.labels = xValues;
+        myChart2.data.labels = xValues;
         myChart3.update();
+        myChart2.update();
     }
     
 
@@ -189,15 +192,29 @@ $api_url = 'https://localhost:7070/api/Crypto';
     //Change Chart Type
     function changeChartType(type)
     {
+        
+        document.getElementById("Daily").classList.remove("active");
+        document.getElementById("Weekly").classList.remove("active");
+        document.getElementById("Monthly").classList.remove("active");
+
         switch (type) {
             case "D":
+            {
+                document.getElementById("Daily").classList.add("active");
                 chartType = false;
+            }
                 break;
             case "W":
+            {
+                document.getElementById("Weekly").classList.add("active");
                 chartType = "Weekly";
+            }
                 break;
             case "M":
+            {
+                document.getElementById("Monthly").classList.add("active");
                 chartType = "Monthly";
+            }
                 break;
         
             default:
@@ -256,7 +273,7 @@ $api_url = 'https://localhost:7070/api/Crypto';
     function cmpChartUpdate(){
         let ilosc = 0;
         let a = 1;
-    for(let i=0; i<3; i++){
+    for(let i=0; i<collection.length; i++){
         if(collection[i].checked == true && ilosc<2){
             myChart2.data.datasets[ilosc].data = getCrypto(chartType, coins[i].id);
             myChart2.data.datasets[ilosc].label = label
@@ -351,13 +368,13 @@ $api_url = 'https://localhost:7070/api/Crypto';
             datasets: [{
                     label: label,
                     data: data[0],
-                    backgroundColor: "rgba(235, 22, 22, .7)",
+                    backgroundColor: "rgba(235, 22, 22, .5)",
                     fill: true
                 },
                 {
                     label: label,
                     data: data[1],
-                    backgroundColor: "rgba(235, 22, 22, .5)",
+                    backgroundColor: "rgba(235, 22, 22, .7)",
                     fill: true
                 }
             ]
