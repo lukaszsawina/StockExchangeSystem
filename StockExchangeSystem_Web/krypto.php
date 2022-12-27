@@ -86,7 +86,15 @@ $api_url = 'https://localhost:7070/api/Crypto';
                 <div class="row g-4">
                     <div class="col-sm-12 col-xl-12">
                         <div id="chart1"class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Single Line Chart</h6>
+                            <div class="ChartTop mb-4">
+                                <text>Single Line Chart</text>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary" onclick="changeChartType('D')">Daily</button>
+                                    <button type="button" class="btn btn-primary" onclick="changeChartType('W')">Weekly</button>
+                                    <button type="button" class="btn btn-primary" onclick="changeChartType('M')">Monthly</button>
+                                </div>
+                            </div>
+                            
                             <canvas id="liniowy"></canvas>
                         </div>
                     </div>
@@ -108,8 +116,13 @@ $api_url = 'https://localhost:7070/api/Crypto';
     Chart.defaults.borderColor = "#000000";
 
     //Months to table 
-    function subtractMonths(date, months) {
-        date.setMonth(date.getMonth() - months);
+    function subtractMonths(date) {
+        date.setMonth(date.getMonth() - 1);
+        return date;
+    }
+    //Weeks to table
+    function subtractWeek(date) {
+        date.setDate(date.getDate() - 7)
         return date;
     }
     //Days to table
@@ -117,25 +130,86 @@ $api_url = 'https://localhost:7070/api/Crypto';
         date.setDate(date.getDate() - 1)
         return date;
     }
-    var today = new Date(); // yyyy-mm-dd
 
     var xValues = [];
+    var chartType = false;
 
-    for(let i = 0; i < 365; i++)
+    $( document ).ready(function() {
+            setChartxValues();
+        })
+
+    function setChartxValues()
     {
-        var days = subtractDays(today, 1);
-        var days = days.toLocaleDateString();
-        xValues.push(days);
-    }
+        var today = new Date(); // yyyy-mm-dd
 
-    var xValues = xValues.reverse();
+        var xValues = [];
+        var num = 0;
+        if(chartType == false)
+            num = 365;
+        else if(chartType == "Weekly")
+            num = 52;
+        else 
+            num = 12;
+        var days = today.toLocaleDateString();
+        xValues.push(days);
+        for(let i = 0; i < num; i++)
+        {
+            switch (chartType) {
+                case false:
+                    var days = subtractDays(today);
+                    break;
+                case "Weekly":
+                    var days = subtractWeek(today);
+                    break;
+                case "Monthly":
+                    var days = subtractMonths(today);
+                    break;
+                default:
+                    break;
+            }
+            
+            var days = days.toLocaleDateString();
+            xValues.push(days);
+        }
+        xValues = xValues.reverse();
+        myChart3.data.labels = xValues;
+        myChart3.update();
+    }
+    
+
     var data = [];
     var label = "Brak";
+
     // Comparison Line Chart
     var count = 0
     var queue = []
     let collection = document.querySelectorAll(".kryptocheck");
     
+
+    //Change Chart Type
+    function changeChartType(type)
+    {
+        switch (type) {
+            case "D":
+                chartType = false;
+                break;
+            case "W":
+                chartType = "Weekly";
+                break;
+            case "M":
+                chartType = "Monthly";
+                break;
+        
+            default:
+                break;
+        }
+        setChartxValues();
+
+        
+        myChart3.data.datasets[0].data = getCrypto(chartType, currentyCrypto);
+        myChart3.update()
+    }
+
     // Handling checkbox click
     for (let i = 0; i < collection.length; i++) {
         collection[i].addEventListener('change', ()=>{
@@ -184,7 +258,7 @@ $api_url = 'https://localhost:7070/api/Crypto';
         let a = 1;
     for(let i=0; i<3; i++){
         if(collection[i].checked == true && ilosc<2){
-            myChart2.data.datasets[ilosc].data = getCryptoMonthly(coins[i].id);
+            myChart2.data.datasets[ilosc].data = getCrypto(chartType, coins[i].id);
             myChart2.data.datasets[ilosc].label = label
             myChart2.update()
             ilosc++
@@ -211,11 +285,17 @@ $api_url = 'https://localhost:7070/api/Crypto';
     }
 
 
-    function getCryptoMonthly(symbol)
+
+    //Get crypto data with offset type
+    function getCrypto(type, symbol)
     {
+        if(!type)
+            var link = "https://localhost:7070/api/Crypto/"+symbol;
+        else
+            var link = "https://localhost:7070/api/Crypto/"+type+"/"+symbol;
         var data = [];
         $.ajax({
-                url: "https://localhost:7070/api/Crypto/"+symbol,
+                url: link,
                 type: 'GET',
                 async: false,
                 dataType: 'json',
@@ -232,13 +312,14 @@ $api_url = 'https://localhost:7070/api/Crypto';
         return data;
     }
 
+    var currentCrytpo;
     // Single Line Chart
     let coins = document.getElementsByClassName('krypto')
     for(let i=0; i<coins.length; i++){
         coins[i].onclick= () =>{
+            currentyCrypto = coins[i].id;
             
-            
-            myChart3.data.datasets[0].data = getCryptoMonthly(coins[i].id);
+            myChart3.data.datasets[0].data = getCrypto(chartType, currentyCrypto);
             myChart3.data.datasets[0].label = label;
             myChart3.update()
             //cmpChartUpdate()

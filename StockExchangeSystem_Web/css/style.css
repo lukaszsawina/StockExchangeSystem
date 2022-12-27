@@ -317,3 +317,12 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+
+
+/* Chart type options */
+.ChartTop
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
