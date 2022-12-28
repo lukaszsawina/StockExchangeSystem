@@ -120,6 +120,27 @@ namespace StockExchangeSystem_Server.Controllers
                 throw new Exception("Error");
             }
         }
+        [HttpGet("exist/{email}")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetAccountExistAsync(string email)
+        {
+            try
+            {
+                var output = await _accountRepository.AccountExistAsync(email);
+
+                if (!ModelState.IsValid)
+                    return BadRequest();
+
+                return Ok(output);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while showing account {id}", email);
+                throw new Exception("Error");
+            }
+        }
 
         [HttpPut("update/{id}")]
         [ProducesResponseType(204)]

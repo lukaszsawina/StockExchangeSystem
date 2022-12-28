@@ -317,9 +317,6 @@ namespace CurrencyExchangeLibrary.Migrations
                 {
                     b.HasBaseType("CurrencyExchangeLibrary.Models.Account.AccountModel");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
