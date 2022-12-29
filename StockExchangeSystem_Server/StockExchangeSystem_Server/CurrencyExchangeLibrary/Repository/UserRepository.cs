@@ -36,7 +36,7 @@ namespace CurrencyExchangeLibrary.Repository
             return await _context.User.Where(x => x.ID == id).FirstOrDefaultAsync();
         }
 
-        public async Task<UserModel> GetUserAsync(string email)
+        public async Task<UserModel> GetUserMailAsync(string email)
         {
             return await _context.User.Where(x => x.Email == email).FirstOrDefaultAsync();
         }

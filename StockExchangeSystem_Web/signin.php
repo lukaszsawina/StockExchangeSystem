@@ -46,19 +46,19 @@
         <div class="container-fluid">
             <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
                 <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-                    <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+                    <form id="form" method="post" action="signin_script.php" class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                            <a href="index.html" class="">
+                            <a href="index.php" class="">
                                 <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>DarkPan</h3>
                             </a>
                             <h3>Sign In</h3>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                            <input type="email" class="form-control" id="eMail" required name="email" placeholder="name@example.com">
                             <label for="floatingInput">Email address</label>
                         </div>
                         <div class="form-floating mb-4">
-                            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                            <input type="password" name="pass" class="form-control" required id="pass" placeholder="Password">
                             <label for="floatingPassword">Password</label>
                         </div>
                         <div class="d-flex align-items-center justify-content-between mb-4">
@@ -68,9 +68,13 @@
                             </div>
                             <a href="">Forgot Password</a>
                         </div>
-                        <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign In</button>
-                        <p class="text-center mb-0">Don't have an Account? <a href="">Sign Up</a></p>
-                    </div>
+                        <div id="existInfo" class="d-none align-items-center justify-content-between flex-wrap">
+                            <h1>User don't exist</h1>
+                            <h4>Check your email and password</h4>
+                        </div>
+                        <button type="submit" class="btn btn-primary shadow-none py-3 w-100 mb-4">Sign In</button>
+                        <p class="text-center mb-0">Don't have an Account? <a href="signup.php">Sign Up</a></p>
+                    </form>
                 </div>
             </div>
         </div>
@@ -91,5 +95,39 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 </body>
+<script>
+        var form=document.getElementById('form')
+        var exist
+
+        form.addEventListener('submit', function(e){
+        e.preventDefault()
+        AccountLoginAPI()
+        });
+
+        function AccountLoginAPI()
+        {
+            fetch('https://localhost:7070/api/Account/loggin', {
+            method: 'POST',
+            async: false,
+            body: JSON.stringify({
+                email: document.getElementById('eMail').value,
+                password: document.getElementById('pass').value,
+        }),
+        headers: {
+            'Content-type': 'application/json;',
+        }
+        }).then(response => {
+            if(response.ok)
+                form.submit();
+            else
+            {
+                document.getElementById("existInfo").classList.remove("d-none");
+                document.getElementById("existInfo").classList.add("d-flex");
+            }
+
+        })    
+        }
+
+</script>
 
 </html>

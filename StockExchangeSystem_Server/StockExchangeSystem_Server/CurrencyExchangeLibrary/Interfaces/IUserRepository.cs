@@ -12,7 +12,7 @@ namespace CurrencyExchangeLibrary.Interfaces
         //Get
         Task<List<UserModel>> GetUsersAsync();
         Task<UserModel> GetUserAsync(int id);
-        Task<UserModel> GetUserAsync(string email);
+        Task<UserModel> GetUserMailAsync(string email);
         
         //Post
         Task<bool> CreateUserAsync(UserModel user);

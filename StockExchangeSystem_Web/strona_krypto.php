@@ -57,8 +57,6 @@ $times = explode("T", $response->metaData->lastRefreshed);
                                     </thead>
                                     <tbody id="tableBody">
                                         <?php
-                                        $response->ohlcvCryptoData = array_reverse($response->ohlcvCryptoData);
-                                        $i = 1;
                                         foreach ($response->ohlcvCryptoData as &$c)
                                         {
                                             $ohlcTime = explode("T", $c->time);
@@ -70,7 +68,6 @@ $times = explode("T", $response->metaData->lastRefreshed);
                                             <td><?php echo number_format($c->closeUSD,2, ',', ' ');?></td>
                                         </tr>           
                                             <?php
-                                            $i++;
                                         } 
                                         ?>                     
                                     </tbody>

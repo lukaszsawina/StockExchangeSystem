@@ -69,7 +69,7 @@ namespace StockExchangeSystem_Server.Controllers
             }
         }
 
-        [HttpGet("email/{email}")]
+        [HttpGet("mail/{email}")]
         [ProducesResponseType(200, Type = typeof(UserModel))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetUserAsync(string email)
@@ -83,7 +83,7 @@ namespace StockExchangeSystem_Server.Controllers
                 }
 
                 _logger.LogInformation("Attempting to receive {code} data from database", email);
-                var user = _userRepository.GetUserAsync(email);
+                var user = await _userRepository.GetUserMailAsync(email);
 
                 if (!ModelState.IsValid)
                     return BadRequest();

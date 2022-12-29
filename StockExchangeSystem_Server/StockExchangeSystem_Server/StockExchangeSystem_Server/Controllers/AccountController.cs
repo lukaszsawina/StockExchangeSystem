@@ -95,7 +95,7 @@ namespace StockExchangeSystem_Server.Controllers
             }
         }
 
-        [HttpGet("loggin")]
+        [HttpPost("loggin")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> LogginAsync([FromBody] AccountModel account)
@@ -117,6 +117,27 @@ namespace StockExchangeSystem_Server.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while logging account {email}", account.Email);
+                throw new Exception("Error");
+            }
+        }
+        [HttpGet("exist/{email}")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetAccountExistAsync(string email)
+        {
+            try
+            {
+                var output = await _accountRepository.AccountExistAsync(email);
+
+                if (!ModelState.IsValid)
+                    return BadRequest();
+
+                return Ok(output);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while showing account {id}", email);
                 throw new Exception("Error");
             }
         }
