@@ -95,7 +95,7 @@ namespace StockExchangeSystem_Server.Controllers
             }
         }
 
-        [HttpGet("loggin")]
+        [HttpPost("loggin")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> LogginAsync([FromBody] AccountModel account)
