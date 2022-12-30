@@ -1,5 +1,6 @@
 <?php
 include_once 'parts/header.php';
+$api_url = 'https://localhost:7070/api/Stock';
 ?>
 
  <!-- Description Start -->
@@ -17,6 +18,10 @@ include_once 'parts/header.php';
                 </div>
             </div>
             <!-- Description End -->
+ 
+            <?php
+                $response = GetAPI($api_url,false);
+            ?>
 
   <!-- Table Start -->
   <div class="container-fluid pt-4 px-4">
@@ -31,213 +36,36 @@ include_once 'parts/header.php';
                                 <th scope="col"> </th>
                                 <th scope="col">#</th>
                                 <th scope="col">Logo</th>
-                                <th scope="col">Nazwa</th>
                                 <th scope="col">Symbol</th>
                                 <th scope="col">Cena(USD)</th>
-                                <th scope="col">Kap.</th>
-                                <th scope="col">Wol. (24h)</th>
                                 <th scope="col">Cał. wol.</th>
-                                <th scope="col">Zm. (24h)</th>
                                 <th scope="col">Zm. (7d)</th>
+                                <th scope="col">Zm. (30d)</th>
+                                <th scope="col">Info.</th>
+
                             </tr>
                         </thead>
                         <tbody>
-                            <tr id="BTC" class="krypto">
-                                <td><input id="BTCchk" class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">1</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" loading="lazy" alt="BTC logo"></td>
-                                <td>Bitcoin</td>
-                                <td>BTC</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
+                            <?php                    
+                                $i = 1;
+                                foreach ($response as &$c)
+                                {
+                            ?>
+                            <tr id="<?php echo $c->symbol;?>" class="stock">
+                                <td><input id="<?php echo $c->symbol."chk";?>" class="stockcheck" type="checkbox"></td>
+                                <th scope="row"><?php echo $i;?></th>
+                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" loading="lazy" alt="logo"></td>
+                                <td><?php echo $c->symbol;?></td>
+                                <td><?php echo number_format($c->value,2, ',', ' ');?></td>
+                                <td><?php echo number_format($c->volume,2, ',', ' ');?></td>
+                                <td><?php echo number_format($c->changeWeek,2, ',', ' ')."%";?></td>
+                                <td><?php echo number_format($c->changeMonth,2, ',', ' ')."%";?></td>
+                                <td><a href="stock_page.php?c=<?php echo $c->symbol;?>" type="button" class="btn btn-primary shadow-none">More</a></td>
                             </tr>
-                            <tr id="ETH" class="krypto">
-                                <td><input id="ETHchk" class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">2</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png" loading="lazy" alt="ETH logo"></td>
-                                <td>Etherum</td>
-                                <td>ETH</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="USDT" class="krypto">
-                                <td><input id="USDTchk" class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">3</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/825.png" loading="lazy" alt="USDT logo"></td>
-                                <td>Tether</td>
-                                <td>USDT</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="USDC" class="krypto">
-                                <td><input id="USDCchk" class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">4</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png" loading="lazy" alt="USDC logo"></td>
-                                <td>USD Coin</td>
-                                <td>USDC</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="BNB" class="krypto">
-                                <td><input class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">5</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png" loading="lazy" alt="BNB logo"></td>
-                                <td>BNB</td>
-                                <td>BNB</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="BUSD" class="krypto">
-                                <td><input class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">6</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png" loading="lazy" alt="BUSD logo"></td>
-                                <td>Binance USD</td>
-                                <td>BUSD</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="XRP" class="krypto">
-                                <td><input class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">7</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/52.png" loading="lazy" alt="XRP logo"></td>
-                                <td>XRP</td>
-                                <td>XRP</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="DOGE" class="krypto">
-                                <td><input class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">8</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png" loading="lazy" alt="ADA logo"></td>
-                                <td>Dogecoin</td>
-                                <td>DOGE</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="ADA" class="krypto">
-                                <td><input class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">9</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/74.png" loading="lazy" alt="DOGE logo"></td>
-                                <td>Cardano</td>
-                                <td>ADA</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="MATIC" class="krypto">
-                                <td><input class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">10</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/3890.png" loading="lazy" alt="MATIC logo"></td>
-                                <td>Polygon</td>
-                                <td>MATIC</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="DOT" class="krypto">
-                                <td><input class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">11</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/6636.png" loading="lazy" alt="DOT logo"></td>
-                                <td>Polkadot</td>
-                                <td>DOT</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="DAI" class="krypto">
-                                <td><input class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">12</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png" loading="lazy" alt="DAI logo"></td>
-                                <td>Dai</td>
-                                <td>DAI</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="SHIB" class="krypto">
-                                <td><input class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">13</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png" loading="lazy" alt="SHIB logo"></td>
-                                <td>Shiba Inu</td>
-                                <td>SHIB</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="SOL" class="krypto">
-                                <td><input class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">14</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png" loading="lazy" alt="SOL logo"></td>
-                                <td>Solana</td>
-                                <td>SOL</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            <tr id="TRX" class="krypto">
-                                <td><input class="kryptocheck" type="checkbox"></td>
-                                <th scope="row">15</th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/1958.png" loading="lazy" alt="TRX logo"></td>
-                                <td>TRON</td>
-                                <td>TRX</td>
-                                <td>20.859,4</td>
-                                <td>400,47B $</td>
-                                <td>52,58B $</td>
-                                <td>57,42%</td>
-                                <td>-1,62%</td>
-                                <td>+2,29%</td>
-                            </tr>
-                            
+                            <?php
+                                $i++;
+                               } 
+                            ?> 
                         </tbody>
                     </table>
                 </div>
@@ -252,7 +80,14 @@ include_once 'parts/header.php';
     <div class="row g-4">
         <div class="col-sm-12 col-xl-12">
             <div id="chart1"class="bg-secondary rounded h-100 p-4">
-                <h6 class="mb-4">Single Line Chart</h6>
+            <div class="ChartTop mb-4">
+                <text>Single Line Chart</text>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('D')" id="Daily">Daily</button>
+                    <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('W')" id="Weekly">Weekly</button>
+                    <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('M')" id="Monthly">Monthly</button>
+                </div>
+            </div>
                 <canvas id="liniowy"></canvas>
             </div>
         </div>
@@ -268,29 +103,122 @@ include_once 'parts/header.php';
 
 <script>  
 document.getElementById("navakcje").classList.add('active');
-    // Chart Global Color
-    Chart.defaults.color = "#6C7293";
-    Chart.defaults.borderColor = "#000000";
+   // Chart Global Color
+   Chart.defaults.color = "#6C7293";
+  Chart.defaults.borderColor = "#000000";
 
-    var xValues = [10 + " Dni ",60 + " Dni ",70,80,90,100,110,120,130,140,169];
-    var yValues = [7,8,8,9,9,9,10,11,14,14,15.5];
-    var yValues2 = [10,9,8,7,7,6,8,12,12,13,12,11];
+    //Months to table 
+    function subtractMonths(date) {
+        date.setMonth(date.getMonth() - 1);
+        return date;
+    }
+    //Weeks to table
+    function subtractWeek(date) {
+        date.setDate(date.getDate() - 7)
+        return date;
+    }
+    //Days to table
+    function subtractDays(date, day) {
+        date.setDate(date.getDate() - 1)
+        return date;
+    }
 
-    var BTCdata = [10,11,12,9,7,8,8,11,11,13,13,14];
-    var ETHdata = [9,8,7,5,5,7,8,7,9,10,10,7];
-    var USDTdata = [4,5,6,2,5,4,3,6,6,5,7,6];
-    var USDCdata = [2,3,4,3,3,4,3,3,4,4,4,5];
+    var xValues = [];
+    var chartType = false;
 
-    // Arrays with crypto data sorted
-    var data = [BTCdata, ETHdata, USDTdata, USDCdata]
-    var label = ['Bitcoin', 'Etherum', 'Tether', 'USD Coin']
+    $( document ).ready(function() {
+            document.getElementById("Daily").classList.add("active");
+            setChartxValues();
+        })
 
+    function setChartxValues()
+    {
+        var today = new Date(); // yyyy-mm-dd
+
+        var xValues = [];
+        var num = 0;
+        if(chartType == false)
+            num = 365;
+        else if(chartType == "Weekly")
+            num = 52;
+        else 
+            num = 12;
+        var days = today.toLocaleDateString();
+        xValues.push(days);
+        for(let i = 0; i < num; i++)
+        {
+            switch (chartType) {
+                case false:
+                    var days = subtractDays(today);
+                    break;
+                case "Weekly":
+                    var days = subtractWeek(today);
+                    break;
+                case "Monthly":
+                    var days = subtractMonths(today);
+                    break;
+                default:
+                    break;
+            }
+            
+            var days = days.toLocaleDateString();
+            xValues.push(days);
+        }
+        xValues = xValues.reverse();
+        myChart3.data.labels = xValues;
+        myChart2.data.labels = xValues;
+        myChart2.update();
+        myChart3.update();
+    }
+
+    var data = [];
+    var label = "Not selected";
 
     // Comparison Line Chart
     var count = 0
     var queue = []
-    let collection = document.querySelectorAll(".kryptocheck");
-    
+    let collection = document.querySelectorAll(".stockcheck");
+
+    //Change Chart Type
+    function changeChartType(type)
+    {
+        
+        document.getElementById("Daily").classList.remove("active");
+        document.getElementById("Weekly").classList.remove("active");
+        document.getElementById("Monthly").classList.remove("active");
+
+        switch (type) {
+            case "D":
+            {
+                document.getElementById("Daily").classList.add("active");
+                chartType = false;
+            }
+                break;
+            case "W":
+            {
+                document.getElementById("Weekly").classList.add("active");
+                chartType = "Weekly";
+            }
+                break;
+            case "M":
+            {
+                document.getElementById("Monthly").classList.add("active");
+                chartType = "Monthly";
+            }
+                break;
+        
+            default:
+                break;
+        }
+        
+        
+        myChart3.data.datasets[0].data = getStock(chartType, currentyCrypto);
+        //setChartxValues();
+        myChart3.data.labels = xValues;
+        myChart2.data.labels = xValues;
+        myChart3.update();
+        myChart2.update();  
+    }
     // Handling checkbox click
     for (let i = 0; i < collection.length; i++) {
         collection[i].addEventListener('change', ()=>{
@@ -337,46 +265,84 @@ document.getElementById("navakcje").classList.add('active');
     function cmpChartUpdate(){
         let ilosc = 0;
         let a = 1;
-    for(let i=0; i<4; i++){
+    for(let i=0; i<collection.length; i++){
         if(collection[i].checked == true && ilosc<2){
-            console.log("sheesh")
-            myChart2.data.datasets[ilosc].data = data[i]
-            myChart2.data.datasets[ilosc].label = label[i]
-            myChart2.update()
+            myChart2.data.datasets[ilosc].data = getStock(chartType, coins[i].id);
+            myChart2.data.datasets[ilosc].label = label
+            myChart2.data.labels = xValues;
+            myChart2.update();
             ilosc++
             a=i;
         }
+        else
+        {
+            myChart2.data.datasets[ilosc].data = []
+            myChart2.data.datasets[ilosc].label = "Not selected"
+        }
     }
-    console.log(ilosc)
-    console.log(a)
+
     if(ilosc==1 && a!=0)
         {
             myChart2.data.datasets[1].data = data[0]
-            myChart2.data.datasets[1].label = label[0]
+            myChart2.data.datasets[1].label = "Not selected"
         }
     if(ilosc==1 && a==0)
         {
             myChart2.data.datasets[1].data = data[1]
-            myChart2.data.datasets[1].label = label[1]
+            myChart2.data.datasets[1].label = "Not selected"
         }
             myChart2.update()
-        }
-        
-    // Single Line Chart
+    }
 
-    let coins = document.getElementsByClassName('krypto')
-    for(let i=0; i<4; i++){
-        coins[i].onclick = () =>{
-            myChart3.data.datasets[0].data = data[i]
-            myChart3.data.datasets[0].label = label[i]
+    //Get currency data with offset type
+    function getStock(type, symbol)
+    {
+        if(!type)
+            var link = "https://localhost:7070/api/Stock/"+symbol;
+        else
+            var link = "https://localhost:7070/api/Stock/"+type+"/"+symbol;
+        var data = [];
+        
+	
+
+        $.ajax({
+                url: link,
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                cors: false ,
+                contentType:'application/json',
+                success: function (APIdata){
+                    label =  APIdata["metaData"]["symbol"];
+                    xValues = [];
+                    for(let i = 0; i < APIdata["ohlcvData"].length;i++)
+                    {
+                        var time = APIdata["ohlcvData"][i]["time"].split('T');
+                        xValues.push(time[0]);
+                        data.push(APIdata["ohlcvData"][i]["close"]);
+                    }
+                }
+                
+            });
+
+        return data;
+    }
+
+    var currentCrytpo;
+    // Single Line Chart
+    let coins = document.getElementsByClassName('stock')
+    for(let i=0; i<coins.length; i++){
+        coins[i].onclick= () =>{
+            currentyCrypto = coins[i].id;
+            
+            myChart3.data.datasets[0].data = getStock(chartType, currentyCrypto);
+            myChart3.data.datasets[0].label = label;
+            myChart3.data.labels = xValues;
             myChart3.update()
             //cmpChartUpdate()
         }
     }
 
-
-
-    
     // Single Line Chart
     var ctx3 = $("#liniowy").get(0).getContext("2d");
     var myChart3 = new Chart(ctx3, {
@@ -384,7 +350,7 @@ document.getElementById("navakcje").classList.add('active');
         data: {
             labels: xValues,
             datasets: [{
-                label: label[0],
+                label: label,
                 data: data[0],
                 backgroundColor: "rgba(235, 22, 22, .7)",
             }]
@@ -400,15 +366,15 @@ document.getElementById("navakcje").classList.add('active');
         data: {
             labels: xValues,
             datasets: [{
-                    label: label[0],
+                    label: label,
                     data: data[0],
-                    backgroundColor: "rgba(235, 22, 22, .7)",
+                    backgroundColor: "rgba(235, 22, 22, .5)",
                     fill: true
                 },
                 {
-                    label: label[1],
+                    label: label,
                     data: data[1],
-                    backgroundColor: "rgba(235, 22, 22, .5)",
+                    backgroundColor: "rgba(235, 22, 22, .7)",
                     fill: true
                 }
             ]

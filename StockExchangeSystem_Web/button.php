@@ -70,7 +70,7 @@ include_once 'parts/header.php';
                             <h6 class="mb-4">Icon Buttons</h6>
                             <div class="m-n2">
                                 <button type="button" class="btn btn-square btn-primary m-2"><i class="fa fa-home"></i></button>
-                                <button type="button" class="btn btn-square btn-outline-primary m-2"><i class="fa fa-home"></i></button>
+                                <button type="button" class="btn btn-square btn-outline-primary m-2 shadow-none"><i class="fa fa-home"></i></button>
                                 <button type="button" class="btn btn-square btn-secondary m-2"><i class="fa fa-home"></i></button>
                                 <button type="button" class="btn btn-square btn-outline-secondary m-2"><i class="fa fa-home"></i></button>
                                 <button type="button" class="btn btn-square btn-success m-2"><i class="fa fa-home"></i></button>

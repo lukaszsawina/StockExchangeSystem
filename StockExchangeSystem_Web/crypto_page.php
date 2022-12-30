@@ -1,19 +1,31 @@
 <?php
 include_once 'parts/header.php';
-$api_url = 'https://localhost:7070/api/Crypto';
 
+$krypto = $_GET['c'];
+$api_url = 'https://localhost:7070/api/Crypto/'.$krypto ;
+
+$response = GetAPI($api_url,false);
+
+
+$times = explode("T", $response->metaData->lastRefreshed);
+// "information": "Daily Prices and Volumes for Digital Currency",
+//     "dcCode": "BTC",
+//     "dcName": "Bitcoin",
+//     "marketCode": "USD",
+//     "marketName": "United States Dollar",
+//     "lastRefreshed": "2022-12-25T00:00:00",
+//     "timeZone": "UTC"
 ?>
-
-
             <!-- Description Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
                     <div class="col-sm-12 col-xl-12">
                         <div class="bg-secondary rounded d-flex align-items-center p-4">
-                            <i class="fa-brands fa-bitcoin fa-3x text-primary"></i>
+                            <a href="krypto.php"><i class="fa  fa-arrow-left fa-3x text-primary"></i></a>
                             <div class="ms-3">
-                                <h1 class="text-body mb-2">Kryptowaluty</p>
-                                <h6 class="mb-0">Inwestycje w kryptowaluty uznawane są za ryzykowne, ale jednocześnie dające szanse na osiągnięcie wręcz niewyobrażalnych zysków.</h6>
+                                <h1 class="text-body mb-2"><?php echo $response->metaData->dcName;?> Symbol: <?php echo $response->metaData->marketCode;?></h1>
+                                <h6 class="mb-2">Market Code: <?php echo $response->metaData->marketCode;?> Market Name: <?php echo $response->metaData->marketName;?></h6>
+                                <h6 class="mb-2">Last Time Refreshed: <?php echo $times[0];?>  Time Zone: <?php echo $response->metaData->timeZone;?></h6>
                             </div>
                         </div>
                     </div>
@@ -31,45 +43,31 @@ $api_url = 'https://localhost:7070/api/Crypto';
                 <div class="row g-4">
                     <div class="col-12">
                         <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Najpopularniejsze kryptowaluty</h6>
+                            <h6 class="mb-4">Daily info from past year</h6>
                             <div class="table-responsive">
-                                <table id="example" class="table">
+                                <table id="dtDynamicVerticalScrollExample" class="table mb-2">
                                     <thead>
                                         <tr>
-                                            <th scope="col"> </th>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Logo</th>
-                                            <th scope="col">Nazwa</th>
-                                            <th scope="col">Symbol</th>
-                                            <th scope="col">Cena(USD)</th>
-                                            <th scope="col">Cał. wol.</th>
-                                            <th scope="col">Zm. (24h)</th>
-                                            <th scope="col">Zm. (7d)</th>
-                                            <th scope="col">Info.</th>
+                                            <th scope="col">Time</th>
+                                            <th scope="col">Open</th>
+                                            <th scope="col">High</th>
+                                            <th scope="col">Low</th>
+                                            <th scope="col">Close</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tableBody">
-                                        
                                         <?php
-                                        
-                                        $i = 1;
-                                        foreach ($response as &$c)
+                                        foreach ($response->ohlcvCryptoData as &$c)
                                         {
+                                            $ohlcTime = explode("T", $c->time);
                                             ?>
-                                        <tr id="<?php echo $c->symbol;?>" class="krypto">
-                                            <td><input id="<?php echo $c->symbol."chk";?>" class="kryptocheck" type="checkbox"></td>
-                                            <th scope="row"><?php echo $i;?></th>
-                                            <td><img class="coin-logo" src="https://cryptoicons.org/api/icon/<?php echo strtolower($c->symbol);?>/200" loading="lazy" alt="BTC logo"></td>
-                                            <td><?php echo $c->name;?></td>
-                                            <td id="symbol"><?php echo $c->symbol;?></td>
-                                            <td><?php echo number_format($c->value,2, ',', ' ');?></td>
-                                            <td><?php echo number_format($c->volume,2, ',', ' ');?></td>
-                                            <td><?php echo number_format($c->changeDay,2, ',', ' ')."%";?></td>
-                                            <td><?php echo number_format($c->changeWeek,2, ',', ' ')."%";?></td>
-                                            <td><a href="crypto_page.php?c=<?php echo $c->symbol;?>" type="button" class="btn btn-primary shadow-none">More</a></td>
+                                            <th scope="row"><?php echo $ohlcTime[0];?></th>
+                                            <td><?php echo number_format($c->openUSD,2, ',', ' ');?></td>
+                                            <td><?php echo number_format($c->highUSD,2, ',', ' ');?></td>
+                                            <td><?php echo number_format($c->lowUSD,2, ',', ' ');?></td>
+                                            <td><?php echo number_format($c->closeUSD,2, ',', ' ');?></td>
                                         </tr>           
                                             <?php
-                                            $i++;
                                         } 
                                         ?>                     
                                     </tbody>
@@ -96,12 +94,6 @@ $api_url = 'https://localhost:7070/api/Crypto';
                             </div>
                             
                             <canvas id="liniowy"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-xl-12">
-                        <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Comparison Line Chart</h6>
-                            <canvas id="porownanie"></canvas>
                         </div>
                     </div>
                 </div>
@@ -133,10 +125,18 @@ $api_url = 'https://localhost:7070/api/Crypto';
 
     var xValues = [];
     var chartType = false;
+    var currentCrypto = "<?php echo $krypto;?>";
+
 
     $( document ).ready(function() {
             document.getElementById("Daily").classList.add("active");
             setChartxValues();
+            $('#dtDynamicVerticalScrollExample').DataTable({
+                "scrollY": "60vh",
+                "scrollCollapse": true,
+            });
+            $('.dataTables_length').addClass('bs-select');
+
         })
 
     function setChartxValues()
@@ -169,25 +169,19 @@ $api_url = 'https://localhost:7070/api/Crypto';
                     break;
             }
             
-            var days = days.toISOString().slice(0, 10);
+            var days = days.toLocaleDateString();
             xValues.push(days);
         }
         xValues = xValues.reverse();
         myChart3.data.labels = xValues;
-        myChart2.data.labels = xValues;
+        myChart3.data.datasets[0].data = getCrypto(chartType, currentCrypto);
+
         myChart3.update();
-        myChart2.update();
     }
     
 
     var data = [];
-    var label = "Not selected";
-
-    // Comparison Line Chart
-    var count = 0
-    var queue = []
-    let collection = document.querySelectorAll(".kryptocheck");
-    
+    var label = currentCrypto;
 
     //Change Chart Type
     function changeChartType(type)
@@ -222,85 +216,9 @@ $api_url = 'https://localhost:7070/api/Crypto';
         }
         setChartxValues();
 
-        
-        myChart3.data.datasets[0].data = getCrypto(chartType, currentyCrypto);
+        myChart3.data.datasets[0].data = getCrypto(chartType, currentCrypto);
         myChart3.update()
     }
-
-    // Handling checkbox click
-    for (let i = 0; i < collection.length; i++) {
-        collection[i].addEventListener('change', ()=>{
-            if(collection[i].checked){
-                count++
-
-                // Changing chart data
-                //whichChartChange(i, true)
-
-                if(count >= 2){
-                    checkBoxBLock(collection, true)
-                }
-                //myChart2.update()
-            }
-            else{
-                count--
-                queue.push(i)
-                if(count < 2){
-                    checkBoxBLock(collection, false)
-                }
-                //myChart2.update()
-            }
-            cmpChartUpdate();
-        })
-    }
-
-    function checkBoxBLock(items, disable){
-        for (let item of items) {
-            if(disable){
-                if(item.checked == false)
-                {
-                    item.disabled=true;
-                }
-            }
-            else{
-                if(item.disabled == true)
-                {
-                    item.disabled=false;
-                }
-            }
-        }
-    }
-
-    function cmpChartUpdate(){
-        let ilosc = 0;
-        let a = 1;
-    for(let i=0; i<collection.length; i++){
-        if(collection[i].checked == true && ilosc<2){
-            myChart2.data.datasets[ilosc].data = getCrypto(chartType, coins[i].id);
-            myChart2.data.datasets[ilosc].label = label
-            myChart2.update()
-            ilosc++
-            a=i;
-        }
-        else
-        {
-            myChart2.data.datasets[ilosc].data = []
-            myChart2.data.datasets[ilosc].label = "Not selected"
-        }
-    }
-
-    if(ilosc==1 && a!=0)
-        {
-            myChart2.data.datasets[1].data = data[0]
-            myChart2.data.datasets[1].label = "Not selected"
-        }
-    if(ilosc==1 && a==0)
-        {
-            myChart2.data.datasets[1].data = data[1]
-            myChart2.data.datasets[1].label = "Not selected"
-        }
-            myChart2.update()
-    }
-
 
 
     //Get crypto data with offset type
@@ -328,20 +246,6 @@ $api_url = 'https://localhost:7070/api/Crypto';
 
         return data;
     }
-
-    var currentCrytpo;
-    // Single Line Chart
-    let coins = document.getElementsByClassName('krypto')
-    for(let i=0; i<coins.length; i++){
-        coins[i].onclick= () =>{
-            currentyCrypto = coins[i].id;
-            
-            myChart3.data.datasets[0].data = getCrypto(chartType, currentyCrypto);
-            myChart3.data.datasets[0].label = label;
-            myChart3.update()
-            //cmpChartUpdate()
-        }
-    }
     
     // Single Line Chart
     var ctx3 = $("#liniowy").get(0).getContext("2d");
@@ -357,30 +261,6 @@ $api_url = 'https://localhost:7070/api/Crypto';
         },
         options: {
             responsive: true,
-        }
-    });
-    // Salse & Revenue Chart
-    var ctx2 = $("#porownanie").get(0).getContext("2d");
-    var myChart2 = new Chart(ctx2, {
-        type: "line",
-        data: {
-            labels: xValues,
-            datasets: [{
-                    label: label,
-                    data: data[0],
-                    backgroundColor: "rgba(235, 22, 22, .5)",
-                    fill: true
-                },
-                {
-                    label: label,
-                    data: data[1],
-                    backgroundColor: "rgba(235, 22, 22, .7)",
-                    fill: true
-                }
-            ]
-            },
-        options: {
-            responsive: true
         }
     });
     </script>

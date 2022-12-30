@@ -205,7 +205,7 @@ if(isset($_SESSION["id"]))
                             <span class="d-none d-lg-inline-flex"><?php echo $response->firstName." ".$response->lastName;?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">My Profile</a>
+                            <a href="user_page.php?u=<?php echo $response->id;?>" class="dropdown-item">My Profile</a>
                             <a href="logout_script.php" class="dropdown-item">Log Out</a>
                         </div>
                     </div>

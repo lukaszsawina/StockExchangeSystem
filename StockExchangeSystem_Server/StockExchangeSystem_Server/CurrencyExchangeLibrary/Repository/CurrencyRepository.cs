@@ -20,7 +20,6 @@ namespace CurrencyExchangeLibrary.Repository
     {
         private readonly DataContext _context;
         private readonly IAPIKeyLogic _apiKey;
-        private readonly int currencyAmound = 260;
 
         public CurrencyRepository(DataContext context, IAPIKeyLogic apiKey)
         {
@@ -140,7 +139,7 @@ namespace CurrencyExchangeLibrary.Repository
         public async Task<bool> CreateCurrencyAsync(string symbol)
         {
 
-            string QUERY_URL = $"https://www.alphavantage.co/query?function=FX_DAILY&from_symbol={symbol}&to_symbol=USD&apikey={await _apiKey.GetKeyAsync()}";
+            string QUERY_URL = $"https://www.alphavantage.co/query?function=FX_DAILY&from_symbol={symbol}&to_symbol=USD&outputsize=full&apikey={await _apiKey.GetKeyAsync()}";
             Uri queryUri = new Uri(QUERY_URL);
 
             using (WebClient client = new WebClient())
@@ -149,15 +148,17 @@ namespace CurrencyExchangeLibrary.Repository
                 JObject currencyObj = JObject.Parse(client.DownloadString(queryUri));
 
 
-                int k = 0;
                 foreach (var i in currencyObj.Last.First)
                 {
-                    if (k++ > currencyAmound)
-                        break;
+
 
                     OHLCCurrencyModel newOHCL = i.First.ToObject<OHLCCurrencyModel>();
                     newOHCL.Time = DateTime.Parse(i.ToString().Split(':')[0].Replace('"', ' '));
                     newOHCL.Symbol = symbol;
+
+                    if (newOHCL.Time < DateTime.Today.AddYears(-1)) 
+                        break;
+
                     currency.OHLCData.Add(newOHCL);                    
 
                 }
@@ -228,7 +229,7 @@ namespace CurrencyExchangeLibrary.Repository
                 if (new_element_count > 0)
                 {
                     await CreateOHLCAsync(elementsToAdd);
-                    _context.OHLCCurrenciesData.RemoveRange(_context.OHLCCurrenciesData.Where(x => x.Symbol == symbol && x.Time < elementsToAdd.First().Time.AddDays(-currencyAmound)));
+                    _context.OHLCCurrenciesData.RemoveRange(_context.OHLCCurrenciesData.Where(x => x.Symbol == symbol && x.Time < elementsToAdd.First().Time.AddYears(-1)));
                 }
 
                 return await SaveAsync();
