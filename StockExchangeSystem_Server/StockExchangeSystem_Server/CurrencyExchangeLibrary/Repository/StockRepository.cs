@@ -19,7 +19,6 @@ namespace CurrencyExchangeLibrary.Repository
     {
         private readonly DataContext _context;
         private readonly IAPIKeyLogic _apiKey;
-        private readonly int stockAmound = 260;
 
         public StockRepository(DataContext context, IAPIKeyLogic apiKey)
         {
@@ -143,16 +142,14 @@ namespace CurrencyExchangeLibrary.Repository
                 var stock = JsonConvert.DeserializeObject<StockModel>(client.DownloadString(queryUri));
                 JObject StockObj = JObject.Parse(client.DownloadString(queryUri));
 
-
-                int k = 0;
                 foreach (var i in StockObj.Last.First)
                 {
-                    if (k++ > stockAmound)
-                        break;
 
                     OHLCVStockModel newOHCLV = i.First.ToObject<OHLCVStockModel>();
                     newOHCLV.Time = DateTime.Parse(i.ToString().Split(':')[0].Replace('"', ' '));
                     newOHCLV.Symbol = symbol;
+                    if (newOHCLV.Time < DateTime.Today.AddYears(-1))
+                        break;
                     stock.OHLCVData.Add(newOHCLV);
 
                 }
@@ -221,7 +218,7 @@ namespace CurrencyExchangeLibrary.Repository
                 if (new_element_count > 0)
                 {
                     await this.CreateOHLCAsync(elementsToAdd);
-                    _context.OHLCVStockData.RemoveRange(_context.OHLCVStockData.Where(x => x.Symbol == symbol && x.Time < elementsToAdd.First().Time.AddDays(-stockAmound)));
+                    _context.OHLCVStockData.RemoveRange(_context.OHLCVStockData.Where(x => x.Symbol == symbol && x.Time < elementsToAdd.First().Time.AddYears(-1)));
                 }
 
                 return await SaveAsync();
