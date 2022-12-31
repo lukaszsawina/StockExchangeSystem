@@ -346,6 +346,16 @@ namespace CurrencyExchangeLibrary.Migrations
                     b.HasDiscriminator().HasValue("OHLCVCryptoModel");
                 });
 
+            modelBuilder.Entity("CurrencyExchangeLibrary.Models.Account.AdminModel", b =>
+                {
+                    b.HasBaseType("CurrencyExchangeLibrary.Models.Account.UserModel");
+
+                    b.Property<long>("phone")
+                        .HasColumnType("bigint");
+
+                    b.HasDiscriminator().HasValue("AdminModel");
+                });
+
             modelBuilder.Entity("CurrencyExchangeLibrary.Models.Crypto.CryptoModel", b =>
                 {
                     b.HasOne("CurrencyExchangeLibrary.Models.Crypto.CryptoDataModel", "MetaData")

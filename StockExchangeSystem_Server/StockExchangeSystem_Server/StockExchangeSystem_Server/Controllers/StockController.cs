@@ -1,4 +1,5 @@
 ﻿using CurrencyExchangeLibrary.Interfaces;
+using CurrencyExchangeLibrary.Models;
 using CurrencyExchangeLibrary.Models.OUTPUT;
 using CurrencyExchangeLibrary.Models.Stock;
 using Microsoft.AspNetCore.Mvc;
@@ -133,12 +134,12 @@ namespace StockExchangeSystem_Server.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateStock([FromBody] string symbol)
+        public async Task<IActionResult> CreateStock([FromBody] SymbolModel symbol)
         {
             try
             {
-                _logger.LogInformation("Attempting to add new stock {code}", symbol);
-                if (await _stockRepository.StockExistAsync(symbol))
+                _logger.LogInformation("Attempting to add new stock {code}", symbol.Symbol);
+                if (await _stockRepository.StockExistAsync(symbol.Symbol))
                 {
                     _logger.LogInformation("Crypto already exist in database");
                     ModelState.AddModelError("", "Crypto already exist");
@@ -148,14 +149,14 @@ namespace StockExchangeSystem_Server.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                if (!(await _stockRepository.CreateStockAsync(symbol)))
+                if (!(await _stockRepository.CreateStockAsync(symbol.Symbol)))
                 {
                     _logger.LogInformation("Something went wrong while saving data in database");
                     ModelState.AddModelError("", "Something went wrong while adding stock");
                     return StatusCode(500, ModelState);
                 }
 
-                if (!(await _stockRepository.UpdateStockCurrentAsync(symbol)))
+                if (!(await _stockRepository.UpdateStockCurrentAsync(symbol.Symbol)))
                 {
                     _logger.LogInformation("Something went wrong while saving data in database");
                     ModelState.AddModelError("", "Something went wrong while adding stock");

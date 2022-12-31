@@ -1,4 +1,5 @@
 ﻿using CurrencyExchangeLibrary.Interfaces;
+using CurrencyExchangeLibrary.Models;
 using CurrencyExchangeLibrary.Models.Crypto;
 using CurrencyExchangeLibrary.Models.OHLC;
 using CurrencyExchangeLibrary.Models.OUTPUT;
@@ -140,13 +141,13 @@ namespace StockExchangeSystem_Server.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateCrypto([FromBody] string symbol)
+        public async Task<IActionResult> CreateCrypto([FromBody] SymbolModel symbol)
         {
             try
             {
 
-                _logger.LogInformation("Attempting to add new crypto {code}", symbol);
-                if (await _cryptoRepository.CryptoExistAsync(symbol))
+                _logger.LogInformation("Attempting to add new crypto {code}", symbol.Symbol);
+                if (await _cryptoRepository.CryptoExistAsync(symbol.Symbol))
                 {
                     _logger.LogInformation("Crypto already exist in database");
                     ModelState.AddModelError("", "Crypto already exist");
@@ -156,14 +157,14 @@ namespace StockExchangeSystem_Server.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                if (!(await _cryptoRepository.CreateCryptoAsync(symbol)))
+                if (!(await _cryptoRepository.CreateCryptoAsync(symbol.Symbol)))
                 {
                     _logger.LogInformation("Something went wrong while saving data in database");
                     ModelState.AddModelError("", "Something went wrong while adding crypto");
                     return StatusCode(500, ModelState);
                 }
 
-                if (!(await _cryptoRepository.UpdateCryptoCurrentAsync(symbol)))
+                if (!(await _cryptoRepository.UpdateCryptoCurrentAsync(symbol.Symbol)))
                 {
                     _logger.LogInformation("Something went wrong while saving data in database");
                     ModelState.AddModelError("", "Something went wrong while adding crypto");

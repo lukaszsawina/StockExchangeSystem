@@ -35,7 +35,7 @@ namespace CurrencyExchangeLibrary.Data
         //Account
         public DbSet<AccountModel> Account { get; set; }
         public DbSet<UserModel> User { get; set; }
-
+        public DbSet<AdminModel> Admin { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CryptoDataModel>().HasKey("ID");
