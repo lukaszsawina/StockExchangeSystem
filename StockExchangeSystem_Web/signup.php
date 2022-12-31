@@ -159,7 +159,6 @@
                 createTime: new Date(),
                 firstName: document.getElementById('fName').value,
                 lastName: document.getElementById('lName').value
-
         }),
         headers: {
             'Content-type': 'application/json;',

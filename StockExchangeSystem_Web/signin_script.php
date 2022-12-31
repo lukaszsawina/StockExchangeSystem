@@ -21,11 +21,16 @@ function GetAPI($url, $data)
 }
 
 $mail = $_POST['email'];
-$api_url = 'https://localhost:7070/api/User/mail/'.$mail;
+$api_url = 'https://localhost:7070/api/Account/email/'.$mail;
 $response = GetAPI($api_url,false);
 
 session_start();
 $_SESSION["id"] = $response->id;
+
+$api_url = 'https://localhost:7070/api/Admin/isAdmin/'.$response->id;
+$response = GetAPI($api_url,false);
+
+$_SESSION["admin"] = $response;
 
 header("Location: index.php");
 ?>

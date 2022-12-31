@@ -27,6 +27,7 @@ builder.Services.AddScoped<IAPIKeyLogic, APIKeyLogic>();
 builder.Services.AddScoped<IRefreshLogic, RefreshLogic>();
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 
 //builder.Services.AddHostedService(
 //    provider => provider.GetRequiredService<PeriodicHostedService>());

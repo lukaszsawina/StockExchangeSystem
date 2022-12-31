@@ -110,7 +110,20 @@ if(isset($_SESSION["id"]))
                     </div>
                     
                     <div class="ms-3">
-                        <span>Logged in as</span>
+                        <?php
+                        if($_SESSION["admin"])
+                        {
+                            ?>
+                            <span>Administrator</span>
+                            <?php
+                        }
+                        else
+                        {
+                            ?>
+                            <span>Logged in as</span>
+                            <?php
+                        }
+                        ?>
                         <h6 class="mb-0"><?php echo $response->firstName." ".$response->lastName;?></h6>
                     </div>
                   
@@ -205,6 +218,14 @@ if(isset($_SESSION["id"]))
                             <span class="d-none d-lg-inline-flex"><?php echo $response->firstName." ".$response->lastName;?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                            <?php
+                            if($_SESSION["admin"])
+                            {
+                                ?>
+                                <a href="admin_page.php?u=<?php echo $response->id;?>" class="dropdown-item">Admin panel</a>
+                                <?php
+                            }
+                            ?>
                             <a href="user_page.php?u=<?php echo $response->id;?>" class="dropdown-item">My Profile</a>
                             <a href="logout_script.php" class="dropdown-item">Log Out</a>
                         </div>

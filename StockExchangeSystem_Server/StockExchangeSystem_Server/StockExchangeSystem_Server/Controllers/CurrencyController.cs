@@ -1,4 +1,5 @@
 ﻿using CurrencyExchangeLibrary.Interfaces;
+using CurrencyExchangeLibrary.Models;
 using CurrencyExchangeLibrary.Models.Currency;
 using CurrencyExchangeLibrary.Models.OUTPUT;
 using Microsoft.AspNetCore.Cors;
@@ -135,13 +136,13 @@ namespace StockExchangeSystem_Server.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateCurrencyAsync([FromBody] string symbol)
+        public async Task<IActionResult> CreateCurrencyAsync([FromBody] SymbolModel symbol)
         {
             try
             {
 
-                _logger.LogInformation("Attempting to add new currency {code}", symbol);
-                if (await _currencyRepository.CurrencyExistAsync(symbol))
+                _logger.LogInformation("Attempting to add new currency {code}", symbol.Symbol);
+                if (await _currencyRepository.CurrencyExistAsync(symbol.Symbol))
                 {
                     _logger.LogInformation("Currency already exist in database");
                     ModelState.AddModelError("", "Currency already exist");
@@ -151,13 +152,13 @@ namespace StockExchangeSystem_Server.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                if (!(await _currencyRepository.CreateCurrencyAsync(symbol)))
+                if (!(await _currencyRepository.CreateCurrencyAsync(symbol.Symbol)))
                 {
                     _logger.LogInformation("Something went wrong while saving data in database");
                     ModelState.AddModelError("", "Something went wrong while adding currency");
                     return StatusCode(500, ModelState);
                 }
-                if (!(await _currencyRepository.UpdateCurrencyValueAsync(symbol)))
+                if (!(await _currencyRepository.UpdateCurrencyValueAsync(symbol.Symbol)))
                 {
                     _logger.LogInformation("Something went wrong while saving data in database");
                     ModelState.AddModelError("", "Something went wrong while adding currency");
