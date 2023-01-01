@@ -10,6 +10,7 @@ IConfiguration configuration = new ConfigurationBuilder()
                             .AddJsonFile("appsettings.json")
                             .Build();
 
+
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration)
     .CreateLogger();
@@ -72,6 +73,7 @@ app.MapControllers();
 try
 {
     Log.Information("App is running");
+    Log.Warning("test");
     app.Run();
 }
 catch(Exception ex)

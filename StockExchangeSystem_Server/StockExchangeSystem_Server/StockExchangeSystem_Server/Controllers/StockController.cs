@@ -138,10 +138,10 @@ namespace StockExchangeSystem_Server.Controllers
         {
             try
             {
-                _logger.LogInformation("Attempting to add new stock {code}", symbol.Symbol);
+                _logger.LogWarning("Attempting to add new stock {code}", symbol.Symbol);
                 if (await _stockRepository.StockExistAsync(symbol.Symbol))
                 {
-                    _logger.LogInformation("Crypto already exist in database");
+                    _logger.LogCritical("Crypto already exist in database");
                     ModelState.AddModelError("", "Crypto already exist");
                     return StatusCode(422, ModelState);
                 }
@@ -151,14 +151,14 @@ namespace StockExchangeSystem_Server.Controllers
 
                 if (!(await _stockRepository.CreateStockAsync(symbol.Symbol)))
                 {
-                    _logger.LogInformation("Something went wrong while saving data in database");
+                    _logger.LogError("Something went wrong while saving data in database");
                     ModelState.AddModelError("", "Something went wrong while adding stock");
                     return StatusCode(500, ModelState);
                 }
 
                 if (!(await _stockRepository.UpdateStockCurrentAsync(symbol.Symbol)))
                 {
-                    _logger.LogInformation("Something went wrong while saving data in database");
+                    _logger.LogError("Something went wrong while saving data in database");
                     ModelState.AddModelError("", "Something went wrong while adding stock");
                     return StatusCode(500, ModelState);
                 }
@@ -185,14 +185,14 @@ namespace StockExchangeSystem_Server.Controllers
             {
                 if (!(await _stockRepository.StockExistAsync(symbol)))
                 {
-                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    _logger.LogError("{code} don't exist in database", symbol);
                     return NotFound();
                 }
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                _logger.LogInformation("Refreshing {code} current value in database", symbol);
+                _logger.LogWarning("Refreshing {code} current value in database", symbol);
                 await _stockRepository.UpdateStockCurrentAsync(symbol);
 
                 return Ok();
@@ -226,6 +226,27 @@ namespace StockExchangeSystem_Server.Controllers
                 await _stockRepository.UpdateStockModelAsync(symbol);
 
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while refreshing data");
+                throw new Exception("Error");
+            }
+
+        }
+        [HttpGet("Exist/{symbol}")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> StockExistAsync(string symbol)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var exist = await _stockRepository.StockExistAsync(symbol);
+                
+                return Ok(exist);
             }
             catch (Exception ex)
             {

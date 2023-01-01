@@ -29,6 +29,55 @@ if(isset($_SESSION["id"]))
     $api_url = 'https://localhost:7070/api/User/'.$_SESSION["id"];
     $response = GetAPI($api_url,false);
    
+    if(isset($_COOKIE['history']))
+    {
+        
+        $data = json_decode($_COOKIE['history'], true);
+        $url = explode("/", $_SERVER['REQUEST_URI']);
+
+        if($data[count($data)-1] != $_SESSION["id"])
+        {
+            $hist = array($_SESSION["id"]);
+            setcookie('history', json_encode($hist), time()+3600);
+        }
+        else if($data[0] != $url[2])
+        {
+            switch ($url[2]) {
+                case 'index.php':
+                    array_unshift($data, "Main page");
+                    break;
+                case "krypto.php":
+                    array_unshift($data, "Cryptos page");
+                    break;
+                case 'waluty.php':
+                    array_unshift($data, "Currencies page");
+                    break;
+                case "akcje.php":
+                    array_unshift($data, "Stocks page");
+                    break;
+                case "user_page.php?u=".$_SESSION["id"]:
+                    array_unshift($data, "User page");
+                    break;
+                case "admin_page.php?u=".$_SESSION["id"]:
+                    array_unshift($data, "Admin page");
+                    break;
+            }
+            array_unshift($data, date("H:i:s"));
+            array_unshift($data, $url[2]);
+
+            setcookie('history', json_encode($data), time()+3600);
+        }
+        else
+        {
+
+        }
+
+    }
+    else
+    {
+        $hist = array($_SESSION["id"]);
+        setcookie('history', json_encode($hist), time()+3600);
+    }
 }
 
 
@@ -188,21 +237,29 @@ if(isset($_SESSION["id"]))
                             <i class="fa fa-history me-lg-2"></i>
                             <span class="d-none d-lg-inline-flex">History</span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Profile updated</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">New user added</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Password changed</h6>
-                                <small>15 minutes ago</small>
-                            </a>
+                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0 overflow-auto history-dropdown">
+                            <?php
+
+                            if(isset($_COOKIE['history']))
+                            {
+                                if($data[count($data)-1] == $_SESSION["id"])
+                                {
+                                    $data = json_decode($_COOKIE['history'], true);
+                                    for ($i = 0; $i < count($data)-1; $i+=3)
+                                    {
+                                ?>
+                                <a href="<?php echo $data[$i];?>" class="dropdown-item">
+                                    <h6 class="fw-normal mb-0"><?php echo $data[$i+2]?></h6>
+                                    <small><?php echo $data[$i+1]?></small>
+                                </a>
+                                <hr class="dropdown-divider">
+    
+                                <?php
+                                }
+                                
+                                }
+                            }
+                            ?>
                         </div>
                     </div>
                     <?php
