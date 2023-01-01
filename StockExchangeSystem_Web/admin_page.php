@@ -1,8 +1,6 @@
 <?php
 include_once 'parts/header.php';
 
-
-
 ?>
 
 
@@ -74,34 +72,236 @@ include_once 'parts/header.php';
 
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-secondary text-center rounded p-4">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">New element on web</h6>
-                    </div>
-                    <div class="col-sm-12 col-xl-6">
-                        <form action="addElement.php" method="post" class="bg-secondary rounded h-100 p-4">
-                                <div class="form-floating mb-3">
-                                    <select class="form-select" name="type"
-                                        aria-label="Floating label select example">
-                                        <option selected>Open this select menu</option>
-                                        <option value="Crypto">Crypto</option>
-                                        <option value="Currency">Currency</option>
-                                        <option value="Stock">Stock</option>
-                                    </select>
-                                    <label for="floatingSelect">Element Type</label>
-                                </div>
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="symbol" name="symbol">
-                                <label for="floatingInput">Symbol</label>
+                    <div class="row g-4">
+                        <div class="col-sm-12 col-md-6 col-xl-6 bg-secondary ">
+                            <div class="">
+                                <h6 class="mb-0">New element on web</h6>
                             </div>
-                            <button type="submit" class="btn btn-lg btn-primary m-2" >Add new element</button>
-                        </form>
+                            <div class="">
+                                <form id="form" action="addElement.php" method="post" class="bg-secondary rounded h-100 p-4">
+                                        <div class="form-floating mb-3">
+                                            <select class="form-select" name="type" id="type"
+                                                aria-label="Floating label select example">
+                                                <option selected>Open this select menu</option>
+                                                <option value="Crypto">Crypto</option>
+                                                <option value="Currency">Currency</option>
+                                                <option value="Stock">Stock</option>
+                                            </select>
+                                            <label for="floatingSelect">Element Type</label>
+                                        </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="symbol" name="symbol">
+                                        <label for="floatingInput">Symbol</label>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn shadow-none btn-primary py-3 w-100 mb-4" >Add new element</button>
+                                </form>
+                                <div id="existInfo" class="d-none align-items-center justify-content-center flex-wrap">
+                                    <h1>Already exist!</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-xl-6  bg-secondary">
+                            <div class="">
+                                <h6 class="mb-0">New admin</h6>
+                            </div>
+                            <form method="post" id="adminform" class="bg-secondary rounded  p-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="fName" placeholder="jhondoe" name="firstName">
+                                    <label for="floatingText">First name</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="lName" placeholder="jhondoe" name="lastName">
+                                    <label for="floatingText">Last name</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control" id="eMail" placeholder="name@example.com" name="email">
+                                    <label for="floatingInput">Email address</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="phone" class="form-control" id="phone" placeholder="123123123" name="phone">
+                                    <label for="floatingInput">Phone</label>
+                                </div>
+                                <div class="form-floating mb-4">
+                                    <input type="password" class="form-control" id="pass" placeholder="Password" name="password">
+                                    <label for="floatingPassword">Password</label>
+                                </div>
+                                <div id="successInfo" class="d-none align-items-center justify-content-between flex-wrap">
+                                    <h1>Success</h1>
+                                </div>
+                                <div id="existAdminInfo" class="d-none align-items-center justify-content-between flex-wrap">
+                                    <h1>User already exist</h1>
+                                </div>
+                                <button id="subBtn" type="submit" class="btn shadow-none btn-primary py-3 w-100 mb-4">Add new Admin</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Table Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            <h6 class="mb-4">Daily info from past year</h6>
+                            <div class="table-responsive">
+                                <table id="dtDynamicVerticalScrollExample" class="table mb-2">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Message</th>
+                                            <th scope="col">Level</th>
+                                            <th scope="col">Time</th>
+                                            <th scope="col">Exception</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody">
+                                    <?php
+
+                                        // Read the JSON file
+                                        $json = file_get_contents('.\logs.json');
+
+                                        // Decode the JSON file
+                                        $json_data = json_decode($json,true);
+                                        var_dump($json_data);
+                                        foreach ($json_data as &$user) { ?>
+                                            <tr>
+                                                <td> <?= $user->Message; ?> </td>
+                                                <td> <?= $user->Message; ?> </td>
+                                                <td> <?= $user->Message; ?> </td>
+                                                <td> <?= $user->Message; ?> </td>
+                                                <td> <?= $user->Message; ?> </td>
+                                            </tr>
+                                            <?php 
+                                         }
+
+                                         
+                                    ?>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Table End -->
+
 
     <script>  
+        var form=document.getElementById('form')
+        var adminform=document.getElementById('adminform')
 
+
+
+        form.addEventListener('submit', function(e){
+        e.preventDefault()
+            document.getElementById("existInfo").classList.add("d-none");
+            document.getElementById("existInfo").classList.remove("d-flex");
+            
+            if(!ExistAPI()){
+                form.submit();
+            }
+            else{
+                
+                document.getElementById("existInfo").classList.remove("d-none");
+                document.getElementById("existInfo").classList.add("d-flex");
+            }
+        });
+        
+
+        function ExistAPI()
+        {
+        var s = document.getElementById('symbol').value;
+        var t = document.getElementById('type').value;
+        
+        var exist;
+        var link = "https://localhost:7070/api/"+t+"/Exist/"+s;
+        $.ajax({
+                url: link,
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                cors: false ,
+                contentType:'application/json',
+                success: function (APIdata){
+                    exist = APIdata;
+                }
+                
+            });
+            return exist;
+        }
+
+
+
+        adminform.addEventListener('submit', function(e){
+        e.preventDefault()
+            document.getElementById("existAdminInfo").classList.add("d-none");
+            document.getElementById("existAdminInfo").classList.remove("d-flex");
+            document.getElementById("successInfo").classList.add("d-none");
+            document.getElementById("successInfo").classList.remove("d-flex");
+            
+            if(!UserExistAPI()){
+                PostUserAPI();
+            }
+            else{  
+                document.getElementById("existAdminInfo").classList.remove("d-none");
+                document.getElementById("existAdminInfo").classList.add("d-flex");
+            }
+        });
+
+        function UserExistAPI()
+        {
+        var m = document.getElementById('eMail').value.split("@");
+        
+        var exist;
+        var link = "https://localhost:7070/api/Account/exist/"+m[0]+"%40"+m[1];
+        $.ajax({
+                url: link,
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                cors: false ,
+                contentType:'application/json',
+                success: function (APIdata){
+                    exist = APIdata;
+                }
+                
+            });
+            return exist;
+        }
+
+
+        function PostUserAPI()
+        {
+            fetch('https://localhost:7070/api/Admin', {
+        method: 'POST',
+        body: JSON.stringify({
+                email: document.getElementById('eMail').value,
+                password: document.getElementById('pass').value,
+                createTime: new Date(),
+                firstName: document.getElementById('fName').value,
+                phone: document.getElementById('phone').value,
+                lastName: document.getElementById('lName').value
+        }),
+        headers: {
+            'Content-type': 'application/json;',
+        }
+        })
+        .then(function(response){ 
+            })
+            .then(function(data)
+            {
+                document.getElementById("existAdminInfo").classList.add("d-none");
+                document.getElementById("existAdminInfo").classList.remove("d-flex");
+                document.getElementById("successInfo").classList.remove("d-none");
+                document.getElementById("successInfo").classList.add("d-flex");
+                adminform.reset();
+                
+            }) 
+        }
                 
     </script>
 

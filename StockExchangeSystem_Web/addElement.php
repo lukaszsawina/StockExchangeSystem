@@ -1,5 +1,4 @@
 <?php
-
 function my_utf8_encode(array $in): array
 {
     foreach ($in as $key => $record) {
@@ -35,6 +34,13 @@ $options = array(
 $context  = stream_context_create($options);
 $result = file_get_contents($url, false, $context);
 
-echo $result;
+if($result)
+{
+    header("Location: admin_page.php");
+}
+else
+{
+    header("Location: 404_newElement.php");
+}
 
 ?>

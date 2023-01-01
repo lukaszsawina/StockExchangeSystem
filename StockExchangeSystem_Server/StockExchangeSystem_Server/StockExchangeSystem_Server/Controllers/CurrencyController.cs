@@ -24,7 +24,7 @@ namespace StockExchangeSystem_Server.Controllers
         //Get
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CurrencyOutModel>))]
-        public async Task<IActionResult> GetCryptosAsync()
+        public async Task<IActionResult> GetCurrenciesAsync()
         {
 
             try
@@ -49,7 +49,7 @@ namespace StockExchangeSystem_Server.Controllers
         [HttpGet("{symbol}")]
         [ProducesResponseType(200, Type = typeof(CurrencyModel))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetCryptoAsync(string symbol)
+        public async Task<IActionResult> GetCurrencyAsync(string symbol)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace StockExchangeSystem_Server.Controllers
         [HttpGet("WEEKLY/{symbol}")]
         [ProducesResponseType(200, Type = typeof(CurrencyModel))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetWeeklyCryptoAsync(string symbol)
+        public async Task<IActionResult> GetWeeklyCurrencyAsync(string symbol)
         {
 
             try
@@ -236,5 +236,27 @@ namespace StockExchangeSystem_Server.Controllers
 
         }
 
+
+        [HttpGet("Exist/{symbol}")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CurrencyExistAsync(string symbol)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+
+                var exist = await _currencyRepository.CurrencyExistAsync(symbol);
+
+                return Ok(exist);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+        }
     }
 }

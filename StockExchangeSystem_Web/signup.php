@@ -82,7 +82,6 @@
                         </div>
                         <div id="existInfo" class="d-none align-items-center justify-content-between flex-wrap">
                             <h1>User already exist</h1>
-                            <h4>Now return to <a href="index.php">home page</a></h4>
                         </div>
                         <button id="subBtn" type="submit" class="btn shadow-none btn-primary py-3 w-100 mb-4">Sign Up</button>
                         <p class="text-center mb-0">Already have an Account? <a href="signin.php">Sign In</a></p>
@@ -121,7 +120,6 @@
             }
             else{
                 
-                document.getElementById('subBtn').setAttribute('disabled', '');
                 document.getElementById("existInfo").classList.remove("d-none");
                 document.getElementById("existInfo").classList.add("d-flex");
             }
