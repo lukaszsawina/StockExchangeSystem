@@ -347,3 +347,9 @@
     max-height: 300px;
     overflow-y: scroll;
   }
+
+  .logs-dropdown
+  {
+    max-height: 500px;
+    overflow-y: scroll;
+  }

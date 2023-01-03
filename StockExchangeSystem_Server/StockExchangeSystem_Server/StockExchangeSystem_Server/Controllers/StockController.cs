@@ -138,7 +138,7 @@ namespace StockExchangeSystem_Server.Controllers
         {
             try
             {
-                _logger.LogWarning("Attempting to add new stock {code}", symbol.Symbol);
+                _logger.LogInformation("Attempting to add new stock {code}", symbol.Symbol);
                 if (await _stockRepository.StockExistAsync(symbol.Symbol))
                 {
                     _logger.LogCritical("Crypto already exist in database");
@@ -192,7 +192,7 @@ namespace StockExchangeSystem_Server.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                _logger.LogWarning("Refreshing {code} current value in database", symbol);
+                _logger.LogInformation("Refreshing {code} current value in database", symbol);
                 await _stockRepository.UpdateStockCurrentAsync(symbol);
 
                 return Ok();

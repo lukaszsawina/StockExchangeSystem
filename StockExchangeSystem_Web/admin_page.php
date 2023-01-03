@@ -23,8 +23,8 @@ include_once 'parts/header.php';
             <?php
                 $api_url = 'https://localhost:7070/api/User';
                 $response = GetAPI($api_url,false);
-            
-            
+
+
             ?>
 
             <!-- Users Start -->
@@ -47,7 +47,7 @@ include_once 'parts/header.php';
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php                
+                                <?php
                                     foreach ($response as &$c)
                                     {
                                         $Time = explode("T", $c->createTime);
@@ -61,8 +61,8 @@ include_once 'parts/header.php';
                                     <td><a class="btn btn-sm btn-primary" href="delete_user.php?u=<?php echo $c->id; ?>">Delete</a></td>
                                 </tr>
                                 <?php
-                                    } 
-                                ?>  
+                                    }
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -93,7 +93,7 @@ include_once 'parts/header.php';
                                         <input type="text" class="form-control" id="symbol" name="symbol">
                                         <label for="floatingInput">Symbol</label>
                                     </div>
-                                    
+
                                     <button type="submit" class="btn shadow-none btn-primary py-3 w-100 mb-4" >Add new element</button>
                                 </form>
                                 <div id="existInfo" class="d-none align-items-center justify-content-center flex-wrap">
@@ -145,7 +145,7 @@ include_once 'parts/header.php';
                     <div class="col-12">
                         <div class="bg-secondary rounded h-100 p-4">
                             <h6 class="mb-4">Daily info from past year</h6>
-                            <div class="table-responsive">
+                            <div class="table-responsive overflow-auto logs-dropdown">
                                 <table id="dtDynamicVerticalScrollExample" class="table mb-2">
                                     <thead>
                                         <tr>
@@ -153,30 +153,33 @@ include_once 'parts/header.php';
                                             <th scope="col">Message</th>
                                             <th scope="col">Level</th>
                                             <th scope="col">Time</th>
-                                            <th scope="col">Exception</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tableBody">
+                                    <tbody id="tableBody" class="">
                                     <?php
+                                        $serverName = "(localdb)\MSSQLLocalDB";
+                                        $connectionInfo = array( "Database"=>"StockSystemDB", "UID"=>"", "PWD"=>"");
 
-                                        // Read the JSON file
-                                        $json = file_get_contents('.\logs.json');
+                                        $conn = sqlsrv_connect($serverName, $connectionInfo);
 
-                                        // Decode the JSON file
-                                        $json_data = json_decode($json,true);
-                                        var_dump($json_data);
-                                        foreach ($json_data as &$user) { ?>
-                                            <tr>
-                                                <td> <?= $user->Message; ?> </td>
-                                                <td> <?= $user->Message; ?> </td>
-                                                <td> <?= $user->Message; ?> </td>
-                                                <td> <?= $user->Message; ?> </td>
-                                                <td> <?= $user->Message; ?> </td>
-                                            </tr>
-                                            <?php 
-                                         }
+                                        $sql = "SELECT * FROM logs WHERE Level != 'Warning' ORDER BY Id DESC ";
+                                        $stmt = sqlsrv_query( $conn, $sql );
+                                        if( $stmt === false) {
+                                            die( print_r( sqlsrv_errors(), true) );
+                                        }
 
-                                         
+                                        while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
+                                            $Date = $row['TimeStamp']->format('Y-m-d H:m');
+                                            ?>
+                                                <tr>
+                                                    <th scope="row"><?php echo $row['Id'];?></th>
+                                                    <td><?php echo  $row['Message'];?></td>
+                                                    <td><?php echo  $row['Level'];?></td>
+                                                    <td><?php echo $Date;?></td>
+                                                </tr>
+                                            <?php
+                                        }
+
                                     ?>
 
 
@@ -190,7 +193,7 @@ include_once 'parts/header.php';
             <!-- Table End -->
 
 
-    <script>  
+    <script>
         var form=document.getElementById('form')
         var adminform=document.getElementById('adminform')
 
@@ -200,23 +203,23 @@ include_once 'parts/header.php';
         e.preventDefault()
             document.getElementById("existInfo").classList.add("d-none");
             document.getElementById("existInfo").classList.remove("d-flex");
-            
+
             if(!ExistAPI()){
                 form.submit();
             }
             else{
-                
+
                 document.getElementById("existInfo").classList.remove("d-none");
                 document.getElementById("existInfo").classList.add("d-flex");
             }
         });
-        
+
 
         function ExistAPI()
         {
         var s = document.getElementById('symbol').value;
         var t = document.getElementById('type').value;
-        
+
         var exist;
         var link = "https://localhost:7070/api/"+t+"/Exist/"+s;
         $.ajax({
@@ -229,7 +232,7 @@ include_once 'parts/header.php';
                 success: function (APIdata){
                     exist = APIdata;
                 }
-                
+
             });
             return exist;
         }
@@ -242,11 +245,11 @@ include_once 'parts/header.php';
             document.getElementById("existAdminInfo").classList.remove("d-flex");
             document.getElementById("successInfo").classList.add("d-none");
             document.getElementById("successInfo").classList.remove("d-flex");
-            
+
             if(!UserExistAPI()){
                 PostUserAPI();
             }
-            else{  
+            else{
                 document.getElementById("existAdminInfo").classList.remove("d-none");
                 document.getElementById("existAdminInfo").classList.add("d-flex");
             }
@@ -255,7 +258,7 @@ include_once 'parts/header.php';
         function UserExistAPI()
         {
         var m = document.getElementById('eMail').value.split("@");
-        
+
         var exist;
         var link = "https://localhost:7070/api/Account/exist/"+m[0]+"%40"+m[1];
         $.ajax({
@@ -268,7 +271,7 @@ include_once 'parts/header.php';
                 success: function (APIdata){
                     exist = APIdata;
                 }
-                
+
             });
             return exist;
         }
@@ -290,7 +293,7 @@ include_once 'parts/header.php';
             'Content-type': 'application/json;',
         }
         })
-        .then(function(response){ 
+        .then(function(response){
             })
             .then(function(data)
             {
@@ -299,10 +302,10 @@ include_once 'parts/header.php';
                 document.getElementById("successInfo").classList.remove("d-none");
                 document.getElementById("successInfo").classList.add("d-flex");
                 adminform.reset();
-                
-            }) 
+
+            })
         }
-                
+
     </script>
 
 <?php

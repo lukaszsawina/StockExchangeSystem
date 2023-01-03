@@ -1,5 +1,4 @@
 <?php
-
 //Function to Get data from server
 function GetAPI($url, $data)
 {
