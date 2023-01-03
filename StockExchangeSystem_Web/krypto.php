@@ -32,7 +32,8 @@ $api_url = 'https://localhost:7070/api/Crypto';
                     <div class="col-12">
                         <div class="bg-secondary rounded h-100 p-4">
                             <h6 class="mb-4">Najpopularniejsze kryptowaluty</h6>
-                            <div class="table-responsive">
+                            <div class="table-responsive ">
+                                <button id="refresh" onclick="refresh()" class="btn btn-secondary shadow-none"><i class="fa fa-refresh" aria-hidden="true"> </i>  Refresh</button>
                                 <table id="example" class="table">
                                     <thead>
                                         <tr>
@@ -47,6 +48,7 @@ $api_url = 'https://localhost:7070/api/Crypto';
                                             <th scope="col">Zm. (7d)</th>
                                             <th scope="col">Info.</th>
                                         </tr>
+                                        
                                     </thead>
                                     <tbody id="tableBody">
                                         
@@ -62,10 +64,10 @@ $api_url = 'https://localhost:7070/api/Crypto';
                                             <td><img class="coin-logo" src="https://cryptoicons.org/api/icon/<?php echo strtolower($c->symbol);?>/200" loading="lazy" alt="BTC logo"></td>
                                             <td><?php echo $c->name;?></td>
                                             <td id="symbol"><?php echo $c->symbol;?></td>
-                                            <td><?php echo number_format($c->value,2, ',', ' ');?></td>
-                                            <td><?php echo number_format($c->volume,2, ',', ' ');?></td>
-                                            <td><?php echo number_format($c->changeDay,2, ',', ' ')."%";?></td>
-                                            <td><?php echo number_format($c->changeWeek,2, ',', ' ')."%";?></td>
+                                            <td><?php echo number_format($c->value,2, '.', ',');?></td>
+                                            <td><?php echo number_format($c->volume,2, '.', ',');?></td>
+                                            <td><?php echo number_format($c->changeDay,2, '.', ',')."%";?></td>
+                                            <td><?php echo number_format($c->changeWeek,2, '.', ',')."%";?></td>
                                             <td><a href="crypto_page.php?c=<?php echo $c->symbol;?>" type="button" class="btn btn-primary shadow-none">More</a></td>
                                         </tr>           
                                             <?php
@@ -110,6 +112,44 @@ $api_url = 'https://localhost:7070/api/Crypto';
 
             <script>
     document.getElementById("navkrypto").classList.add('active');
+
+    function refresh(){
+        $("#example tbody tr").remove(); 
+
+        var link = "https://localhost:7070/api/Crypto";
+        var data = [];
+        $.ajax({
+                url: link,
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                cors: false ,
+                contentType:'application/json',
+                success: function (APIdata){
+                    for(let i = 0; i < APIdata.length;i++)
+                    {
+                        var trow = "<tr id="+APIdata[i]['symbol']+" class='krypto'>"+
+                                    "<td><input id="+APIdata[i]['symbol']+"chk class='kryptocheck' type='checkbox'></td>"+
+                                    "<th scope='row'>"+(i+1)+"</th>"+
+                                    "<td><img class='coin-logo' src='https://cryptoicons.org/api/icon/"+APIdata[i]['symbol'].toLowerCase()+"/200' loading='lazy' alt='BTC logo'></td>"+
+                                    "<td>"+APIdata[i]['name']+"</td>"+
+                                    "<td id='symbol'>"+APIdata[i]['symbol']+"</td>"+
+                                    "<td>"+APIdata[i]['value'].toLocaleString('en')+"</td>"+
+                                    "<td>"+APIdata[i]['volume'].toLocaleString('en')+"</td>"+
+                                    "<td>"+APIdata[i]['changeDay'].toLocaleString('en', {  maximumFractionDigits: 2})+"%</td>"+
+                                    "<td>"+APIdata[i]['changeWeek'].toLocaleString('en')+"%</td>"+
+                                    "<td><a href='crypto_page.php?c="+APIdata[i]['symbol']+" type='button' class='btn btn-primary shadow-none'>More</a></td>"+
+                                    "</tr>";
+                                    var tableRef = document.getElementById('example').getElementsByTagName('tbody')[0];
+                                    var newRow = tableRef.insertRow(tableRef.rows.length);
+                                    newRow.innerHTML = trow;                                           
+                    }
+                }
+                
+            });
+
+    }
+
 
     // Chart Global Color
     Chart.defaults.color = "#6C7293";
@@ -300,8 +340,6 @@ $api_url = 'https://localhost:7070/api/Crypto';
         }
             myChart2.update()
     }
-
-
 
     //Get crypto data with offset type
     function getCrypto(type, symbol)

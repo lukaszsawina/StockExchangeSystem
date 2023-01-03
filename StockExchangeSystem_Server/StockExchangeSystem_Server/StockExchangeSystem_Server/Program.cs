@@ -73,7 +73,6 @@ app.MapControllers();
 try
 {
     Log.Information("App is running");
-    Log.Warning("test");
     app.Run();
 }
 catch(Exception ex)
