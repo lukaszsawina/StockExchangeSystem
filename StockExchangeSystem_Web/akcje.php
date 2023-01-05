@@ -30,6 +30,7 @@ $api_url = 'https://localhost:7070/api/Stock';
             <div class="bg-secondary rounded h-100 p-4">
                 <h6 class="mb-4">Najpopularniejsze kryptowaluty</h6>
                 <div class="table-responsive">
+                <button id="refresh" onclick="refresh()" class="btn btn-secondary shadow-none"><i class="fa fa-refresh" aria-hidden="true"> </i>  Refresh</button>
                     <table id="example" class="table">
                         <thead>
                             <tr>
@@ -121,6 +122,33 @@ document.getElementById("navakcje").classList.add('active');
     function subtractDays(date, day) {
         date.setDate(date.getDate() - 1)
         return date;
+    }
+
+    function refresh(){
+        var link = "https://localhost:7070/api/Stock";
+        var data = [];
+        $.ajax({
+                url: link,
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                cors: false ,
+                contentType:'application/json',
+                success: function (APIdata){
+                    for(let i = 0; i < APIdata.length;i++)
+                    {
+                        var table = document.getElementById('example').rows[i+1].cells[4];
+                        table.innerHTML = APIdata[i]['value'].toLocaleString("en",{useGrouping: true,minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        var table = document.getElementById('example').rows[i+1].cells[5];
+                        table.innerHTML = APIdata[i]['volume'].toLocaleString("en",{useGrouping: true,minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        var table = document.getElementById('example').rows[i+1].cells[6];
+                        table.innerHTML = APIdata[i]['changeWeek'].toLocaleString("en",{useGrouping: true,minimumFractionDigits: 2, maximumFractionDigits: 2})+"%";
+                        var table = document.getElementById('example').rows[i+1].cells[7];
+                        table.innerHTML = APIdata[i]['changeMonth'].toLocaleString("en",{useGrouping: true,minimumFractionDigits: 2, maximumFractionDigits: 2})+"%";
+
+                }
+            }
+            });
     }
 
     var xValues = [];

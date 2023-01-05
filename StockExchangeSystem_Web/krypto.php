@@ -62,8 +62,8 @@ $api_url = 'https://localhost:7070/api/Crypto';
                                             <td><input id="<?php echo $c->symbol."chk";?>" class="kryptocheck" type="checkbox"></td>
                                             <th scope="row"><?php echo $i;?></th>
                                             <td><img class="coin-logo" src="https://cryptoicons.org/api/icon/<?php echo strtolower($c->symbol);?>/200" loading="lazy" alt="BTC logo"></td>
-                                            <td><?php echo $c->name;?></td>
-                                            <td id="symbol"><?php echo $c->symbol;?></td>
+                                            <td class="name"><?php echo $c->name;?></td>
+                                            <td class="symbol"><?php echo $c->symbol;?></td>
                                             <td><?php echo number_format($c->value,2, '.', ',');?></td>
                                             <td><?php echo number_format($c->volume,2, '.', ',');?></td>
                                             <td><?php echo number_format($c->changeDay,2, '.', ',')."%";?></td>
@@ -114,8 +114,6 @@ $api_url = 'https://localhost:7070/api/Crypto';
     document.getElementById("navkrypto").classList.add('active');
 
     function refresh(){
-        $("#example tbody tr").remove(); 
-
         var link = "https://localhost:7070/api/Crypto";
         var data = [];
         $.ajax({
@@ -128,27 +126,20 @@ $api_url = 'https://localhost:7070/api/Crypto';
                 success: function (APIdata){
                     for(let i = 0; i < APIdata.length;i++)
                     {
-                        var trow = "<tr id="+APIdata[i]['symbol']+" class='krypto'>"+
-                                    "<td><input id="+APIdata[i]['symbol']+"chk class='kryptocheck' type='checkbox'></td>"+
-                                    "<th scope='row'>"+(i+1)+"</th>"+
-                                    "<td><img class='coin-logo' src='https://cryptoicons.org/api/icon/"+APIdata[i]['symbol'].toLowerCase()+"/200' loading='lazy' alt='BTC logo'></td>"+
-                                    "<td>"+APIdata[i]['name']+"</td>"+
-                                    "<td id='symbol'>"+APIdata[i]['symbol']+"</td>"+
-                                    "<td>"+APIdata[i]['value'].toLocaleString('en')+"</td>"+
-                                    "<td>"+APIdata[i]['volume'].toLocaleString('en')+"</td>"+
-                                    "<td>"+APIdata[i]['changeDay'].toLocaleString('en', {  maximumFractionDigits: 2})+"%</td>"+
-                                    "<td>"+APIdata[i]['changeWeek'].toLocaleString('en')+"%</td>"+
-                                    "<td><a href='crypto_page.php?c="+APIdata[i]['symbol']+" type='button' class='btn btn-primary shadow-none'>More</a></td>"+
-                                    "</tr>";
-                                    var tableRef = document.getElementById('example').getElementsByTagName('tbody')[0];
-                                    var newRow = tableRef.insertRow(tableRef.rows.length);
-                                    newRow.innerHTML = trow;                                           
+                        var table = document.getElementById('example').rows[i+1].cells[5];
+                        table.innerHTML = APIdata[i]['value'].toLocaleString("en",{useGrouping: true,minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        var table = document.getElementById('example').rows[i+1].cells[6];
+                        table.innerHTML = APIdata[i]['volume'].toLocaleString("en",{useGrouping: true,minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        var table = document.getElementById('example').rows[i+1].cells[7];
+                        table.innerHTML = APIdata[i]['changeDay'].toLocaleString("en",{useGrouping: true,minimumFractionDigits: 2, maximumFractionDigits: 2})+"%";
+                        var table = document.getElementById('example').rows[i+1].cells[8];
+                        table.innerHTML = APIdata[i]['changeWeek'].toLocaleString("en",{useGrouping: true,minimumFractionDigits: 2, maximumFractionDigits: 2})+"%";           
                     }
+
                 }
                 
             });
-
-    }
+        }
 
 
     // Chart Global Color
