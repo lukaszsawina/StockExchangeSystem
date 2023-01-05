@@ -32,6 +32,7 @@ $api_url = 'https://localhost:7070/api/Currency';
                         <div class="bg-secondary rounded h-100 p-4">
                             <h6 class="mb-4">Najpopularniejsze kryptowaluty</h6>
                             <div class="table-responsive">
+                            <button id="refresh" onclick="refresh()" class="btn btn-secondary shadow-none"><i class="fa fa-refresh" aria-hidden="true"> </i>  Refresh</button>
                                 <table id="example" class="table">
                                     <thead>
                                         <tr>
@@ -232,6 +233,33 @@ function to_any()
         date.setDate(date.getDate() - 1)
         return date;
     }
+
+
+    function refresh(){
+        var link = "https://localhost:7070/api/Currency";
+        var data = [];
+        $.ajax({
+                url: link,
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                cors: false ,
+                contentType:'application/json',
+                success: function (APIdata){
+                    for(let i = 0; i < APIdata.length;i++)
+                    {
+                        var table = document.getElementById('example').rows[i+1].cells[3];
+                        table.innerHTML = APIdata[i]['inUSD'].toLocaleString("en",{useGrouping: true,minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        var table = document.getElementById('example').rows[i+1].cells[4];
+                        table.innerHTML = APIdata[i]['weekChange'].toLocaleString("en",{useGrouping: true,minimumFractionDigits: 2, maximumFractionDigits: 2})+"%";
+                        var table = document.getElementById('example').rows[i+1].cells[5];
+                        table.innerHTML = APIdata[i]['monthChange'].toLocaleString("en",{useGrouping: true,minimumFractionDigits: 2, maximumFractionDigits: 2})+"%";
+
+                }
+            }
+            });
+    }
+
 
     var xValues = [];
     var chartType = false;
