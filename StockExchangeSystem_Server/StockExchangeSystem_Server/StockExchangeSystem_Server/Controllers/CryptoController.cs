@@ -5,6 +5,7 @@ using CurrencyExchangeLibrary.Models.OHLC;
 using CurrencyExchangeLibrary.Models.OUTPUT;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using PredictLibrary;
 using StockExchangeSystem_Server.PeriodicServices;
 
 namespace StockExchangeSystem_Server.Controllers
@@ -33,6 +34,12 @@ namespace StockExchangeSystem_Server.Controllers
 
             try
             {
+
+
+                PredictCrypto predict = new PredictCrypto(_cryptoRepository);
+
+                await predict.predict();
+
                 _logger.LogInformation("Attempting to receive all crypto from database");
                 var crypto = await _cryptoRepository.GetCryptosAsync();
 

@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CurrencyExchangeLibrary\CurrencyExchangeLibrary.csproj" />
+    <ProjectReference Include="..\PredictLibrary\PredictLibrary.csproj" />
   </ItemGroup>
 
 </Project>

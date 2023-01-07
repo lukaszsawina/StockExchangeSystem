@@ -1,0 +1,15 @@
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\bin\Debug\net6.0\PredictLibrary.deps.json
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\bin\Debug\net6.0\PredictLibrary.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\bin\Debug\net6.0\PredictLibrary.pdb
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\bin\Debug\net6.0\CurrencyExchangeLibrary.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\bin\Debug\net6.0\CurrencyExchangeLibrary.pdb
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\obj\Debug\net6.0\PredictLibrary.csproj.AssemblyReference.cache
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\obj\Debug\net6.0\PredictLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\obj\Debug\net6.0\PredictLibrary.AssemblyInfoInputs.cache
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\obj\Debug\net6.0\PredictLibrary.AssemblyInfo.cs
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\obj\Debug\net6.0\PredictLibrary.csproj.CoreCompileInputs.cache
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\obj\Debug\net6.0\PredictLibrary.csproj.CopyComplete
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\obj\Debug\net6.0\PredictLibrary.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\obj\Debug\net6.0\refint\PredictLibrary.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\obj\Debug\net6.0\PredictLibrary.pdb
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\PredictLibrary\obj\Debug\net6.0\ref\PredictLibrary.dll
