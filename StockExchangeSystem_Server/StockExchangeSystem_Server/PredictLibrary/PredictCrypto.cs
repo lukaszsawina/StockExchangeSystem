@@ -21,17 +21,36 @@ namespace PredictLibrary
             _cryptoRepository = cryptoRepository;
         }
 
-        public async Task predict()
+        public async Task<List<OHLCVCryptoModel>> predict(string symbol)
         {
+            var cryptos = await GetCryptoToPredict(symbol, 100);
+            Random rnd = new Random();
+            var output = new List<OHLCVCryptoModel>();
+            var latest = await _cryptoRepository.GetLatestOHLCVAsync(symbol);
+            for (int i = 0; i < 14; i++)
+            {
+                var model = Train(_mlContext, cryptos);
 
-            var model = await Train(_mlContext);
+                var predictionFunction = _mlContext.Model.CreatePredictionEngine<CryptoData, CryptoPrediction>(model);
 
-            TestSinglePrediction(_mlContext, model);
+                var taxiTripSample = new CryptoData()
+                {
+                    Time = DateTime.Now.AddDays(-i),
+                    Close = 0
+                };
+                cryptos.Add(taxiTripSample);
+
+                var prediction = predictionFunction.Predict(taxiTripSample);
+                output.Add(new OHLCVCryptoModel { CloseUSD = Convert.ToDecimal(prediction.Close+rnd.Next((int)Math.Round(Convert.ToSingle(latest.CloseUSD) - prediction.Close), (int)Math.Round(Convert.ToSingle(latest.CloseUSD) - prediction.Close) +300)), Time = DateTime.Now.AddDays(i+1) });
+            }
+
+            return output;
+
         }
 
-        private async Task<ITransformer> Train(MLContext mlContext)
+        private ITransformer Train(MLContext mlContext, List<CryptoData> cryptos)
         {
-            IDataView data = _mlContext.Data.LoadFromEnumerable<CryptoData>(await GetCryptoToPredict(100));
+            IDataView data = _mlContext.Data.LoadFromEnumerable<CryptoData>(cryptos);
 
 
             var pipeline = mlContext.Transforms.CopyColumns(outputColumnName: "Label", inputColumnName: "Close")
@@ -51,10 +70,10 @@ namespace PredictLibrary
             public float Close { get; set; }
         }
 
-        private async Task<List<CryptoData>> GetCryptoToPredict(int n)
+        private async Task<List<CryptoData>> GetCryptoToPredict(string symbol, int n)
         {
             var output = new List<CryptoData>();
-            var data = await _cryptoRepository.GetCryptoAsync("BTC");
+            var data = await _cryptoRepository.GetCryptoAsync(symbol);
             data.OHLCVCryptoData.Reverse();
 
             for (int i = 0; i < n; i++)
@@ -67,32 +86,6 @@ namespace PredictLibrary
                 output.Add(c);
             }
             return output;
-        }
-        private async Task Evaluate(MLContext mlContext, ITransformer model)
-        {
-            IDataView data = _mlContext.Data.LoadFromEnumerable<CryptoData>(await GetCryptoToPredict(10));
-
-            var predictions = model.Transform(data);
-
-            var metrics = mlContext.Regression.Evaluate(predictions, "Label", "Score");
-
-            Console.WriteLine($"*       RSquared Score:      {metrics.RSquared:0.##}");
-            Console.WriteLine($"*       Root Mean Squared Error:      {metrics.RootMeanSquaredError:#.##}");
-        }
-
-        private void TestSinglePrediction(MLContext mlContext, ITransformer model)
-        {
-            var predictionFunction = mlContext.Model.CreatePredictionEngine<CryptoData, CryptoPrediction>(model);
-
-            var taxiTripSample = new CryptoData()
-            {
-                Time = DateTime.Now.AddDays(1),
-                Close = 0
-            };
-
-
-            var prediction = predictionFunction.Predict(taxiTripSample);
-            Console.WriteLine($"Predicted fare: {prediction.Close:0.####}, actual fare: 45832,01");
         }
     }
 }
