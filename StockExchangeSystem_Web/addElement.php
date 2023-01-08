@@ -15,8 +15,8 @@ function my_utf8_encode(array $in): array
 $url = "https://localhost:7070/api/".$_POST["type"];
 $data = array('Symbol' => $_POST['symbol']);
 
-$data     = my_utf8_encode($data);
-  $postdata = json_encode($data);
+    $data = my_utf8_encode($data);
+    $postdata = json_encode($data);
 
 
 $options = array(

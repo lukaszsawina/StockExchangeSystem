@@ -3,6 +3,7 @@ using CurrencyExchangeLibrary.Models;
 using CurrencyExchangeLibrary.Models.OUTPUT;
 using CurrencyExchangeLibrary.Models.Stock;
 using Microsoft.AspNetCore.Mvc;
+using PredictLibrary;
 
 namespace StockExchangeSystem_Server.Controllers
 {
@@ -128,6 +129,40 @@ namespace StockExchangeSystem_Server.Controllers
                 _logger.LogError(ex, "Something went wrong while reveiving data from database");
                 throw new Exception("Error");
             }
+        }
+
+        [HttpGet("predict/{symbol}")]
+        [ProducesResponseType(200, Type = typeof(StockModel))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetStockPredictionAsync(string symbol)
+        {
+            try
+            {
+                if (!(await _stockRepository.StockExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Attempting to receive {code} data from database", symbol);
+                var stocks = await _stockRepository.GetStockAsync(symbol);
+
+                PredictStock predict = new PredictStock(_stockRepository);
+
+                var predicted = await predict.predict(symbol);
+                stocks.OHLCVData.AddRange(predicted);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                return Ok(stocks);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+
         }
 
         //Post

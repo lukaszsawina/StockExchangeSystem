@@ -23,7 +23,7 @@ $times = explode("T", $response->metaData->lastRefreshed);
                         <div class="bg-secondary rounded d-flex align-items-center p-4">
                             <a href="krypto.php"><i class="fa  fa-arrow-left fa-3x text-primary"></i></a>
                             <div class="ms-3">
-                                <h1 class="text-body mb-2"><?php echo $response->metaData->dcName;?> Symbol: <?php echo $response->metaData->marketCode;?></h1>
+                                <h1 class="text-body mb-2"><?php echo $response->metaData->dcName;?> Symbol: <?php echo $response->metaData->dcCode;?></h1>
                                 <h6 class="mb-2">Market Code: <?php echo $response->metaData->marketCode;?> Market Name: <?php echo $response->metaData->marketName;?></h6>
                                 <h6 class="mb-2">Last Time Refreshed: <?php echo $times[0];?>  Time Zone: <?php echo $response->metaData->timeZone;?></h6>
                             </div>
@@ -90,9 +90,29 @@ $times = explode("T", $response->metaData->lastRefreshed);
                                     <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('D')" id="Daily">Daily</button>
                                     <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('W')" id="Weekly">Weekly</button>
                                     <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('M')" id="Monthly">Monthly</button>
+                                    <?php
+                                    if(isset($_SESSION["id"]))
+                                    {
+                                    ?>
+                                    <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('P')" id="Predict">Predict</button>
+                                        <?php
+                                        }
+                                        else
+                                        {
+                                            ?>
+                                    <button type="button" class="btn btn-primary shadow-none" onclick="signupInfo()" id="Predict">Predict</button>
+
+                                            <?php
+                                        }
+                                        ?>
                                 </div>
                             </div>
-                            
+                            <div id="access" class="alert alert-warning alert-danger fade collapse" role="alert">
+                            <strong>Sorry!</strong> Option only for registered users. <a href="signup.php">Sign up</a> to get more access 
+                            <button type="button"  class="close shadow-none" onclick="hideAllert()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
                             <canvas id="liniowy"></canvas>
                         </div>
                     </div>
@@ -102,6 +122,17 @@ $times = explode("T", $response->metaData->lastRefreshed);
 
             <script>
     document.getElementById("navkrypto").classList.add('active');
+
+    function signupInfo()
+    {
+        $('#access').show();
+        document.getElementById("access").classList.add("show");
+    }
+
+    function hideAllert()
+    {//hide
+     $('#access').hide();
+    }
 
     // Chart Global Color
     Chart.defaults.color = "#6C7293";
@@ -119,6 +150,10 @@ $times = explode("T", $response->metaData->lastRefreshed);
     }
     //Days to table
     function subtractDays(date, day) {
+        date.setDate(date.getDate() - 1)
+        return date;
+    }
+    function subtractPrediction(date) {
         date.setDate(date.getDate() - 1)
         return date;
     }
@@ -149,6 +184,8 @@ $times = explode("T", $response->metaData->lastRefreshed);
             num = 365;
         else if(chartType == "Weekly")
             num = 52;
+        else if(chartType == "Predict")
+            num = 14;
         else 
             num = 12;
         var days = today.toLocaleDateString();
@@ -165,12 +202,12 @@ $times = explode("T", $response->metaData->lastRefreshed);
                 case "Monthly":
                     var days = subtractMonths(today);
                     break;
+                case "Predict":
+                    var days = subtractDays(today);
+                    break;
                 default:
                     break;
             }
-            
-            var days = days.toLocaleDateString();
-            xValues.push(days);
         }
         xValues = xValues.reverse();
         myChart3.data.labels = xValues;
@@ -190,7 +227,9 @@ $times = explode("T", $response->metaData->lastRefreshed);
         document.getElementById("Daily").classList.remove("active");
         document.getElementById("Weekly").classList.remove("active");
         document.getElementById("Monthly").classList.remove("active");
+        document.getElementById("Predict").classList.remove("active");
 
+        
         switch (type) {
             case "D":
             {
@@ -210,6 +249,12 @@ $times = explode("T", $response->metaData->lastRefreshed);
                 chartType = "Monthly";
             }
                 break;
+            case "P":
+            {
+                document.getElementById("Predict").classList.add("active");
+                chartType = "Predict";
+            }
+                break;
         
             default:
                 break;
@@ -217,6 +262,7 @@ $times = explode("T", $response->metaData->lastRefreshed);
         setChartxValues();
 
         myChart3.data.datasets[0].data = getCrypto(chartType, currentCrypto);
+        myChart3.data.labels = xValues;
         myChart3.update()
     }
 
@@ -226,6 +272,11 @@ $times = explode("T", $response->metaData->lastRefreshed);
     {
         if(!type)
             var link = "https://localhost:7070/api/Crypto/"+symbol;
+        else if(type == "Predict")
+        {
+            console.log(type == "Predict")
+            var link = "https://localhost:7070/api/Crypto/predict/"+symbol;
+        }
         else
             var link = "https://localhost:7070/api/Crypto/"+type+"/"+symbol;
         var data = [];
@@ -237,9 +288,22 @@ $times = explode("T", $response->metaData->lastRefreshed);
                 cors: false ,
                 contentType:'application/json',
                 success: function (APIdata){
+                    xValues = [];
                     label =  APIdata["metaData"]["dcName"];
-                    for(let i = 0; i < APIdata["ohlcvCryptoData"].length;i++)
-                    data.push(APIdata["ohlcvCryptoData"][i]["closeUSD"]);
+                    if(type =="Predict")
+                    for(let i = 0; i < 21;i++)
+                        {
+                            var time = APIdata["ohlcvCryptoData"][APIdata["ohlcvCryptoData"].length-21+i]["time"].split('T');
+                            xValues.push(time[0]);
+                            data.push(APIdata["ohlcvCryptoData"][APIdata["ohlcvCryptoData"].length-21+i]["closeUSD"]);
+                        }
+                    else
+                        for(let i = 0; i < APIdata["ohlcvCryptoData"].length;i++)
+                        {
+                            var time = APIdata["ohlcvCryptoData"][i]["time"].split('T');
+                            xValues.push(time[0]);
+                            data.push(APIdata["ohlcvCryptoData"][i]["closeUSD"]);
+                        }
                 }
                 
             });

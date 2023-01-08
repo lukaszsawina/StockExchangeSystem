@@ -83,9 +83,29 @@ $times = explode("T", $response->metaData->lastRefreshed);
                                     <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('D')" id="Daily">Daily</button>
                                     <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('W')" id="Weekly">Weekly</button>
                                     <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('M')" id="Monthly">Monthly</button>
+                                    <?php
+                                    if(isset($_SESSION["id"]))
+                                    {
+                                    ?>
+                                    <button type="button" class="btn btn-primary shadow-none" onclick="changeChartType('P')" id="Predict">Predict</button>
+                                        <?php
+                                        }
+                                        else
+                                        {
+                                            ?>
+                                    <button type="button" class="btn btn-primary shadow-none" onclick="signupInfo()" id="Predict">Predict</button>
+
+                                            <?php
+                                        }
+                                        ?>
                                 </div>
                             </div>
-                            
+                            <div id="access" class="alert alert-warning alert-danger fade collapse" role="alert">
+                            <strong>Sorry!</strong> Option only for registered users. <a href="signup.php">Sign up</a> to get more access 
+                            <button type="button"  class="close shadow-none" onclick="hideAllert()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
                             <canvas id="liniowy"></canvas>
                         </div>
                     </div>
@@ -95,6 +115,17 @@ $times = explode("T", $response->metaData->lastRefreshed);
 
             <script>
     document.getElementById("navwaluty").classList.add('active');
+
+    function signupInfo()
+    {
+        $('#access').show();
+        document.getElementById("access").classList.add("show");
+    }
+
+    function hideAllert()
+    {//hide
+     $('#access').hide();
+    }
 
     // Chart Global Color
     Chart.defaults.color = "#6C7293";
@@ -151,7 +182,12 @@ $times = explode("T", $response->metaData->lastRefreshed);
                 chartType = "Monthly";
             }
                 break;
-        
+            case "P":
+            {
+                document.getElementById("Predict").classList.add("active");
+                chartType = "Predict";
+            }
+                break;
             default:
                 break;
         }
@@ -166,6 +202,11 @@ $times = explode("T", $response->metaData->lastRefreshed);
     {
         if(!type)
             var link = "https://localhost:7070/api/Currency/"+symbol;
+        else if(type == "Predict")
+        {
+            console.log(type == "Predict")
+            var link = "https://localhost:7070/api/Currency/predict/"+symbol;
+        }
         else
             var link = "https://localhost:7070/api/Currency/"+type+"/"+symbol;
         var data = [];
@@ -180,12 +221,23 @@ $times = explode("T", $response->metaData->lastRefreshed);
                 success: function (APIdata){
                     label =  APIdata["metaData"]["fromSymbol"];
                     xValues = [];
-                    for(let i = 0; i < APIdata["ohlcData"].length;i++)
+                    if(type =="Predict")
+                    for(let i = 0; i < 21;i++)
+                        {
+                            var time = APIdata["ohlcData"][APIdata["ohlcData"].length-21+i]["time"].split('T');
+                            xValues.push(time[0]);
+                            data.push(APIdata["ohlcData"][APIdata["ohlcData"].length-21+i]["closeUSD"]);
+                        }
+                    else
                     {
-                        var time = APIdata["ohlcData"][i]["time"].split('T');
-                        xValues.push(time[0]);
-                        data.push(APIdata["ohlcData"][i]["closeUSD"]);
+                        for(let i = 0; i < APIdata["ohlcData"].length;i++)
+                        {
+                            var time = APIdata["ohlcData"][i]["time"].split('T');
+                            xValues.push(time[0]);
+                            data.push(APIdata["ohlcData"][i]["closeUSD"]);
+                        }
                     }
+                    
                 }
                 
             });
