@@ -125,8 +125,12 @@ namespace CurrencyExchangeLibrary.Repository
         private async Task<OHLCCurrencyModel> GetOHLCFromDayAsync(string symbol, DateTime day)
         {
             var output = await _context.OHLCCurrenciesData.Where(s => (s.Symbol == symbol) && (s.Time == day)).FirstOrDefaultAsync();
+            int i = 1;
             while(output == null)
-                output = await _context.OHLCCurrenciesData.Where(s => (s.Symbol == symbol) && (s.Time == day.AddDays(-1))).FirstOrDefaultAsync();
+            {
+                output = await _context.OHLCCurrenciesData.Where(s => (s.Symbol == symbol) && (s.Time == day.AddDays(-i))).FirstOrDefaultAsync();
+                i++;
+            }
 
             return output;
         }
