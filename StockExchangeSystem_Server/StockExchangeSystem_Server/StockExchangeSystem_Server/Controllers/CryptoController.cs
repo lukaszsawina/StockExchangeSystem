@@ -5,6 +5,7 @@ using CurrencyExchangeLibrary.Models.OHLC;
 using CurrencyExchangeLibrary.Models.OUTPUT;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using PredictLibrary;
 using StockExchangeSystem_Server.PeriodicServices;
 
 namespace StockExchangeSystem_Server.Controllers
@@ -136,6 +137,39 @@ namespace StockExchangeSystem_Server.Controllers
             }
         }
 
+        [HttpGet("predict/{symbol}")]
+        [ProducesResponseType(200, Type = typeof(CryptoModel))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetCryptoPredictionAsync(string symbol)
+        {
+            try
+            {
+                if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Attempting to receive {code} data from database", symbol);
+                var crypto = await _cryptoRepository.GetCryptoAsync(symbol);
+
+                PredictCrypto predict = new PredictCrypto(_cryptoRepository);
+
+                var predicted = await predict.predict(symbol);
+                crypto.OHLCVCryptoData.AddRange(predicted);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                return Ok(crypto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+
+        }
 
         //Post
         [HttpPost]
