@@ -18,6 +18,7 @@ namespace CurrencyExchangeLibrary.Interfaces
         Task<CryptoModel> GetWeeklyCryptoAsync(string symbol);
         Task<CryptoModel> GetMonthlyCryptoAsync(string symbol);
         Task<OHLCVCryptoModel> GetLatestOHLCVAsync(string symbol);
+        Task<List<CryptoOutModel>> GetBestCryptoAsync();
         Task<List<string>> GetCryptoCodesAsync();
 
         //Post

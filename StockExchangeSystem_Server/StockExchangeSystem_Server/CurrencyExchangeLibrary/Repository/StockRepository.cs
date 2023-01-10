@@ -6,12 +6,8 @@ using CurrencyExchangeLibrary.Models.Stock;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace CurrencyExchangeLibrary.Repository
 {
@@ -40,30 +36,34 @@ namespace CurrencyExchangeLibrary.Repository
         }
         private async Task<StockOutModel> GetStockOutputAsync(string symbol)
         {
+            //Pobranie wszystkich informacji z bazy o akcji
             var stockData = await _context.StockData.Where(x => x.Symbol == symbol).FirstAsync();
-            var stock = await _context.Stock.Where(s => s.MetaData.Symbol == symbol).FirstOrDefaultAsync();
+            var stock = await _context.Stock.Where(s => s.MetaData.Symbol == symbol).FirstAsync();
+            //Pobranie ostatniej świeczki z bazy danych
             var latestOHLCV = await GetLatestOHLCVAsync(symbol);
             var ohlcvW = new OHLCVStockModel();
             var ohlcvM = new OHLCVStockModel();
 
+            //Sprawdzenie czy dzisiaj jest któryś z dni weekendy
             if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
             {
                 ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-9));
-                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-33));
+                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddMonths(-1));
             }
             else
             {
                 ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-7));
-                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-31));
+                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-33));
             }
 
-            var output = new StockOutModel();
-
-            output.Symbol = stockData.Symbol;
-            output.Value = stock.CurrentValue;
-            output.Volume = latestOHLCV.Volume;
-            output.ChangeWeek = (ohlcvW.Close - stock.CurrentValue) / ohlcvW.Close * 100;
-            output.ChangeMonth = ((ohlcvM.Close - stock.CurrentValue) / ohlcvM.Close) * 100;
+            //Model do zwrócenia
+            var output = new StockOutModel()
+            {
+                Symbol = stockData.Symbol,
+                Value = stock.CurrentValue,
+                ChangeWeek = (ohlcvW.Close - stock.CurrentValue) / ohlcvW.Close * 100,
+                ChangeMonth = ((ohlcvM.Close - stock.CurrentValue) / ohlcvM.Close) * 100
+            };
 
             return output;
         }
@@ -228,6 +228,13 @@ namespace CurrencyExchangeLibrary.Repository
         {
             var saved = await _context.SaveChangesAsync();
             return saved > 0 ? true : false;
+        }
+
+        public async Task<List<StockOutModel>> GetBestStocksAsync()
+        {
+            var stocks = await GetStocksAsync();
+
+            return stocks.Where(x=>x.ChangeWeek >0 || x.ChangeMonth > 0).OrderByDescending(t => t.ChangeWeek).Take(5).ToList();
         }
     }
 }

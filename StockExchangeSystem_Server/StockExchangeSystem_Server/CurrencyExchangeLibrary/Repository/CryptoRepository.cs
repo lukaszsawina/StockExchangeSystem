@@ -229,5 +229,12 @@ namespace CurrencyExchangeLibrary.Repository
 
             return saved > 0 ? true : false;
         }
+
+        public async Task<List<CryptoOutModel>> GetBestCryptoAsync()
+        {
+            var cryptos = await GetCryptosAsync();
+
+            return cryptos.Where(x=>x.ChangeWeek > 0 || x.ChangeDay >0).OrderByDescending(t => t.ChangeWeek).Take(5).ToList();
+        }
     }
 }

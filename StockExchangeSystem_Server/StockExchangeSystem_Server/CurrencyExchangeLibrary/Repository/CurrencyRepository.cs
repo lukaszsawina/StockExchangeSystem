@@ -245,5 +245,11 @@ namespace CurrencyExchangeLibrary.Repository
             return saved > 0 ? true : false;
         }
 
+        public async Task<List<CurrencyOutModel>> GetBestCurrencyAsync()
+        {
+            var currencies = await GetCurrenciesAsync();
+
+            return currencies.Where(x=>x.WeekChange > 0 || x.MonthChange >0).OrderByDescending(t => t.WeekChange).Take(5).ToList();
+        }
     }
 }

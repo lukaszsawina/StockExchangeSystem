@@ -110,6 +110,14 @@ namespace StockExchangeSystem_Server.Controllers
                     return BadRequest(ModelState);
                 }
 
+                if(!ValidEmail(user.Email) && !ValidPassword(user.Password))
+                {
+                    _logger.LogInformation("{code} incorrect data", user.Email);
+
+                    ModelState.AddModelError("", "Incorrect data");
+                    return BadRequest();
+                }
+
                 if(await _accountRepository.AccountExistAsync(user.ID))
                 {
                     _logger.LogInformation("{code} already exist in database", user.Email);
@@ -137,6 +145,15 @@ namespace StockExchangeSystem_Server.Controllers
                 _logger.LogError(ex, "Error while adding user {email}", user.Email);
                 throw new Exception("Error");
             }
+        }
+
+        public bool ValidEmail(string email)
+        {
+            return email.Contains("@");
+        }
+        public bool ValidPassword(string password)
+        {
+            return password.Length > 6;
         }
 
         [HttpPut("{id}")]

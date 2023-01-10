@@ -20,7 +20,6 @@
             {
                 try
                 {
-
                     await using AsyncServiceScope asyncScope = _factory.CreateAsyncScope();
                     var sampleService = asyncScope.ServiceProvider.GetRequiredService<IRefreshLogic>();
                     await sampleService.Refresh();

@@ -171,6 +171,30 @@ namespace StockExchangeSystem_Server.Controllers
 
         }
 
+        [HttpGet("proposition")]
+        [ProducesResponseType(200, Type = typeof(List<CryptoOutModel>))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetCryptoPropositionAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Attempting to receive all crypto from database");
+                var crypto = await _cryptoRepository.GetBestCryptoAsync();
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                _logger.LogInformation("All crypto was send");
+                return Ok(crypto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+
+        }
+
         //Post
         [HttpPost]
         [ProducesResponseType(204)]

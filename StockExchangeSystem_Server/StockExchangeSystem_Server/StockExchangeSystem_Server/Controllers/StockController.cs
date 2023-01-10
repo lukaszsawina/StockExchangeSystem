@@ -165,6 +165,30 @@ namespace StockExchangeSystem_Server.Controllers
 
         }
 
+        [HttpGet("proposition")]
+        [ProducesResponseType(200, Type = typeof(List<StockOutModel>))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetStockPropositionAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Attempting to receive all crypto from database");
+                var stock = await _stockRepository.GetBestStocksAsync();
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                _logger.LogInformation("All crypto was send");
+                return Ok(stock);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+
+        }
+
         //Post
         [HttpPost]
         [ProducesResponseType(204)]
