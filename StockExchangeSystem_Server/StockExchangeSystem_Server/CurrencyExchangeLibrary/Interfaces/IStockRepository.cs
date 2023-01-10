@@ -18,6 +18,7 @@ namespace CurrencyExchangeLibrary.Interfaces
         Task<List<string>> GetStocksCodesAsync();
         Task<StockModel> GetWeeklyStockAsync(string symbol);
         Task<StockModel> GetMonthlyStockAsync(string symbol);
+        Task<List<StockOutModel>> GetBestStocksAsync();
         Task<OHLCVStockModel> GetLatestOHLCVAsync(string symbol);
         //Post
         Task<bool> CreateStockAsync(string symbol);

@@ -167,6 +167,30 @@ namespace StockExchangeSystem_Server.Controllers
 
         }
 
+        [HttpGet("proposition")]
+        [ProducesResponseType(200, Type = typeof(List<CurrencyOutModel>))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetCurrencyPropositionAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Attempting to receive all crypto from database");
+                var currency = await _currencyRepository.GetBestCurrencyAsync();
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                _logger.LogInformation("All crypto was send");
+                return Ok(currency);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+
+        }
+
         //Post
         [HttpPost]
         [ProducesResponseType(204)]

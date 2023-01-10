@@ -18,6 +18,7 @@ namespace CurrencyExchangeLibrary.Interfaces
         Task<CurrencyModel> GetWeeklyCurrencyAsync(string symbol);
         Task<CurrencyModel> GetMonthlyCurrencyAsync(string symbol);
         Task<OHLCCurrencyModel> GetLatestOHLCAsync(string symbol);
+        Task<List<CurrencyOutModel>> GetBestCurrencyAsync();
         Task<List<string>> GetCurrenciesCodesAsync();
         //Post
         Task<bool> CreateCurrencyAsync(string symbol);
