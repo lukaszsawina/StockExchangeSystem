@@ -110,7 +110,7 @@ namespace StockExchangeSystem_Server.Controllers
                     return BadRequest(ModelState);
                 }
 
-                if(!ValidEmail(user.Email) && !ValidPassword(user.Password))
+                if(!Validation.ValidEmail(user.Email) && !Validation.ValidPassword(user.Password))
                 {
                     _logger.LogInformation("{code} incorrect data", user.Email);
 
@@ -145,15 +145,6 @@ namespace StockExchangeSystem_Server.Controllers
                 _logger.LogError(ex, "Error while adding user {email}", user.Email);
                 throw new Exception("Error");
             }
-        }
-
-        public bool ValidEmail(string email)
-        {
-            return email.Contains("@");
-        }
-        public bool ValidPassword(string password)
-        {
-            return password.Length > 6;
         }
 
         [HttpPut("{id}")]

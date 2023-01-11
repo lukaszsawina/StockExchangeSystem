@@ -220,22 +220,24 @@ $times = explode("T", $response->metaData->lastRefreshed);
                 success: function (APIdata){
                     label =  APIdata["metaData"]["symbol"];
                     xValues = [];
+                    var dataSize = APIdata["ohlcvData"].length;
+
                     if(type =="Predict")
-                    for(let i = 0; i < 21;i++)
-                        {
-                            var time = APIdata["ohlcvData"][APIdata["ohlcvData"].length-21+i]["time"].split('T');
-                            xValues.push(time[0]);
-                            data.push(APIdata["ohlcvData"][APIdata["ohlcvData"].length-21+i]["close"]);
-                        }
+                    {
+                        var offset = dataSize-21;
+                        var size = 21;
+                    }
                     else
                     {
-
-                        for(let i = 0; i < APIdata["ohlcvData"].length;i++)
-                        {
-                            var time = APIdata["ohlcvData"][i]["time"].split('T');
-                            xValues.push(time[0]);
-                            data.push(APIdata["ohlcvData"][i]["close"]);
-                        }
+                        var offset = 0;
+                        var size = dataSize;
+                    }
+                    
+                    for(let i = 0; i < size;i++)
+                    {
+                        var time = APIdata["ohlcvData"][APIdata["ohlcvData"].length-21+i]["time"].split('T');
+                        xValues.push(time[0]);
+                        data.push(APIdata["ohlcvData"][APIdata["ohlcvData"].length-21+i]["close"]);
                     }
                 }
                 
