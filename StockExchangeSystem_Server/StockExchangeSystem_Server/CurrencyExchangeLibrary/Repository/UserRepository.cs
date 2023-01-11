@@ -19,6 +19,7 @@ namespace CurrencyExchangeLibrary.Repository
             _context = context;
         }
 
+
         public async Task<bool> CreateUserAsync(UserModel user)
         {
             await _context.User.AddAsync(user);
