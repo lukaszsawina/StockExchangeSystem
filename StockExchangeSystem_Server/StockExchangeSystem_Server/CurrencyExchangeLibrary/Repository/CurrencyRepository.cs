@@ -34,7 +34,6 @@ namespace CurrencyExchangeLibrary.Repository
 
             foreach (var c in await GetCurrenciesCodesAsync())
             {
-
                 currencies.Add(await GetCurrencyOutModelAsync(c));
             }
 
