@@ -66,15 +66,8 @@
                             <label for="floatingInput">Email address</label>
                         </div>
                         <div class="form-floating mb-4">
-                            <input type="password" class="form-control" id="pass" placeholder="Password" name="password">
+                            <input type="password" class="form-control" id="pass" placeholder="Password" name="password" minlength="6" >
                             <label for="floatingPassword">Password</label>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                            </div>
-                            <a href="">Forgot Password</a>
                         </div>
                         <div id="successInfo" class="d-none align-items-center justify-content-between flex-wrap">
                             <h1>Success</h1>

@@ -11,8 +11,8 @@ $api_url = 'https://localhost:7070/api/Currency';
                         <div class="bg-secondary rounded d-flex align-items-center p-4">
                             <i class="fa-solid fa-dollar-sign fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <h1 class="text-body mb-2">Kursy walut</p>
-                                <h6 class="mb-0">Dolar to najważniejsza na świecie waluta transakcyjna i rezerwowa, dla której aktualnie nie ma żadnej realnej alternatywy.</h6>
+                                <h1 class="text-body mb-2">Currencies</p>
+                                <h6 class="mb-0">The dollar is the world's most important transaction and reserve currency, for which there is currently no viable alternative.</h6>
                             </div>
                         </div>
                     </div>
@@ -30,7 +30,7 @@ $api_url = 'https://localhost:7070/api/Currency';
                 <div class="row g-4">
                     <div class="col-12">
                         <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Najpopularniejsze kryptowaluty</h6>
+                            <h6 class="mb-4">Most popular currencies</h6>
                             <div class="table-responsive">
                             <button id="refresh" onclick="refresh()" class="btn btn-secondary shadow-none"><i class="fa fa-refresh" aria-hidden="true"> </i>  Refresh</button>
                                 <table id="example" class="table">
@@ -40,8 +40,8 @@ $api_url = 'https://localhost:7070/api/Currency';
                                             <th scope="col">#</th>
                                             <th scope="col">Symbol</th>
                                             <th scope="col">Value(USD)</th>
-                                            <th scope="col">Week Change</th>
-                                            <th scope="col">Month Change</th>
+                                            <th scope="col">Change (7d)</th>
+                                            <th scope="col">Change (30d)</th>
                                             <th scope="col">Info.</th>
                                         </tr>
                                     </thead>

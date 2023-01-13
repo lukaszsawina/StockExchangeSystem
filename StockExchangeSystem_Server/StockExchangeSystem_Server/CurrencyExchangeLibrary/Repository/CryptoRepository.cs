@@ -54,8 +54,14 @@ namespace CurrencyExchangeLibrary.Repository
             output.Symbol = cryptoData.DCCode;
             output.Value = crypto.CurrentValue;
             output.Volume = ohlcvY.Volume;
-            output.ChangeDay = (ohlcvY.CloseUSD - crypto.CurrentValue) /ohlcvY.CloseUSD*100;
-            output.ChangeWeek = ((ohlcvW.CloseUSD - crypto.CurrentValue) / ohlcvW.CloseUSD) * 100;
+            if (ohlcvY.CloseUSD == 0)
+                output.ChangeDay = 0;
+            else
+                output.ChangeDay = (ohlcvY.CloseUSD - crypto.CurrentValue) / ohlcvY.CloseUSD*100;
+            if (ohlcvW.CloseUSD == 0)
+                output.ChangeWeek = 0;
+            else
+                output.ChangeWeek = ((ohlcvW.CloseUSD - crypto.CurrentValue) / ohlcvW.CloseUSD) * 100;
 
             return output;
         }

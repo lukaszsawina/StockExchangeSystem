@@ -10,8 +10,8 @@ $api_url = 'https://localhost:7070/api/Stock';
                         <div class="bg-secondary rounded d-flex align-items-center p-4">
                             <i class="fa-solid fa-arrow-trend-up fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <h1 class="text-body mb-2">Akcje</p>
-                                <h6 class="mb-0">Inwestycje w akcje uznaje się za inwestycje stosunkowo bezpieczne i mało ryzykowne w porównaniu z inwestycjami w inne aktywa.</h6>
+                                <h1 class="text-body mb-2">Stocks</p>
+                                <h6 class="mb-0">Investments in shares are considered relatively safe and low-risk compared to investments in other assets.</h6>
                             </div>
                         </div>
                     </div>
@@ -28,7 +28,7 @@ $api_url = 'https://localhost:7070/api/Stock';
     <div class="row g-4">
         <div class="col-12">
             <div class="bg-secondary rounded h-100 p-4">
-                <h6 class="mb-4">Najpopularniejsze kryptowaluty</h6>
+                <h6 class="mb-4">The most popular stocks</h6>
                 <div class="table-responsive">
                 <button id="refresh" onclick="refresh()" class="btn btn-secondary shadow-none"><i class="fa fa-refresh" aria-hidden="true"> </i>  Refresh</button>
                     <table id="example" class="table">
@@ -36,12 +36,11 @@ $api_url = 'https://localhost:7070/api/Stock';
                             <tr>
                                 <th scope="col"> </th>
                                 <th scope="col">#</th>
-                                <th scope="col">Logo</th>
                                 <th scope="col">Symbol</th>
-                                <th scope="col">Cena(USD)</th>
-                                <th scope="col">Cał. wol.</th>
-                                <th scope="col">Zm. (7d)</th>
-                                <th scope="col">Zm. (30d)</th>
+                                <th scope="col">Value(USD)</th>
+                                <th scope="col">Volume</th>
+                                <th scope="col">Change (7d)</th>
+                                <th scope="col">Change (30d)</th>
                                 <th scope="col">Info.</th>
 
                             </tr>
@@ -55,7 +54,6 @@ $api_url = 'https://localhost:7070/api/Stock';
                             <tr id="<?php echo $c->symbol;?>" class="stock">
                                 <td><input id="<?php echo $c->symbol."chk";?>" class="stockcheck" type="checkbox"></td>
                                 <th scope="row"><?php echo $i;?></th>
-                                <td><img class="coin-logo" src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" loading="lazy" alt="logo"></td>
                                 <td><?php echo $c->symbol;?></td>
                                 <td><?php echo number_format($c->value,2, ',', ' ');?></td>
                                 <td><?php echo number_format($c->volume,2, ',', ' ');?></td>
