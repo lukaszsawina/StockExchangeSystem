@@ -48,12 +48,12 @@ namespace CurrencyExchangeLibrary.Repository
             if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
             {
                 ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-9));
-                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddMonths(-1));
+                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-33));
             }
             else
             {
                 ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-7));
-                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-33));
+                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-31));
             }
 
             //Model do zwrócenia

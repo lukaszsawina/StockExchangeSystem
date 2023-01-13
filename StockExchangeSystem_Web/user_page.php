@@ -2,6 +2,12 @@
 include_once 'parts/header.php';
 
 
+if(isset($_GET['u']))
+{
+    $api_url = 'https://localhost:7070/api/User/'.$_GET['u'];
+    $response = GetAPI($api_url,false);
+}
+
 
 ?>
 
@@ -65,11 +71,11 @@ include_once 'parts/header.php';
             <!-- User information End -->
 
             <!-- Sale & Revenue Start -->
-            <div class="container-fluid pt-4 px-4">
+            <!-- <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
                     <div class="col-sm-6 col-xl-3">
                         <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-line fa-3x text-primary"></i> <!--ikona-->
+                            <i class="fa fa-chart-line fa-3x text-primary"></i> 
                             <div class="ms-3">
                                 <p class="mb-2">Today Sale</p>
                                 <h6 class="mb-0">$1234</h6>
@@ -104,14 +110,14 @@ include_once 'parts/header.php';
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- Sale & Revenue End -->
 
 
            
 
             <!-- Recent Sales Start -->
-            <div class="container-fluid pt-4 px-4">
+            <!-- <div class="container-fluid pt-4 px-4">
                 <div class="bg-secondary text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
                         <h6 class="mb-0">Recent Salse</h6>
@@ -180,7 +186,7 @@ include_once 'parts/header.php';
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- Recent Sales End -->
 
     <script>  

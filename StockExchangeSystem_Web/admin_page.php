@@ -58,7 +58,7 @@ include_once 'parts/header.php';
                                     <td><?php echo $c->email; ?></td>
                                     <td><?php echo $Time[0]; ?></td>
                                     <td><a class="btn btn-sm btn-primary" href="user_page.php?u=<?php echo $c->id; ?>">Info</a></td>
-                                    <td><a class="btn btn-sm btn-primary" href="delete_user.php?u=<?php echo $c->id; ?>">Delete</a></td>
+                                    <td><a class="btn btn-sm btn-primary" onclick="delete_user(<?php echo $c->id; ?>)">Delete</a></td>
                                 </tr>
                                 <?php
                                     }
@@ -94,10 +94,16 @@ include_once 'parts/header.php';
                                         <label for="floatingInput">Symbol</label>
                                     </div>
 
-                                    <button type="submit" class="btn shadow-none btn-primary py-3 w-100 mb-4" >Add new element</button>
+                                    <button type="submit" onclick="signupInfo()"class="btn shadow-none btn-primary py-3 w-100 mb-4" >Add new element</button>
                                 </form>
                                 <div id="existInfo" class="d-none align-items-center justify-content-center flex-wrap">
                                     <h1>Already exist!</h1>
+                                </div>
+                                <div id="access" class="alert alert-warning fade collapse" role="alert">
+                                <strong>Remember!</strong> this option takes some time.
+                                <button type="button"  class="close shadow-none" onclick="hideAllert()">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                                 </div>
                             </div>
                         </div>
@@ -197,7 +203,32 @@ include_once 'parts/header.php';
         var form=document.getElementById('form')
         var adminform=document.getElementById('adminform')
 
+        function signupInfo()
+    {
+        $('#access').show();
+        document.getElementById("access").classList.add("show");
+    }
 
+    function hideAllert()
+    {//hide
+     $('#access').hide();
+    }
+
+        function delete_user(user)
+        {
+        fetch('https://localhost:7070/api/User/'+user, {
+        method: 'DELETE',
+        headers: {
+            'Content-type': 'application/json;',
+        }
+        })
+        .then(function(response){ 
+            })
+            .then(function(data)
+            {
+                location.reload();
+            }) 
+        }
 
         form.addEventListener('submit', function(e){
         e.preventDefault()

@@ -61,13 +61,6 @@
                             <input type="password" name="pass" class="form-control" required id="pass" placeholder="Password">
                             <label for="floatingPassword">Password</label>
                         </div>
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                            </div>
-                            <a href="">Forgot Password</a>
-                        </div>
                         <div id="existInfo" class="d-none align-items-center justify-content-between flex-wrap">
                             <h1>User don't exist</h1>
                             <h4>Check your email and password</h4>

@@ -221,7 +221,7 @@ include_once 'parts/header.php';
                                 <h1 class=" text-body mb-0">Sorry!</h1>
                             </div>
                             <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h4 class="mb-0">Please <a href="signup.php">sign up</a> or if you already are <a href="signup.php">sign in</a> to view this section</h4>
+                                <h4 class="mb-0">Please <a href="signup.php">sign up</a> or if you already are <a href="signin.php">sign in</a> to view this section</h4>
                             </div>
                             
 

@@ -8,13 +8,6 @@ $response = GetAPI($api_url,false);
 
 
 $times = explode("T", $response->metaData->lastRefreshed);
-// "information": "Daily Prices and Volumes for Digital Currency",
-//     "dcCode": "BTC",
-//     "dcName": "Bitcoin",
-//     "marketCode": "USD",
-//     "marketName": "United States Dollar",
-//     "lastRefreshed": "2022-12-25T00:00:00",
-//     "timeZone": "UTC"
 ?>
             <!-- Description Start -->
             <div class="container-fluid pt-4 px-4">

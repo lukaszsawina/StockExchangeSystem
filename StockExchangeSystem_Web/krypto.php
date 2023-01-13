@@ -12,8 +12,8 @@ $api_url = 'https://localhost:7070/api/Crypto';
                         <div class="bg-secondary rounded d-flex align-items-center p-4">
                             <i class="fa-brands fa-bitcoin fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <h1 class="text-body mb-2">Kryptowaluty</p>
-                                <h6 class="mb-0">Inwestycje w kryptowaluty uznawane są za ryzykowne, ale jednocześnie dające szanse na osiągnięcie wręcz niewyobrażalnych zysków.</h6>
+                                <h1 class="text-body mb-2">Cryptocurrencies</p>
+                                <h6 class="mb-0">Investments in cryptocurrencies are considered risky, but at the same time giving a chance to achieve unimaginable profits.</h6>
                             </div>
                         </div>
                     </div>
@@ -31,21 +31,20 @@ $api_url = 'https://localhost:7070/api/Crypto';
                 <div class="row g-4">
                     <div class="col-12">
                         <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Najpopularniejsze kryptowaluty</h6>
+                            <h6 class="mb-4">The most popular cryptocurrencies</h6>
                             <div class="table-responsive ">
                                 <button id="refresh" onclick="refresh()" class="btn btn-secondary shadow-none"><i class="fa fa-refresh" aria-hidden="true"> </i>  Refresh</button>
-                                <table id="example" class="table">
+                                <table id="example dtDynamicVerticalScrollExample"  class="table">
                                     <thead>
                                         <tr>
                                             <th scope="col"> </th>
                                             <th scope="col">#</th>
-                                            <th scope="col">Logo</th>
-                                            <th scope="col">Nazwa</th>
+                                            <th scope="col">name</th>
                                             <th scope="col">Symbol</th>
-                                            <th scope="col">Cena(USD)</th>
-                                            <th scope="col">Cał. wol.</th>
-                                            <th scope="col">Zm. (24h)</th>
-                                            <th scope="col">Zm. (7d)</th>
+                                            <th scope="col">Value(USD)</th>
+                                            <th scope="col">Volume</th>
+                                            <th scope="col">Change (24h)</th>
+                                            <th scope="col">Change (7d)</th>
                                             <th scope="col">Info.</th>
                                         </tr>
                                         
@@ -61,7 +60,6 @@ $api_url = 'https://localhost:7070/api/Crypto';
                                         <tr id="<?php echo $c->symbol;?>" class="krypto">
                                             <td><input id="<?php echo $c->symbol."chk";?>" class="kryptocheck" type="checkbox"></td>
                                             <th scope="row"><?php echo $i;?></th>
-                                            <td><img class="coin-logo" src="https://cryptoicons.org/api/icon/<?php echo strtolower($c->symbol);?>/200" loading="lazy" alt="BTC logo"></td>
                                             <td class="name"><?php echo $c->name;?></td>
                                             <td class="symbol"><?php echo $c->symbol;?></td>
                                             <td><?php echo number_format($c->value,2, '.', ',');?></td>
@@ -141,6 +139,16 @@ $api_url = 'https://localhost:7070/api/Crypto';
             });
         }
 
+        $( document ).ready(function() {
+            document.getElementById("Daily").classList.add("active");
+            setChartxValues();
+            $('#dtDynamicVerticalScrollExample').DataTable({
+                "scrollY": "60vh",
+                "scrollCollapse": true,
+            });
+            $('.dataTables_length').addClass('bs-select');
+
+        })
 
     // Chart Global Color
     Chart.defaults.color = "#6C7293";
