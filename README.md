@@ -10,7 +10,13 @@ It allows you to view tables, charts, information from each day of the last year
 
 ## Frameworks used in the application
 
-| Framework | Version |
-| ------------- | ------------- |
-| Entity Framework | 6.0.2 |
-| Serilog | 6.0.0 |
+| Framework |
+| ------------- |
+| Entity Framework |
+| Serilog |
+| Newtonsoft.Json |
+| ML.net |
+| SQL Server |
+| Xunit |
+| FakeItEasy |
+| FluentAssertions |
