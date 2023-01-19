@@ -2,7 +2,7 @@
 Web application that aims to help you invest in the stock market.
 It allows you to view tables, charts, information from each day of the last year of a given asset
 
-[![IMAGE ALT TEXT]([https://youtu.be/MLipjxJwuNA](https://i9.ytimg.com/vi/MLipjxJwuNA/mqdefault.jpg?sqp=CIC8pJ4G-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGEUgSyhlMA8=&rs=AOn4CLAn6OYnIkFC_9_O2oyn0WCo0Qd_Cw))](https://youtu.be/MLipjxJwuNA "DarkStock - projekt systemy pomocy w inwestycji")
+[![DarkStock - projekt systemy pomocy w inwestycji](https://user-images.githubusercontent.com/49497250/213422489-f716f76f-ebef-4b1f-8619-5be702c0cf0b.png)](https://youtu.be/MLipjxJwuNA "DarkStock - projekt systemy pomocy w inwestycji")
 
 
 ## Frameworks used in the application
