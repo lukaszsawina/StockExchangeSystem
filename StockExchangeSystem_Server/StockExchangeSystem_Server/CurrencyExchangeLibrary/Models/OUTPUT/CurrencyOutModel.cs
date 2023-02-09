@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CurrencyExchangeLibrary.Models.OUTPUT
 {
-    public class CurrencyOutModel
+    public class CurrencyOutModelDto
     {
         public string Symbol { get; set; }
         public decimal inUSD { get; set; }

@@ -1,5 +1,8 @@
-﻿using CurrencyExchangeLibrary.Interfaces;
+﻿using AutoMapper;
+using CurrencyExchangeLibrary.Dto;
+using CurrencyExchangeLibrary.Interfaces;
 using CurrencyExchangeLibrary.Models;
+using CurrencyExchangeLibrary.Models.OHLC;
 using CurrencyExchangeLibrary.Models.OUTPUT;
 using CurrencyExchangeLibrary.Models.Stock;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +16,13 @@ namespace StockExchangeSystem_Server.Controllers
     {
         private readonly IStockRepository _stockRepository;
         private readonly ILogger<StockController> _logger;
+        private readonly IMapper _mapper;
 
-        public StockController(IStockRepository stockRepository, ILogger<StockController> logger )
+        public StockController(IStockRepository stockRepository, ILogger<StockController> logger, IMapper mapper)
         {
             _stockRepository = stockRepository;
             _logger = logger;
+            _mapper = mapper;
         }
 
         //Get
@@ -46,7 +51,7 @@ namespace StockExchangeSystem_Server.Controllers
         }
 
         [HttpGet("{symbol}")]
-        [ProducesResponseType(200, Type = typeof(StockModel))]
+        [ProducesResponseType(200, Type = typeof(StockModelDto))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetStockAsync(string symbol)
         {
@@ -59,7 +64,7 @@ namespace StockExchangeSystem_Server.Controllers
                 }
 
                 _logger.LogInformation("Attempting to receive {code} data from database", symbol);
-                var crypto = await _stockRepository.GetStockAsync(symbol);
+                var crypto = _mapper.Map<StockModelDto>(await _stockRepository.GetStockAsync(symbol));
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -73,9 +78,37 @@ namespace StockExchangeSystem_Server.Controllers
             }
 
         }
+        [HttpGet("DAILY/{symbol}")]
+        [ProducesResponseType(200, Type = typeof(List<OHLCVStockModel>))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetStockOHLCVAsync(string symbol)
+        {
+
+            try
+            {
+                if (!(await _stockRepository.StockExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Attempting to receive  {code} weekly data from database", symbol);
+                var crypto = await _stockRepository.GetStockOHLCVAsync(symbol);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                return Ok(crypto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+        }
 
         [HttpGet("WEEKLY/{symbol}")]
-        [ProducesResponseType(200, Type = typeof(StockModel))]
+        [ProducesResponseType(200, Type = typeof(List<OHLCVStockModel>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetWeeklyStockAsync(string symbol)
         {
@@ -89,7 +122,7 @@ namespace StockExchangeSystem_Server.Controllers
                 }
 
                 _logger.LogInformation("Attempting to receive  {code} weekly data from database", symbol);
-                var crypto = await _stockRepository.GetWeeklyStockAsync(symbol);
+                var crypto = await _stockRepository.GetWeeklyStockOHLCVAsync(symbol);
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -104,7 +137,7 @@ namespace StockExchangeSystem_Server.Controllers
         }
 
         [HttpGet("MONTHLY/{symbol}")]
-        [ProducesResponseType(200, Type = typeof(StockModel))]
+        [ProducesResponseType(200, Type = typeof(List<OHLCVStockModel>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetMonthlyStockAsync(string symbol)
         {
@@ -117,7 +150,7 @@ namespace StockExchangeSystem_Server.Controllers
                 }
 
                 _logger.LogInformation("Attempting to receive {code} monthly data from database", symbol);
-                var crypto = await _stockRepository.GetMonthlyStockAsync(symbol);
+                var crypto = await _stockRepository.GetMonthlyStockOHLCVAsync(symbol);
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);

@@ -70,7 +70,7 @@ namespace CurrencyExchangeLibrary.Repository
         public async Task<StockModel> GetStockAsync(string symbol)
         {
 
-            StockModel stock = new StockModel();
+            StockModel stock = await _context.Stock.Where(x => x.MetaData.Symbol == symbol).FirstOrDefaultAsync();
             stock.MetaData = await _context.StockData.Where(x => x.Symbol == symbol).FirstAsync();
             stock.OHLCVData = await _context.OHLCVStockData.Where(x => x.Symbol == symbol).ToListAsync();
             return stock;
@@ -79,44 +79,46 @@ namespace CurrencyExchangeLibrary.Repository
         {
             return await _context.Stock.AnyAsync(x => x.MetaData.Symbol == symbol);
         }
-        public async Task<StockModel> GetWeeklyStockAsync(string symbol)
+        public async Task<List<OHLCVStockModel>> GetStockOHLCVAsync(string symbol)
         {
-            StockModel stock = new StockModel();
-            stock.MetaData = await _context.StockData.Where(x => x.Symbol == symbol).FirstAsync();
+            return await _context.OHLCVStockData.Where(x => x.Symbol == symbol).ToListAsync();
+        }
+        public async Task<List<OHLCVStockModel>> GetWeeklyStockOHLCVAsync(string symbol)
+        {
+            List<OHLCVStockModel> output = new List<OHLCVStockModel>();
             List<OHLCVStockModel> listOfOHLCV = await _context.OHLCVStockData.Where(x => x.Symbol == symbol).ToListAsync();
 
             foreach (var i in listOfOHLCV)
             {
                 if (i.Time.DayOfWeek == DayOfWeek.Monday)
-                    stock.OHLCVData.Add(i);
+                    output.Add(i);
             }
 
             if (DateTime.Today.DayOfWeek != DayOfWeek.Monday)
             {
-                stock.OHLCVData.Add(listOfOHLCV.Last());
+                output.Add(listOfOHLCV.Last());
                 listOfOHLCV.Remove(listOfOHLCV.Last());
             }
 
-            return stock;
+            return output;
         }
-        public async Task<StockModel> GetMonthlyStockAsync(string symbol)
+        public async Task<List<OHLCVStockModel>> GetMonthlyStockOHLCVAsync(string symbol)
         {
-            StockModel stock = new StockModel();
-            stock.MetaData = await _context.StockData.Where(x => x.Symbol == symbol).FirstAsync();
+            var output = new List<OHLCVStockModel>();
             List<OHLCVStockModel> listOfOHLCV = await _context.OHLCVStockData.Where(x => x.Symbol == symbol).ToListAsync();
 
             foreach (var i in listOfOHLCV)
             {
                 if ((int)i.Time.Day - DateTime.DaysInMonth(i.Time.Year, i.Time.Month) == 0)
-                    stock.OHLCVData.Add(i);
+                    output.Add(i);
             }
 
             if ((int)DateTime.Today.Day - DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month) != 0)
             {
-                stock.OHLCVData.Add(listOfOHLCV.Last());
+                output.Add(listOfOHLCV.Last());
                 listOfOHLCV.Remove(listOfOHLCV.Last());
             }
-            return stock;
+            return output;
         }
         public async Task<OHLCVStockModel> GetLatestOHLCVAsync(string symbol)
         {

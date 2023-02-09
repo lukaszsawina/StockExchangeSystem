@@ -20,6 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
 // Add services to the container.
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddSingleton<PeriodicHostedService>();
 builder.Services.AddScoped<ICryptoRepository, CryptoRepository>();
 builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CurrencyExchangeLibrary.Models.OUTPUT
 {
-    public class CryptoOutModel
+    public class CryptoOutModelDto
     {
         public string Name { get; set; }
         public string Symbol { get; set; }

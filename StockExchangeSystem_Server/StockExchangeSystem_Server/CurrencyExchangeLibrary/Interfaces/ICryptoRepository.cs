@@ -12,13 +12,14 @@ namespace CurrencyExchangeLibrary.Interfaces
     public interface ICryptoRepository
     {
         //Get
-        Task<List<CryptoOutModel>> GetCryptosAsync();
+        Task<List<CryptoOutModelDto>> GetCryptosAsync();
         Task<CryptoModel> GetCryptoAsync(string symbol);
         Task<bool> CryptoExistAsync(string symbol);
-        Task<CryptoModel> GetWeeklyCryptoAsync(string symbol);
-        Task<CryptoModel> GetMonthlyCryptoAsync(string symbol);
+        Task<List<OHLCVCryptoModel>> GetCryptoOHLCVAsync(string symbol);
+        Task<List<OHLCVCryptoModel>> GetWeeklyCryptoOHLCVAsync(string symbol);
+        Task<List<OHLCVCryptoModel>> GetMonthlyCryptoOHLCVAsync(string symbol);
         Task<OHLCVCryptoModel> GetLatestOHLCVAsync(string symbol);
-        Task<List<CryptoOutModel>> GetBestCryptoAsync();
+        Task<List<CryptoOutModelDto>> GetBestCryptoAsync();
         Task<List<string>> GetCryptoCodesAsync();
 
         //Post

@@ -1,6 +1,9 @@
-﻿using CurrencyExchangeLibrary.Interfaces;
+﻿using AutoMapper;
+using CurrencyExchangeLibrary.Dto;
+using CurrencyExchangeLibrary.Interfaces;
 using CurrencyExchangeLibrary.Models;
 using CurrencyExchangeLibrary.Models.Currency;
+using CurrencyExchangeLibrary.Models.OHLC;
 using CurrencyExchangeLibrary.Models.OUTPUT;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -15,16 +18,18 @@ namespace StockExchangeSystem_Server.Controllers
     {
         private readonly ICurrencyRepository _currencyRepository;
         private readonly ILogger<CurrencyModel> _logger;
+        private readonly IMapper _mapper;
 
-        public CurrencyController(ICurrencyRepository currencyRepository, ILogger<CurrencyModel> logger)
+        public CurrencyController(ICurrencyRepository currencyRepository, ILogger<CurrencyModel> logger, IMapper mapper)
         {
             _currencyRepository = currencyRepository;
             _logger = logger;
+            _mapper = mapper;
         }
 
         //Get
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<CurrencyOutModel>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<CurrencyOutModelDto>))]
         public async Task<IActionResult> GetCurrenciesAsync()
         {
 
@@ -48,7 +53,7 @@ namespace StockExchangeSystem_Server.Controllers
         }
 
         [HttpGet("{symbol}")]
-        [ProducesResponseType(200, Type = typeof(CurrencyModel))]
+        [ProducesResponseType(200, Type = typeof(CurrencyModelDto))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetCurrencyAsync(string symbol)
         {
@@ -61,7 +66,7 @@ namespace StockExchangeSystem_Server.Controllers
                 }
 
                 _logger.LogInformation("Attempting to receive {code} data from database", symbol);
-                var crypto = await _currencyRepository.GetCurrencyAsync(symbol);
+                var crypto = _mapper.Map<CurrencyModelDto>(await _currencyRepository.GetCurrencyAsync(symbol));
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -75,9 +80,37 @@ namespace StockExchangeSystem_Server.Controllers
             }
 
         }
+        [HttpGet("DAILY/{symbol}")]
+        [ProducesResponseType(200, Type = typeof(List<OHLCCurrencyModel>))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetDailyCurrencyAsync(string symbol)
+        {
+
+            try
+            {
+                if (!(await _currencyRepository.CurrencyExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Attempting to receive {code} weekly data from database", symbol);
+                var crypto = await _currencyRepository.GetCurrencyOHLCAsync(symbol);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                return Ok(crypto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+        }
 
         [HttpGet("WEEKLY/{symbol}")]
-        [ProducesResponseType(200, Type = typeof(CurrencyModel))]
+        [ProducesResponseType(200, Type = typeof(List<OHLCCurrencyModel>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetWeeklyCurrencyAsync(string symbol)
         {
@@ -91,7 +124,7 @@ namespace StockExchangeSystem_Server.Controllers
                 }
 
                 _logger.LogInformation("Attempting to receive {code} weekly data from database", symbol);
-                var crypto = await _currencyRepository.GetWeeklyCurrencyAsync(symbol);
+                var crypto = await _currencyRepository.GetWeeklyCurrencyOHLCAsync(symbol);
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -106,7 +139,7 @@ namespace StockExchangeSystem_Server.Controllers
         }
 
         [HttpGet("MONTHLY/{symbol}")]
-        [ProducesResponseType(200, Type = typeof(CurrencyModel))]
+        [ProducesResponseType(200, Type = typeof(List<OHLCCurrencyModel>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetMonthlyCryptoAsync(string symbol)
         {
@@ -119,7 +152,7 @@ namespace StockExchangeSystem_Server.Controllers
                 }
 
                 _logger.LogInformation("Attempting to receive {code} monthly data from database", symbol);
-                var crypto = await _currencyRepository.GetMonthlyCurrencyAsync(symbol);
+                var crypto = await _currencyRepository.GetMonthlyCurrencyOHLCAsync(symbol);
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -168,7 +201,7 @@ namespace StockExchangeSystem_Server.Controllers
         }
 
         [HttpGet("proposition")]
-        [ProducesResponseType(200, Type = typeof(List<CurrencyOutModel>))]
+        [ProducesResponseType(200, Type = typeof(List<CurrencyOutModelDto>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetCurrencyPropositionAsync()
         {

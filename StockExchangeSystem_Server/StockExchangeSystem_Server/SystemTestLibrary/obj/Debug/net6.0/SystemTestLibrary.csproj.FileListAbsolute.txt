@@ -203,3 +203,5 @@ C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Ser
 C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\SystemTestLibrary\obj\Debug\net6.0\SystemTestLibrary.pdb
 C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\SystemTestLibrary\obj\Debug\net6.0\SystemTestLibrary.genruntimeconfig.cache
 C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\SystemTestLibrary\obj\Debug\net6.0\ref\SystemTestLibrary.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\SystemTestLibrary\bin\Debug\net6.0\AutoMapper.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\SystemTestLibrary\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

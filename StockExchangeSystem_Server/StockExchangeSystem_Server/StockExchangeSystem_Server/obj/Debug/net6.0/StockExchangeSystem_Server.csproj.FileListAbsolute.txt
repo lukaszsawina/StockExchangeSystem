@@ -208,3 +208,5 @@ C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Ser
 C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\StockExchangeSystem_Server\bin\Debug\net6.0\runtimes\win-x86\native\FastTreeNative.dll
 C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\StockExchangeSystem_Server\bin\Debug\net6.0\PredictLibrary.dll
 C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\StockExchangeSystem_Server\bin\Debug\net6.0\PredictLibrary.pdb
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\StockExchangeSystem_Server\bin\Debug\net6.0\AutoMapper.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\StockExchangeSystem_Server\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

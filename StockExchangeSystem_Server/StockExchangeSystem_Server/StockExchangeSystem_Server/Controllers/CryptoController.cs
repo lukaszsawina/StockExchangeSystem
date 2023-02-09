@@ -1,4 +1,6 @@
-﻿using CurrencyExchangeLibrary.Interfaces;
+﻿using AutoMapper;
+using CurrencyExchangeLibrary.Dto;
+using CurrencyExchangeLibrary.Interfaces;
 using CurrencyExchangeLibrary.Models;
 using CurrencyExchangeLibrary.Models.Crypto;
 using CurrencyExchangeLibrary.Models.OHLC;
@@ -17,18 +19,18 @@ namespace StockExchangeSystem_Server.Controllers
     {
         private readonly ICryptoRepository _cryptoRepository;
         private readonly ILogger<CryptoController> _logger;
-        private readonly IRefreshLogic _refreshLogic;
+        private readonly IMapper _mapper;
 
-        public CryptoController(ICryptoRepository cryptoRepository, ILogger<CryptoController> logger, IRefreshLogic refreshLogic)
+        public CryptoController(ICryptoRepository cryptoRepository, ILogger<CryptoController> logger, IMapper mapper)
         {
             _cryptoRepository = cryptoRepository;
             _logger = logger;
-            _refreshLogic = refreshLogic;
+            _mapper = mapper;
         }
 
         //Get
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<CryptoOutModel>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<CryptoOutModelDto>))]
         public async Task<IActionResult> GetCryptosAsync()
         {
 
@@ -52,7 +54,7 @@ namespace StockExchangeSystem_Server.Controllers
         }
 
         [HttpGet("{symbol}")]
-        [ProducesResponseType(200, Type = typeof(CryptoModel))]
+        [ProducesResponseType(200, Type = typeof(CryptoModelDto))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetCryptoAsync(string symbol)
         {
@@ -65,7 +67,7 @@ namespace StockExchangeSystem_Server.Controllers
                 }
 
                 _logger.LogInformation("Attempting to receive {code} data from database",symbol);
-                var crypto = await _cryptoRepository.GetCryptoAsync(symbol);
+                var crypto = _mapper.Map<CryptoModelDto>(await _cryptoRepository.GetCryptoAsync(symbol));
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -80,8 +82,37 @@ namespace StockExchangeSystem_Server.Controllers
             
         }
 
+        [HttpGet("DAILY/{symbol}")]
+        [ProducesResponseType(200, Type = typeof(List<OHLCVCryptoModel>))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetDailyCryptoAsync(string symbol)
+        {
+
+            try
+            {
+                if (!(await _cryptoRepository.CryptoExistAsync(symbol)))
+                {
+                    _logger.LogInformation("{code} don't exist in database", symbol);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Attempting to receive {code} weekly data from database", symbol);
+                var OHLCVlist = await _cryptoRepository.GetCryptoOHLCVAsync(symbol);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                return Ok(OHLCVlist);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong while reveiving data from database");
+                throw new Exception("Error");
+            }
+        }
+
         [HttpGet("WEEKLY/{symbol}")]
-        [ProducesResponseType(200, Type = typeof(CryptoModel))]
+        [ProducesResponseType(200, Type = typeof(List<OHLCVCryptoModel>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetWeeklyCryptoAsync(string symbol)
         {
@@ -94,13 +125,13 @@ namespace StockExchangeSystem_Server.Controllers
                     return NotFound();
                 }
 
-                _logger.LogInformation("Attempting to receive  {code} weekly data from database", symbol);
-                var crypto = await _cryptoRepository.GetWeeklyCryptoAsync(symbol);
+                _logger.LogInformation("Attempting to receive {code} weekly data from database", symbol);
+                var OHLCVlist = await _cryptoRepository.GetWeeklyCryptoOHLCVAsync(symbol);
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                return Ok(crypto);
+                return Ok(OHLCVlist);
             }
             catch(Exception ex)
             {
@@ -110,7 +141,7 @@ namespace StockExchangeSystem_Server.Controllers
         }
 
         [HttpGet("MONTHLY/{symbol}")]
-        [ProducesResponseType(200, Type = typeof(CryptoModel))]
+        [ProducesResponseType(200, Type = typeof(List<OHLCVCryptoModel>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetMonthlyCryptoAsync(string symbol)
         {
@@ -123,12 +154,12 @@ namespace StockExchangeSystem_Server.Controllers
                 }
 
                 _logger.LogInformation("Attempting to receive {code} monthly data from database", symbol);
-                var crypto = await _cryptoRepository.GetMonthlyCryptoAsync(symbol);
+                var OHLCVlist = await _cryptoRepository.GetMonthlyCryptoOHLCVAsync(symbol);
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                return Ok(crypto);
+                return Ok(OHLCVlist);
             }
             catch(Exception ex)
             {
@@ -172,7 +203,7 @@ namespace StockExchangeSystem_Server.Controllers
         }
 
         [HttpGet("proposition")]
-        [ProducesResponseType(200, Type = typeof(List<CryptoOutModel>))]
+        [ProducesResponseType(200, Type = typeof(List<CryptoOutModelDto>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetCryptoPropositionAsync()
         {
