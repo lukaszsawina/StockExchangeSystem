@@ -27,7 +27,7 @@ namespace StockExchangeSystem_Server.Controllers
 
         //Get
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<StockOutModel>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<StockOutModelDto>))]
         public async Task<IActionResult> GetStocksAsync()
         {
 
@@ -199,7 +199,7 @@ namespace StockExchangeSystem_Server.Controllers
         }
 
         [HttpGet("proposition")]
-        [ProducesResponseType(200, Type = typeof(List<StockOutModel>))]
+        [ProducesResponseType(200, Type = typeof(List<StockOutModelDto>))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetStockPropositionAsync()
         {

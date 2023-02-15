@@ -1,8 +1,181 @@
-﻿@{
+﻿@using CurrencyExchangeLibrary.Models.OUTPUT
+@{
     ViewData["Title"] = "Home Page";
+
+    IEnumerable<CryptoOutModelDto>? crypto = ViewData["Crypto"] as IEnumerable<CryptoOutModelDto>;
+    IEnumerable<CurrencyOutModelDto>? currency = ViewData["Currency"] as IEnumerable<CurrencyOutModelDto>;
+    IEnumerable<StockOutModelDto>? stock = ViewData["Stock"] as IEnumerable<StockOutModelDto>;
+
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+ <!-- Sale & Revenue Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-12">
+            <div class="bg-secondary rounded d-flex align-items-center p-4">
+                <i class="fa-solid fa-money-bill-trend-up fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <h1 class="text-body mb-2">Welcome to DarkStock</p>
+                    <h6 class="mb-0">See what's happening on the stock market. Check out the interesting assets we offer.</h6>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<!-- Sale & Revenue End -->
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h4 class="mb-0">Our investment proposals</h4>
+        </div>
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h1 class="text-body mb-0">Crypto</h1>
+        </div>
+        <div class="table-responsive">
+            @{
+                if(crypto.Count() > 0)
+                {
+                <table class="table text-start align-middle table-bordered table-hover mb-4">
+                    <thead>
+                        <tr class="text-white">
+                            <th scope="col"> </th>
+                            <th scope="col">Symbol</th>
+                            <th scope="col">Value(USD)</th>
+                            <th scope="col">Change (24h)</th>
+                            <th scope="col">Change (7d)</th>
+                            <th scope="col">Info.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 1;
+                        }
+                        @foreach(var item in crypto)
+                        {
+                            <tr id="@item.Symbol" class="krypto">
+                            <th scope="row">@i</th>
+                            <td class="symbol">@item.Symbol</td>
+                            <td>@decimal.Round(item.Value,2,MidpointRounding.AwayFromZero)</td>
+                            <td>@decimal.Round(item.ChangeDay,2,MidpointRounding.AwayFromZero)</td>
+                            <td>@decimal.Round(item.ChangeWeek, 2,MidpointRounding.AwayFromZero)</td>
+                            <td><a href="crypto_page.php?c=<?php echo $c->symbol;?>" type="button" class="btn btn-primary shadow-none">More</a></td>
+                        </tr>
+                            i++;
+                        }
+                    
+                    </tbody>
+                </table>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <h3 class=" text-body mb-0">Sorry!</h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h4 class="mb-0">Nothing interesting so far</h4>
+                    </div>
+                }
+            }
+         <div class="d-flex align-items-center justify-content-between mb-4">
+            <h1 class="text-body mb-0">Currency</h1>
+        </div>
+            @{
+                if(currency.Count() > 0)
+                {
+                <table class="table text-start align-middle table-bordered table-hover mb-4">
+                    <thead>
+                        <tr class="text-white">
+                            <th scope="col"> </th>
+                            <th scope="col">Symbol</th>
+                            <th scope="col">Value(USD)</th>
+                            <th scope="col">Change (7d)</th>
+                            <th scope="col">Change (30d)</th>
+                            <th scope="col">Info.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 1;
+                        }
+                        @foreach(var item in currency)
+                        {
+                            <tr id="@item.Symbol" class="krypto">
+                            <th scope="row">@i</th>
+                            <td class="symbol">@item.Symbol</td>
+                            <td>@decimal.Round(item.inUSD,2,MidpointRounding.AwayFromZero)</td>
+                            <td>@decimal.Round(item.WeekChange,2,MidpointRounding.AwayFromZero)</td>
+                            <td>@decimal.Round(item.MonthChange, 2,MidpointRounding.AwayFromZero)</td>
+                            <td><a href="crypto_page.php?c=<?php echo $c->symbol;?>" type="button" class="btn btn-primary shadow-none">More</a></td>
+                        </tr>
+                            i++;
+                        }
+                    
+                    </tbody>
+                </table>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <h3 class=" text-body mb-0">Sorry!</h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h4 class="mb-0">Nothing interesting so far</h4>
+                    </div>
+                }
+            }
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h1 class="text-body mb-0">Stock</h1>
+            </div>
+            @{
+                if(stock.Count() > 0)
+                {
+                <table class="table text-start align-middle table-bordered table-hover mb-4">
+                    <thead>
+                        <tr class="text-white">
+                            <th scope="col"> </th>
+                            <th scope="col">Symbol</th>
+                            <th scope="col">Value(USD)</th>
+                            <th scope="col">Change (7d)</th>
+                            <th scope="col">Change (30d)</th>
+                            <th scope="col">Info.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 1;
+                        }
+                        @foreach(var item in stock)
+                        {
+                            <tr id="@item.Symbol" class="krypto">
+                            <th scope="row">@i</th>
+                            <td class="symbol">@item.Symbol</td>
+                            <td>@decimal.Round(item.Value,2,MidpointRounding.AwayFromZero)</td>
+                            <td>@decimal.Round(item.ChangeMonth,2,MidpointRounding.AwayFromZero)</td>
+                            <td>@decimal.Round(item.ChangeWeek, 2,MidpointRounding.AwayFromZero)</td>
+                            <td><a href="crypto_page.php?c=<?php echo $c->symbol;?>" type="button" class="btn btn-primary shadow-none">More</a></td>
+                        </tr>
+                            i++;
+                        }
+                    
+                    </tbody>
+                </table>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <h3 class=" text-body mb-0">Sorry!</h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h4 class="mb-0">Nothing interesting so far</h4>
+                    </div>
+                }
+            }
+                         
+        </div>
+    </div>
+</div>
+            <!-- Recent Sales End -->
+
+
+<script>  document.getElementById("navindex").classList.add('active'); </script>

@@ -23,9 +23,9 @@ namespace CurrencyExchangeLibrary.Repository
         }
 
         //Get
-        public async Task<List<StockOutModel>> GetStocksAsync()
+        public async Task<List<StockOutModelDto>> GetStocksAsync()
         {
-            var stocks = new List<StockOutModel>();
+            var stocks = new List<StockOutModelDto>();
 
             foreach (var c in await GetStocksCodesAsync())
             {
@@ -34,7 +34,7 @@ namespace CurrencyExchangeLibrary.Repository
 
             return stocks;
         }
-        private async Task<StockOutModel> GetStockOutputAsync(string symbol)
+        private async Task<StockOutModelDto> GetStockOutputAsync(string symbol)
         {
             //Pobranie wszystkich informacji z bazy o akcji
             var stockData = await _context.StockData.Where(x => x.Symbol == symbol).FirstAsync();
@@ -53,11 +53,11 @@ namespace CurrencyExchangeLibrary.Repository
             else
             {
                 ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-7));
-                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-31));
+                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-33));
             }
 
             //Model do zwrócenia
-            var output = new StockOutModel()
+            var output = new StockOutModelDto()
             {
                 Symbol = stockData.Symbol,
                 Value = stock.CurrentValue,
@@ -232,7 +232,7 @@ namespace CurrencyExchangeLibrary.Repository
             return saved > 0 ? true : false;
         }
 
-        public async Task<List<StockOutModel>> GetBestStocksAsync()
+        public async Task<List<StockOutModelDto>> GetBestStocksAsync()
         {
             var stocks = await GetStocksAsync();
 

@@ -12,14 +12,14 @@ namespace CurrencyExchangeLibrary.Interfaces
     public interface IStockRepository
     {
         //Get
-        Task<List<StockOutModel>> GetStocksAsync();
+        Task<List<StockOutModelDto>> GetStocksAsync();
         Task<StockModel> GetStockAsync(string symbol);
         Task<bool> StockExistAsync(string symbol);
         Task<List<string>> GetStocksCodesAsync();
         Task<List<OHLCVStockModel>> GetStockOHLCVAsync(string symbol);
         Task<List<OHLCVStockModel>> GetWeeklyStockOHLCVAsync(string symbol);
         Task<List<OHLCVStockModel>> GetMonthlyStockOHLCVAsync(string symbol);
-        Task<List<StockOutModel>> GetBestStocksAsync();
+        Task<List<StockOutModelDto>> GetBestStocksAsync();
         Task<OHLCVStockModel> GetLatestOHLCVAsync(string symbol);
         //Post
         Task<bool> CreateStockAsync(string symbol);
