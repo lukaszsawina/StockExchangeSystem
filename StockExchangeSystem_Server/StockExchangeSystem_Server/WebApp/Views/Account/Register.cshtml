@@ -1,0 +1,52 @@
+﻿@model RegisterViewModel
+@{
+	ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<div class="container-fluid">
+            <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+                <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+                    <form asp-action="Register" id="form" class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <a href="index.php" class="">
+                                <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>DarkPan</h3>
+                            </a>
+                            <h3>Sign Up</h3>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control"  asp-for="FirstName">
+                            <label asp-for="FirstName"></label>
+                        </div><div class="form-floating mb-3">
+                            <input class="form-control"  asp-for="LastName">
+                            <label asp-for="LastName"></label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control"  asp-for="Email">
+                            <label asp-for="Email"></label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" asp-for="Password">
+                            <label asp-for="Password"></label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" asp-for="ConfirmPassword">
+                            <label asp-for="ConfirmPassword"></label>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        
+                        @if(TempData["Error"] is not null){
+                        <div class="d-none align-items-center justify-content-between flex-wrap">
+                            <h1>Sorry!</h1>
+                            <h4>@TempData["Error"]</h4>
+                        </div>
+                        }
+
+                        <button id="subBtn" type="submit" class="btn shadow-none btn-primary py-3 w-100 mb-4">Sign Up</button>
+                        <p class="text-center mb-0">Already have an Account? <a asp-action="Login" asp-controller="Account">Sign In</a></p>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
