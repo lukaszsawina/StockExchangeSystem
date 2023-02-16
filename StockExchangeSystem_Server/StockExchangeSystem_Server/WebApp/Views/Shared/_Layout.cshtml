@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+
+    string test = ViewData["Test"] as string;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -71,7 +76,7 @@
                     
                     <div class="ms-3">
                         
-                        ?>
+                        @test
                         <h6 class="mb-0"></h6>
                     </div>
                   
@@ -131,7 +136,7 @@
                             <span class="d-none d-lg-inline-flex">Sign in/up</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <a href="signin.php" class="dropdown-item">Sign in</a>
+                            <a asp-area="" asp-controller="Account" asp-action="Login" class="dropdown-item">Sign in</a>
                             <a href="signup.php" class="dropdown-item">Sign up</a>
                         </div>
                     </div>

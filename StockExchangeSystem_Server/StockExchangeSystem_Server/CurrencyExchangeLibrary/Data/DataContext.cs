@@ -1,24 +1,18 @@
-﻿using CurrencyExchangeLibrary.Models.Account;
+﻿using Microsoft.EntityFrameworkCore;
+using CurrencyExchangeLibrary.Models.Account;
 using CurrencyExchangeLibrary.Models.Crypto;
 using CurrencyExchangeLibrary.Models.Currency;
 using CurrencyExchangeLibrary.Models.OHLC;
 using CurrencyExchangeLibrary.Models.Stock;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CurrencyExchangeLibrary.Data
 {
     public class DataContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> option) : base(option)
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 
         }
-
         //Crypto
         public DbSet<CryptoModel> Crypto { get; set; }
         public DbSet<OHLCCryptoModel> OHLCCryptoData { get; set; }

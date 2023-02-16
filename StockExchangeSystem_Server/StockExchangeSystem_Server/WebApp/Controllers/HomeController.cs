@@ -26,7 +26,6 @@ namespace WebApp.Controllers
             ViewData["Crypto"] = await _cryptoRepository.GetBestCryptoAsync();
             ViewData["Currency"] = await _currencyRepository.GetBestCurrencyAsync();
             ViewData["Stock"] = await _stockRepository.GetBestStocksAsync();
-
             return View();
         }
 

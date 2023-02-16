@@ -108,3 +108,14 @@ C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Ser
 C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Serilog.Sinks.Console.dll
 C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Serilog.Sinks.Debug.dll
 C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Serilog.Sinks.File.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Microsoft.Extensions.Identity.Core.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Microsoft.Extensions.Identity.Stores.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Humanizer.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Mono.TextTemplating.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\System.Text.Encodings.Web.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\System.Text.Json.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll

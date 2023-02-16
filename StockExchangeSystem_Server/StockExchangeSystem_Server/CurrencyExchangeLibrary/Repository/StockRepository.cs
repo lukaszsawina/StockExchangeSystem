@@ -53,7 +53,7 @@ namespace CurrencyExchangeLibrary.Repository
             else
             {
                 ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-7));
-                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-33));
+                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-30));
             }
 
             //Model do zwrócenia
