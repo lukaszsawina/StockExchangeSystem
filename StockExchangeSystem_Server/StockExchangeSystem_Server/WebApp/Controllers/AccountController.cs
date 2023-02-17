@@ -17,6 +17,7 @@ namespace WebApp.Controllers
             _context = context;
         }
 
+        [HttpGet]
         public IActionResult Login()
         {
             var response = new LoginViewModel();
@@ -28,18 +29,21 @@ namespace WebApp.Controllers
         {
             if (!ModelState.IsValid) return View(loginViewModel);
 
-            var user = await _userManager.FindByEmailAsync(loginViewModel.Email);
+            var user = await _userManager.FindByNameAsync(loginViewModel.Email);
 
-            if(user is not null)
+            if(user != null)
             {
+
                 var passwordCheck = await _userManager.CheckPasswordAsync(user, loginViewModel.Password);
                 if(passwordCheck)
                 {
                     var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password, false, false);
                     if (result.Succeeded)
+                    {
                         return RedirectToAction("Index", "Home");
+                    }
                 }
-                TempData["Error"] = "Wrong data. Pleas try again";
+                TempData["Error"] = "Wrong password. Pleas try again";
                 return View(loginViewModel);
             }
             TempData["Error"] = "Wrong data. Pleas try again";
@@ -57,7 +61,7 @@ namespace WebApp.Controllers
         {
             if (!ModelState.IsValid) return View(registerViewModel);
 
-            var user = await _userManager.FindByEmailAsync(registerViewModel.Email);
+            var user = await _userManager.FindByNameAsync(registerViewModel.Email);
 
             if(user is not null)
             {
@@ -83,7 +87,6 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
