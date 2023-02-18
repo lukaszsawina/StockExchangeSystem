@@ -43,8 +43,20 @@ namespace CurrencyExchangeLibrary.Repository
         {
             var cryptoData = await _context.CryptoData.Where(x => x.DCCode == symbol).FirstAsync();
             var crypto = await _context.Crypto.Where(s => s.MetaData.DCCode == symbol).FirstOrDefaultAsync();
+            
+            
             var ohlcvY = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-1));
             var ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-7));
+
+            int i = 0;
+            while (ohlcvY == null || ohlcvW == null)
+            {
+                ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-(1 + i)));
+                ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-(7 + i)));
+                i++;
+            }
+
+
             var output = new CryptoOutModelDto();
 
             output.Name = cryptoData.DCName;

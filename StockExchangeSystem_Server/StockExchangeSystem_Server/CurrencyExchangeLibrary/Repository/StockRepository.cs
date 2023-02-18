@@ -44,16 +44,17 @@ namespace CurrencyExchangeLibrary.Repository
             var ohlcvW = new OHLCVStockModel();
             var ohlcvM = new OHLCVStockModel();
 
+
             //Sprawdzenie czy dzisiaj jest któryś z dni weekendy
-            if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+            ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-7));
+            ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddMonths(-1));
+
+            int i = 0;
+            while (ohlcvW == null || ohlcvM == null)
             {
-                ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-9));
-                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-33));
-            }
-            else
-            {
-                ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-7));
-                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-30));
+                ohlcvW = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddDays(-(7+i)));
+                ohlcvM = await GetOHLCVFromDayAsync(symbol, DateTime.Today.AddMonths(-1).AddDays(-i));
+                i++;
             }
 
             //Model do zwrócenia

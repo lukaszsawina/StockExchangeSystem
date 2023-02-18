@@ -22,7 +22,6 @@ namespace WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Message = "Welcome to my demo!";
             ViewData["Crypto"] = await _cryptoRepository.GetBestCryptoAsync();
             ViewData["Currency"] = await _currencyRepository.GetBestCurrencyAsync();
             ViewData["Stock"] = await _stockRepository.GetBestStocksAsync();

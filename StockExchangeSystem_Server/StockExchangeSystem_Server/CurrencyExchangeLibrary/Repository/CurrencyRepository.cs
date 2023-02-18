@@ -46,8 +46,18 @@ namespace CurrencyExchangeLibrary.Repository
 
                 var currencyData = await _context.CurrencyData.Where(x => x.fromSymbol == symbol).FirstAsync();
                 var currency = await _context.Currency.Where(s => s.MetaData.fromSymbol == symbol).FirstOrDefaultAsync();
+
+
                 var ohlcW = await GetOHLCFromDayAsync(symbol, DateTime.Today.AddDays(-7));
-                var ohlcM = await GetOHLCFromDayAsync(symbol, DateTime.Today.AddDays(-30));
+                var ohlcM = await GetOHLCFromDayAsync(symbol, DateTime.Today.AddMonths(-1));
+
+                int i = 0;
+                while (ohlcW == null || ohlcM == null)
+                {
+                    ohlcW = await GetOHLCFromDayAsync(symbol, DateTime.Today.AddDays(-(7 + i)));
+                    ohlcM = await GetOHLCFromDayAsync(symbol, DateTime.Today.AddMonths(-1).AddDays(-i));
+                    i++;
+                }
 
                 var output = new CurrencyOutModelDto();
                 var PLNUSD = await _context.Currency.Where(s => s.MetaData.fromSymbol == "PLN").FirstOrDefaultAsync();
