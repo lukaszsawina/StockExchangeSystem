@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "GUv4NuUvVm/qfLdcEN4vUcc6m4rRksa93A4kaJpIRYhSpAkk6wiT1XFJo5nzUj+0mNJASlX7/yInmUPPjMJaOA==",
+  "dgSpecHash": "6gqA92Ia5GEskQRgKE+3dOtCeBwyqHEZuUTvItA8u6FIJRD7Ozny9uW1Ewc19lEbR6gCKZBYNJ9VZoU4xGJ7eA==",
   "success": true,
   "projectFilePath": "C:\\dev\\C#\\StockExchangeSystem\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\WebApp\\WebApp.csproj",
   "expectedPackageFiles": [
@@ -48,6 +48,7 @@
     "C:\\Users\\lukis\\.nuget\\packages\\microsoft.ml\\2.0.1\\microsoft.ml.2.0.1.nupkg.sha512",
     "C:\\Users\\lukis\\.nuget\\packages\\microsoft.ml.cpumath\\2.0.1\\microsoft.ml.cpumath.2.0.1.nupkg.sha512",
     "C:\\Users\\lukis\\.nuget\\packages\\microsoft.ml.dataview\\2.0.1\\microsoft.ml.dataview.2.0.1.nupkg.sha512",
+    "C:\\Users\\lukis\\.nuget\\packages\\microsoft.ml.fasttree\\2.0.1\\microsoft.ml.fasttree.2.0.1.nupkg.sha512",
     "C:\\Users\\lukis\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
     "C:\\Users\\lukis\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\lukis\\.nuget\\packages\\microsoft.sqlserver.server\\1.0.0\\microsoft.sqlserver.server.1.0.0.nupkg.sha512",

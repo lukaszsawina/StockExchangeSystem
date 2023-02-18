@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CurrencyExchangeLibrary\CurrencyExchangeLibrary.csproj" />
+    <ProjectReference Include="..\PredictLibrary\PredictLibrary.csproj" />
 	<PackageReference Include="Serilog" Version="2.12.0" />
 	<PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
   </ItemGroup>

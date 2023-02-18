@@ -244,24 +244,25 @@
             case "W":
             {
                 document.getElementById("Weekly").classList.add("active");
-                chartType = "Weekly";
+                chartType = "WEEKLY";
             }
                 break;
             case "M":
             {
                 document.getElementById("Monthly").classList.add("active");
-                chartType = "Monthly";
+                chartType = "MONTHLY";
             }
                 break;
         
             default:
                 break;
         }
-        setChartxValues();
-
-        
         myChart3.data.datasets[0].data = getCrypto(chartType, currentyCrypto);
-        myChart3.update()
+        //setChartxValues();
+        myChart3.data.labels = xValues;
+        myChart2.data.labels = xValues;
+        myChart3.update();
+        myChart2.update(); 
     }
 
     // Handling checkbox click
@@ -341,13 +342,11 @@
     //Get crypto data with offset type
     function getCrypto(type, symbol)
     {
-        
-
-
         if(!type)
-            var link = "https://localhost:7070/api/Crypto/"+symbol;
-        else
-            var link = "https://localhost:7070/api/Crypto/"+type+"/"+symbol;
+            var link = "https://localhost:7004/api/CryptoAPI/DAILY/"+symbol;
+       else
+            var link = "https://localhost:7004/api/CryptoAPI/"+type+"/"+symbol;
+
         var data = [];
         $.ajax({
                 url: link,
@@ -357,9 +356,14 @@
                 cors: false ,
                 contentType:'application/json',
                 success: function (APIdata){
-                    label =  APIdata["metaData"]["dcName"];
-                    for(let i = 0; i < APIdata["ohlcvCryptoData"].length;i++)
-                    data.push(APIdata["ohlcvCryptoData"][i]["closeUSD"]);
+                    label = symbol;
+                    xValues = [];
+                    for(let i = 0; i < APIdata.length;i++)
+                    {
+                        data.push(APIdata[i]["closeUSD"]);
+                        var time = APIdata[i]["time"].split('T');
+                        xValues.push(time[0]);
+                    }
                 }
                 
             });

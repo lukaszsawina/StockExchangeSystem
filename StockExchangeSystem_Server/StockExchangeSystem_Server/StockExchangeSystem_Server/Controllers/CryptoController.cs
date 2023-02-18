@@ -14,7 +14,6 @@ namespace StockExchangeSystem_Server.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
-    [EnableCors("http://mywebclient.azurewebsites.net")]
     public class CryptoController : Controller
     {
         private readonly ICryptoRepository _cryptoRepository;

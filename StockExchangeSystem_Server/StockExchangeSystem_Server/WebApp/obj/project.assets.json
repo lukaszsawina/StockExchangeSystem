@@ -705,6 +705,39 @@
           "lib/netstandard2.0/Microsoft.ML.DataView.dll": {}
         }
       },
+      "Microsoft.ML.FastTree/2.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.ML": "2.0.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.ML.FastTree.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.ML.FastTree.dll": {}
+        },
+        "build": {
+          "build/netstandard2.0/_._": {}
+        },
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/libFastTreeNative.so": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/osx-x64/native/libFastTreeNative.dylib": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          },
+          "runtimes/win-x64/native/FastTreeNative.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x86/native/FastTreeNative.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
+          }
+        }
+      },
       "Microsoft.NETCore.Platforms/5.0.0": {
         "type": "package",
         "compile": {
@@ -1454,6 +1487,21 @@
         },
         "runtime": {
           "bin/placeholder/CurrencyExchangeLibrary.dll": {}
+        }
+      },
+      "PredictLibrary/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "CurrencyExchangeLibrary": "1.0.0",
+          "Microsoft.ML": "2.0.1",
+          "Microsoft.ML.FastTree": "2.0.1"
+        },
+        "compile": {
+          "bin/placeholder/PredictLibrary.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PredictLibrary.dll": {}
         }
       }
     }
@@ -2530,6 +2578,27 @@
         "microsoft.ml.dataview.2.0.1.nupkg.sha512",
         "microsoft.ml.dataview.nuspec",
         "mlnetlogo.png"
+      ]
+    },
+    "Microsoft.ML.FastTree/2.0.1": {
+      "sha512": "fLWCabYZJ1maDp8wYn/7KZfGjTmUUKutJpdeK4ZdpBK8urFMHkEOGK2cx5E/Eky5jFUMTCheCbE/NqR3uPexdA==",
+      "type": "package",
+      "path": "microsoft.ml.fasttree/2.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "THIRD-PARTY-NOTICES.TXT",
+        "build/netstandard2.0/Microsoft.ML.FastTree.props",
+        "lib/netstandard2.0/Microsoft.ML.FastTree.dll",
+        "lib/netstandard2.0/Microsoft.ML.FastTree.xml",
+        "microsoft.ml.fasttree.2.0.1.nupkg.sha512",
+        "microsoft.ml.fasttree.nuspec",
+        "mlnetlogo.png",
+        "runtimes/linux-x64/native/libFastTreeNative.so",
+        "runtimes/osx-x64/native/libFastTreeNative.dylib",
+        "runtimes/win-x64/native/FastTreeNative.dll",
+        "runtimes/win-x86/native/FastTreeNative.dll"
       ]
     },
     "Microsoft.NETCore.Platforms/5.0.0": {
@@ -4455,6 +4524,11 @@
       "type": "project",
       "path": "../CurrencyExchangeLibrary/CurrencyExchangeLibrary.csproj",
       "msbuildProject": "../CurrencyExchangeLibrary/CurrencyExchangeLibrary.csproj"
+    },
+    "PredictLibrary/1.0.0": {
+      "type": "project",
+      "path": "../PredictLibrary/PredictLibrary.csproj",
+      "msbuildProject": "../PredictLibrary/PredictLibrary.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -4463,6 +4537,7 @@
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 6.0.14",
       "Microsoft.EntityFrameworkCore.Design >= 7.0.3",
       "Microsoft.EntityFrameworkCore.SqlServer >= 7.0.3",
+      "PredictLibrary >= 1.0.0",
       "Serilog >= 2.12.0",
       "Serilog.AspNetCore >= 6.1.0",
       "Serilog.Enrichers.Environment >= 2.2.0",
@@ -4500,6 +4575,9 @@
           "projectReferences": {
             "C:\\dev\\C#\\StockExchangeSystem\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\CurrencyExchangeLibrary\\CurrencyExchangeLibrary.csproj": {
               "projectPath": "C:\\dev\\C#\\StockExchangeSystem\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\CurrencyExchangeLibrary\\CurrencyExchangeLibrary.csproj"
+            },
+            "C:\\dev\\C#\\StockExchangeSystem\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\PredictLibrary\\PredictLibrary.csproj": {
+              "projectPath": "C:\\dev\\C#\\StockExchangeSystem\\StockExchangeSystem_Server\\StockExchangeSystem_Server\\PredictLibrary\\PredictLibrary.csproj"
             }
           }
         }
