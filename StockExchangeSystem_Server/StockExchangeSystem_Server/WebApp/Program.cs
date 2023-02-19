@@ -34,6 +34,8 @@ builder.Services.AddScoped<IAPIKeyLogic, APIKeyLogic>();
 //builder.Services.AddHostedService(
 //    provider => provider.GetRequiredService<PeriodicHostedService>());
 
+
+
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
