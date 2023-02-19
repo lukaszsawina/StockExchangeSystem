@@ -2,11 +2,6 @@
 @using CurrencyExchangeLibrary.Models.OUTPUT
 @model IEnumerable<CryptoOutModelDto>
 
-@{
-    IEnumerable<CryptoOutModelDto>? cryptoTable = ViewData["CryptoTable"] as IEnumerable<CryptoOutModelDto>;
-    IEnumerable<CryptoModel>? crypto = ViewData["Cryptos"] as IEnumerable<CryptoModel>;
-}
-
 
 <!-- Description Start -->
             <div class="container-fluid pt-4 px-4">
@@ -53,7 +48,7 @@
                                     @{
                                         int i = 1;
                                     }
-                                    @foreach(var item in cryptoTable)
+                                    @foreach(var item in Model)
                                     {
 
                                         <tr id="@item.Symbol" class="krypto" >
