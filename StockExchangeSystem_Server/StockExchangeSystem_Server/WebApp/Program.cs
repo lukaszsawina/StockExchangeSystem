@@ -1,5 +1,6 @@
 using CurrencyExchangeLibrary.Data;
 using CurrencyExchangeLibrary.Interfaces;
+using CurrencyExchangeLibrary.PeriodicServices;
 using CurrencyExchangeLibrary.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
@@ -22,11 +23,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
 // Add services to the container.
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<PeriodicHostedService>();
 builder.Services.AddScoped<ICryptoRepository, CryptoRepository>();
 builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<IAPIKeyLogic, APIKeyLogic>();
+
+//builder.Services.AddHostedService(
+//    provider => provider.GetRequiredService<PeriodicHostedService>());
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -43,11 +49,15 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
 var app = builder.Build();
 
 if (args.Length == 1 && args[0].ToLower() == "seeddata")
 {
     await seed.SeedUsersAndRolesAsync(app);
+
 }
 
 // Configure the HTTP request pipeline.
@@ -56,6 +66,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+    
 }
 
 app.UseHttpsRedirection();
