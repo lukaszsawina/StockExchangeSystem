@@ -31,6 +31,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3J5cHRvXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/dev/C\#/StockExchangeSystem/StockExchangeSystem_Server/StockExchangeSystem_Server/WebApp/Views/Currency/CurrencyPage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VycmVuY3lcQ3VycmVuY3lQYWdlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/dev/C\#/StockExchangeSystem/StockExchangeSystem_Server/StockExchangeSystem_Server/WebApp/Views/Currency/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VycmVuY3lcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -57,6 +61,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/dev/C\#/StockExchangeSystem/StockExchangeSystem_Server/StockExchangeSystem_Server/WebApp/Views/Stock/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/dev/C\#/StockExchangeSystem/StockExchangeSystem_Server/StockExchangeSystem_Server/WebApp/Views/Stock/StockPage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tcU3RvY2tQYWdlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/dev/C\#/StockExchangeSystem/StockExchangeSystem_Server/StockExchangeSystem_Server/WebApp/Views/_ViewImports.cshtml]

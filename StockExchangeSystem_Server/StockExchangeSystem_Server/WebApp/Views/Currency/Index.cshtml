@@ -50,7 +50,7 @@
                                             <td>@decimal.Round(item.inUSD, 2, MidpointRounding.AwayFromZero)</td>
                                             <td>@decimal.Round(item.WeekChange, 2, MidpointRounding.AwayFromZero)</td>
                                             <td>@decimal.Round(item.MonthChange, 2, MidpointRounding.AwayFromZero)</td>
-                                            <td><a href="currency_page.php?c=<?php echo $c->symbol;?>" type="button" class="btn btn-primary shadow-none">More</a></td>
+                                            <td><a href="@Url.Action("CurrencyPage", "Currency", new {symbol = item.Symbol})" type="button" class="btn btn-primary shadow-none">More</a></td>
                                         </tr>
                                         }
                            

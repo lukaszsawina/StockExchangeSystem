@@ -1,5 +1,6 @@
 ﻿using CurrencyExchangeLibrary.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using WebApp.Models;
 
 namespace WebApp.Controllers
 {
@@ -16,6 +17,17 @@ namespace WebApp.Controllers
         {
             var currency = await _currencyRepository.GetCurrenciesAsync();
             return View(currency);
+        }
+        public async Task<IActionResult> CurrencyPage(string symbol)
+        {
+            var currency = await _currencyRepository.GetCurrencyAsync(symbol);
+            var ohlc = await _currencyRepository.GetCurrencyOHLCAsync(symbol);
+            var output = new CurrencyViewModel()
+            {
+                Currency = currency,
+                OHLC = ohlc
+            };
+            return View(output);
         }
     }
 }

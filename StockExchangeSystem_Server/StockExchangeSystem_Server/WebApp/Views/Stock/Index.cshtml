@@ -53,7 +53,7 @@
                                 <td>@decimal.Round(item.Volume, 2, MidpointRounding.AwayFromZero)</td>
                                 <td>@decimal.Round(item.ChangeWeek, 2, MidpointRounding.AwayFromZero)</td>
                                 <td>@decimal.Round(item.ChangeMonth, 2, MidpointRounding.AwayFromZero)</td>
-                                <td><a href="stock_page.php?c=<?php echo $c->symbol;?>" type="button" class="btn btn-primary shadow-none">More</a></td>
+                                <td><a href="@Url.Action("StockPage" , "Stock", new {symbol = item.Symbol})" type="button" class="btn btn-primary shadow-none">More</a></td>
                             </tr>
                             }
                            
