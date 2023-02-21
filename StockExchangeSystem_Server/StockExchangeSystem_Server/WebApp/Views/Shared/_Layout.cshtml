@@ -64,16 +64,6 @@
                     <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>DarkStock</h3>
                 </a>
                
-                <div class="d-flex align-items-center ms-4 mb-4">
-                    <div class="position-relative">
-                        <i class="fa fa-user"></i>
-                    </div>
-                    
-                    <div class="ms-3">
-                        <h6 class="mb-0">Hello!</h6>
-                    </div>
-                  
-                </div>
                 <div class="navbar-nav w-100">
                     <a asp-area="" asp-controller="Home" asp-action="Index" id="navindex" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Home</a>
                     <a asp-area="" asp-controller="Crypto" asp-action="Index" id="navkrypto" class="nav-item nav-link"><i class="fa-brands fa-bitcoin me-2"></i>Cryptocurrencies</a>
@@ -120,7 +110,7 @@
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <a href="user_page.php?u=<?php echo $response->id;?>" class="dropdown-item">My Profile</a>
+                            <a asp-area="" asp-controller="Account" asp-action="Index" class="dropdown-item">My Profile</a>
                             @if(User.IsInRole("admin"))
                             {
                                 <a asp-area="" asp-controller="Admin" asp-action="Index" class="dropdown-item">Admin Page</a>       

@@ -9,12 +9,55 @@ namespace WebApp.Controllers
     {
         private readonly UserManager<AppUserModel> _userManager;
         private readonly SignInManager<AppUserModel> _signInManager;
-        private readonly AppDataContext _context;
-        public AccountController(UserManager<AppUserModel> userManager, SignInManager<AppUserModel> signInManager, AppDataContext context)
+        public AccountController(UserManager<AppUserModel> userManager, SignInManager<AppUserModel> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+
+            if(!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var output = new UserViewModel()
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
+            };
+            return View(output);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UserViewModel user)
+        {
+            if(!ModelState.IsValid) return RedirectToAction("Index", "Account");
+            var originUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user.Id != originUser.Id) return RedirectToAction("Index", "Account");
+
+            var editedUser = await _userManager.FindByIdAsync(originUser.Id);
+            editedUser.FirstName = user.FirstName;
+            editedUser.LastName = user.LastName;
+            editedUser.Email = user.Email;
+            editedUser.UserName = user.Email;
+            editedUser.NormalizedUserName = user.Email.ToUpper();
+
+            var result = await _userManager.UpdateAsync(editedUser);
+
+            if(result.Succeeded)
+            {
+                return RedirectToAction("Index", "Account");
+            }
+
+            TempData["Error"] = "Something went wront, sorry!";
+            return RedirectToAction("Index", "Account");
+
         }
 
         [HttpGet]

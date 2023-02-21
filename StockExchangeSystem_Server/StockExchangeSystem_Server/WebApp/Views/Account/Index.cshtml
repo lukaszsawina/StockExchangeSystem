@@ -1,0 +1,74 @@
+﻿@model UserViewModel
+
+<!-- Sale & Revenue Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-12">
+                        <div class="bg-secondary rounded d-flex align-items-center p-4">
+                            <i class="fa fa-user fa-3x text-primary"></i>
+                            <div class="ms-3">
+                                <h1 class="text-body mb-2">Hello @Model.FirstName @Model.LastName</p>
+                                <h6 class="mb-0">View your profile.</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sale & Revenue End -->
+
+            <!-- User information Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-12">
+                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                            <div id="userInfo"  class="ms-3">
+                                <h3 class="text-body mb-2">User ID: @Model.Id</h4>
+                                <h3 class="text-body mb-2">First Name: @Model.FirstName</h4>
+                                <h3 class="text-body mb-2">Last Name: @Model.LastName</h4>
+                                <h3 class="text-body mb-2">Email: @Model.Email</h4>
+                            </div>
+                            <div id="userEdit" class="d-none bg-secondary rounded h-100 p-4">
+                                <form id="form" asp-action="Edit">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <input type="hidden" asp-for="Id" value="@Model.Id" />
+                                    <div class="mb-3">
+                                        <label asp-for="FirstName" class="form-label"></label>
+                                        <input type="text" id="fName" class="form-control" asp-for="FirstName" value="@Model.FirstName" require>
+                                    </div><div class="mb-3">
+                                        <label asp-for="LastName" class="form-label">LastName</label>
+                                        <input type="text" id="lName" class="form-control" asp-for="LastName" value="@Model.LastName" require>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="Email" class="form-label">Email address</label>
+                                        <input type="email" id="eMail" class="form-control" asp-for="Email" value="@Model.Email" require
+                                            aria-describedby="emailHelp">
+                                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </form>
+                            </div>
+
+                            <button type="button" onclick="showEdit()" class="btn btn-square btn-outline-primary m-2 shadow-none"><i class="fa fa-edit"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    <script>  
+        document.getElementById("navindex").classList.add('active'); 
+        
+        var show = false;
+
+        function showEdit()
+        {
+            show = !show;
+
+            if(show)
+            {
+                document.getElementById("userInfo").classList.add("d-none");
+                document.getElementById("userEdit").classList.remove("d-none");
+                document.getElementById("userEdit").classList.add("d-flex");
+            }
+        } 
+    </script>
