@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Data;
 using WebApp.Models;
@@ -15,14 +16,9 @@ namespace WebApp.Controllers
             _signInManager = signInManager;
         }
 
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-
-            if(!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             var output = new UserViewModel()
             {
