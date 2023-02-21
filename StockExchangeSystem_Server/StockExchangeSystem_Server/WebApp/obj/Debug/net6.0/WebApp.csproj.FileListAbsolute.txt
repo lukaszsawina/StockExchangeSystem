@@ -129,3 +129,7 @@ C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Ser
 C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\AutoMapper.dll
 C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\obj\Debug\net6.0\WebApp.MvcApplicationPartsAssemblyInfo.cs
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Microsoft.OpenApi.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\dev\C#\StockExchangeSystem\StockExchangeSystem_Server\StockExchangeSystem_Server\WebApp\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll

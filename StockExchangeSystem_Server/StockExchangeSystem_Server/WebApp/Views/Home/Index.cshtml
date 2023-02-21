@@ -29,137 +29,45 @@
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h4 class="mb-0">Our investment proposals</h4>
         </div>
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <h1 class="text-body mb-0">Crypto</h1>
-        </div>
-        <div class="table-responsive">
-            @{
-                if(crypto.Count() > 0)
-                {
-                <table class="table text-start align-middle table-bordered table-hover mb-4">
-                    <thead>
-                        <tr class="text-white">
-                            <th scope="col"> </th>
-                            <th scope="col">Symbol</th>
-                            <th scope="col">Value(USD)</th>
-                            <th scope="col">Change (24h)</th>
-                            <th scope="col">Change (7d)</th>
-                            <th scope="col">Info.</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            int i = 1;
-                        }
-                        @foreach(var item in crypto)
-                        {
-                            <tr id="@item.Symbol" class="krypto">
-                            <th scope="row">@i</th>
-                            <td class="symbol">@item.Symbol</td>
-                            <td>@decimal.Round(item.Value,2,MidpointRounding.AwayFromZero)</td>
-                            <td>@decimal.Round(item.ChangeDay,2,MidpointRounding.AwayFromZero)</td>
-                            <td>@decimal.Round(item.ChangeWeek, 2,MidpointRounding.AwayFromZero)</td>
-                            <td><a href="crypto_page.php?c=<?php echo $c->symbol;?>" type="button" class="btn btn-primary shadow-none">More</a></td>
-                        </tr>
-                            i++;
-                        }
-                    
-                    </tbody>
-                </table>
-                }
-                else
-                {
-                    <div class="d-flex align-items-center justify-content-between mb-1">
-                        <h3 class=" text-body mb-0">Sorry!</h3>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h4 class="mb-0">Nothing interesting so far</h4>
-                    </div>
-                }
-            }
-         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h1 class="text-body mb-0">Currency</h1>
-        </div>
-            @{
-                if(currency.Count() > 0)
-                {
-                <table class="table text-start align-middle table-bordered table-hover mb-4">
-                    <thead>
-                        <tr class="text-white">
-                            <th scope="col"> </th>
-                            <th scope="col">Symbol</th>
-                            <th scope="col">Value(USD)</th>
-                            <th scope="col">Change (7d)</th>
-                            <th scope="col">Change (30d)</th>
-                            <th scope="col">Info.</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            int i = 1;
-                        }
-                        @foreach(var item in currency)
-                        {
-                            <tr id="@item.Symbol" class="krypto">
-                            <th scope="row">@i</th>
-                            <td class="symbol">@item.Symbol</td>
-                            <td>@decimal.Round(item.inUSD,2,MidpointRounding.AwayFromZero)</td>
-                            <td>@decimal.Round(item.WeekChange,2,MidpointRounding.AwayFromZero)</td>
-                            <td>@decimal.Round(item.MonthChange, 2,MidpointRounding.AwayFromZero)</td>
-                            <td><a href="crypto_page.php?c=<?php echo $c->symbol;?>" type="button" class="btn btn-primary shadow-none">More</a></td>
-                        </tr>
-                            i++;
-                        }
-                    
-                    </tbody>
-                </table>
-                }
-                else
-                {
-                    <div class="d-flex align-items-center justify-content-between mb-1">
-                        <h3 class=" text-body mb-0">Sorry!</h3>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h4 class="mb-0">Nothing interesting so far</h4>
-                    </div>
-                }
-            }
+        @if (User.Identity.IsAuthenticated)
+        {
+
             <div class="d-flex align-items-center justify-content-between mb-4">
-                <h1 class="text-body mb-0">Stock</h1>
+                <h1 class="text-body mb-0">Crypto</h1>
             </div>
-            @{
-                if(stock.Count() > 0)
+            <div class="table-responsive">
+                @if (crypto.Count() > 0)
                 {
-                <table class="table text-start align-middle table-bordered table-hover mb-4">
-                    <thead>
-                        <tr class="text-white">
-                            <th scope="col"> </th>
-                            <th scope="col">Symbol</th>
-                            <th scope="col">Value(USD)</th>
-                            <th scope="col">Change (7d)</th>
-                            <th scope="col">Change (30d)</th>
-                            <th scope="col">Info.</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            int i = 1;
-                        }
-                        @foreach(var item in stock)
-                        {
-                            <tr id="@item.Symbol" class="krypto">
-                            <th scope="row">@i</th>
-                            <td class="symbol">@item.Symbol</td>
-                            <td>@decimal.Round(item.Value,2,MidpointRounding.AwayFromZero)</td>
-                            <td>@decimal.Round(item.ChangeMonth,2,MidpointRounding.AwayFromZero)</td>
-                            <td>@decimal.Round(item.ChangeWeek, 2,MidpointRounding.AwayFromZero)</td>
-                            <td><a href="crypto_page.php?c=<?php echo $c->symbol;?>" type="button" class="btn btn-primary shadow-none">More</a></td>
-                        </tr>
-                            i++;
-                        }
-                    
-                    </tbody>
-                </table>
+                    <table class="table text-start align-middle table-bordered table-hover mb-4">
+                        <thead>
+                            <tr class="text-white">
+                                <th scope="col"> </th>
+                                <th scope="col">Symbol</th>
+                                <th scope="col">Value(USD)</th>
+                                <th scope="col">Change (24h)</th>
+                                <th scope="col">Change (7d)</th>
+                                <th scope="col">Info.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int i = 1;
+                            }
+                            @foreach (var item in crypto)
+                            {
+                                <tr id="@item.Symbol" class="krypto">
+                                    <th scope="row">@i</th>
+                                    <td class="symbol">@item.Symbol</td>
+                                    <td>@decimal.Round(item.Value,2,MidpointRounding.AwayFromZero)</td>
+                                    <td>@decimal.Round(item.ChangeDay,2,MidpointRounding.AwayFromZero)</td>
+                                    <td>@decimal.Round(item.ChangeWeek, 2,MidpointRounding.AwayFromZero)</td>
+                                    <td><a href="@Url.Action("CryptoPage", "Crypto", new {symbol = item.Symbol})" type="button" class="btn btn-primary shadow-none">More</a></td>
+                                </tr>
+                                i++;
+                            }
+
+                        </tbody>
+                    </table>
                 }
                 else
                 {
@@ -170,9 +78,109 @@
                         <h4 class="mb-0">Nothing interesting so far</h4>
                     </div>
                 }
-            }
-                         
-        </div>
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h1 class="text-body mb-0">Currency</h1>
+                </div>
+                @if (currency.Count() > 0)
+                {
+                    <table class="table text-start align-middle table-bordered table-hover mb-4">
+                        <thead>
+                            <tr class="text-white">
+                                <th scope="col"> </th>
+                                <th scope="col">Symbol</th>
+                                <th scope="col">Value(USD)</th>
+                                <th scope="col">Change (7d)</th>
+                                <th scope="col">Change (30d)</th>
+                                <th scope="col">Info.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int i = 1;
+                            }
+                            @foreach (var item in currency)
+                            {
+                                <tr id="@item.Symbol" class="krypto">
+                                    <th scope="row">@i</th>
+                                    <td class="symbol">@item.Symbol</td>
+                                    <td>@decimal.Round(item.inUSD,2,MidpointRounding.AwayFromZero)</td>
+                                    <td>@decimal.Round(item.WeekChange,2,MidpointRounding.AwayFromZero)</td>
+                                    <td>@decimal.Round(item.MonthChange, 2,MidpointRounding.AwayFromZero)</td>
+                                    <td><a href="@Url.Action("CurrencyPage", "Currency", new {symbol = item.Symbol})" type="button" class="btn btn-primary shadow-none">More</a></td>
+                                </tr>
+                                i++;
+                            }
+
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <h3 class=" text-body mb-0">Sorry!</h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h4 class="mb-0">Nothing interesting so far</h4>
+                    </div>
+                }
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h1 class="text-body mb-0">Stock</h1>
+                </div>
+                @if (stock.Count() > 0)
+                {
+                    <table class="table text-start align-middle table-bordered table-hover mb-4">
+                        <thead>
+                            <tr class="text-white">
+                                <th scope="col"> </th>
+                                <th scope="col">Symbol</th>
+                                <th scope="col">Value(USD)</th>
+                                <th scope="col">Change (7d)</th>
+                                <th scope="col">Change (30d)</th>
+                                <th scope="col">Info.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int i = 1;
+                            }
+                            @foreach (var item in stock)
+                            {
+                                <tr id="@item.Symbol" class="krypto">
+                                    <th scope="row">@i</th>
+                                    <td class="symbol">@item.Symbol</td>
+                                    <td>@decimal.Round(item.Value,2,MidpointRounding.AwayFromZero)</td>
+                                    <td>@decimal.Round(item.ChangeMonth,2,MidpointRounding.AwayFromZero)</td>
+                                    <td>@decimal.Round(item.ChangeWeek, 2,MidpointRounding.AwayFromZero)</td>
+                                    <td><a href="@Url.Action("StockPage", "Stock", new {symbol = item.Symbol})" type="button" class="btn btn-primary shadow-none">More</a></td>
+                                </tr>
+                                i++;
+                            }
+
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <h3 class=" text-body mb-0">Sorry!</h3>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h4 class="mb-0">Nothing interesting so far</h4>
+                    </div>
+                }
+
+            </div>
+        }
+        else
+        {
+           <div class="d-flex align-items-center justify-content-between mb-4">
+                <h1 class=" text-body mb-0">Sorry!</h1>
+            </div>
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h4 class="mb-0">Please <a asp-area="" asp-controller="Account" asp-action="Register">sign up</a> or if you already are <a asp-area="" asp-action="Login" asp-controller="Account">sign in</a> to view this section</h4>
+            </div> 
+        }
+
     </div>
 </div>
             <!-- Recent Sales End -->

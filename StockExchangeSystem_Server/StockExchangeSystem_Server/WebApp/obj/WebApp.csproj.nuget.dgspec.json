@@ -256,6 +256,10 @@
             "Serilog.Settings.Configuration": {
               "target": "Package",
               "version": "[3.3.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.5.0, )"
             }
           },
           "imports": [
