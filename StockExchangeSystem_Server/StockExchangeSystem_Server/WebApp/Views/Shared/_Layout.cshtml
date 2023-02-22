@@ -110,10 +110,10 @@
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <a asp-area="" asp-controller="Account" asp-action="Index" class="dropdown-item">My Profile</a>
+                            <a href="@Url.Action("Index", "Account", new {email = User.Identity.Name})" class="dropdown-item">My Profile</a>
                             @if(User.IsInRole("admin"))
                             {
-                                <a asp-area="" asp-controller="Admin" asp-action="Index" class="dropdown-item">Admin Page</a>       
+                                <a asp-area="" asp-controller="Account" asp-action="AdminPage" class="dropdown-item">Admin Page</a>       
                             }
                             <a asp-area="" asp-controller="Account" asp-action="Logout" class="dropdown-item">Log Out</a>
                         </div>

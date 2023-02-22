@@ -17,9 +17,13 @@ namespace WebApp.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(string email)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (email == null)
+                email = User.Identity.Name;
+
+            var user = await _userManager.FindByNameAsync(email);
             var output = new UserViewModel()
             {
                 Id = user.Id,
@@ -28,6 +32,42 @@ namespace WebApp.Controllers
                 Email = user.Email
             };
             return View(output);
+        }
+
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> AdminPage()
+        {
+            var admin = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            var output = new AdminViewModel()
+            {
+                FirstName = admin.FirstName,
+                LastName = admin.LastName,
+                Users = _userManager.Users.ToList()
+            };
+            return View(output);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserDelete(UserViewModel userToDelete)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            var user = await _userManager.FindByNameAsync(userToDelete.Email);
+            if(user != null)
+            {
+                var resutl = await _userManager.DeleteAsync(user);
+                if(resutl.Succeeded)
+                {
+                    if(userToDelete.Email == User.Identity.Name)
+                        Logout();
+                    return RedirectToAction("AdminPage", "Account");
+                }
+                TempData["Error"] = "Something went wront, sorry!";
+                return RedirectToAction("AdminPage", "Account");
+
+            }
+            TempData["Error"] = "Something went wront, sorry!";
+            return RedirectToAction("AdminPage", "Account");
         }
 
         [HttpPost]
