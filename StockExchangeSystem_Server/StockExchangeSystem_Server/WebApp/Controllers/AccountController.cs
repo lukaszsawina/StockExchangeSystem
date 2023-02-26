@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CurrencyExchangeLibrary.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Data;
@@ -10,6 +11,7 @@ namespace WebApp.Controllers
     {
         private readonly UserManager<AppUserModel> _userManager;
         private readonly SignInManager<AppUserModel> _signInManager;
+
         public AccountController(UserManager<AppUserModel> userManager, SignInManager<AppUserModel> signInManager)
         {
             _userManager = userManager;
@@ -22,6 +24,9 @@ namespace WebApp.Controllers
         {
             if (email == null)
                 email = User.Identity.Name;
+
+            if(!User.IsInRole("admin") && email != User.Identity.Name)
+                return RedirectToAction("Index", "Account");
 
             var user = await _userManager.FindByNameAsync(email);
             var output = new UserViewModel()
@@ -38,14 +43,48 @@ namespace WebApp.Controllers
         public async Task<IActionResult> AdminPage()
         {
             var admin = await _userManager.FindByNameAsync(User.Identity.Name);
-
             var output = new AdminViewModel()
             {
                 FirstName = admin.FirstName,
                 LastName = admin.LastName,
-                Users = _userManager.Users.ToList()
+                Users = _userManager.Users.ToList(),
+                Email = admin.Email,
+                Password = admin.PasswordHash,
+                ConfirmPassword = admin.PasswordHash
             };
             return View(output);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterAdmin(AdminViewModel newAdmin)
+        {
+
+
+            if (!ModelState.IsValid) return View(newAdmin);
+
+            var user = await _userManager.FindByNameAsync(newAdmin.Email);
+
+            if (user is not null)
+            {
+                TempData["Error"] = "User already exist!";
+                return View(newAdmin);
+            }
+
+            var newUser = new AppUserModel()
+            {
+                FirstName = newAdmin.FirstName,
+                LastName = newAdmin.LastName,
+                Email = newAdmin.Email,
+                UserName = newAdmin.Email
+            };
+            var newUserResponse = await _userManager.CreateAsync(newUser, newAdmin.Password);
+
+            if (newUserResponse.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(newUser, UserRoles.Admin);
+            }
+
+            return RedirectToAction("Index", "Account");
         }
 
         [HttpPost]
@@ -158,7 +197,10 @@ namespace WebApp.Controllers
             var newUserResponse = await _userManager.CreateAsync(newUser, registerViewModel.Password);
 
             if (newUserResponse.Succeeded)
+            {
                 await _userManager.AddToRoleAsync(newUser, UserRoles.User);
+                await _signInManager.PasswordSignInAsync(newUser, registerViewModel.Password, false, false);
+            }
 
             return RedirectToAction("Index","Home");
         }

@@ -93,32 +93,26 @@
                             <div class="">
                                 <h6 class="mb-0">New admin</h6>
                             </div>
-                            <form method="post" id="adminform" class="bg-secondary rounded  p-4">
+                            <form asp-action="RegisterAdmin" id="adminform" class="bg-secondary rounded  p-4">
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="fName" placeholder="jhondoe" name="firstName">
-                                    <label for="floatingText">First name</label>
+                                    <input type="text" class="form-control" id="fName" placeholder="jhondoe" asp-for="FirstName">
+                                    <label asp-for="FirstName"></label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="lName" placeholder="jhondoe" name="lastName">
-                                    <label for="floatingText">Last name</label>
+                                    <input type="text" class="form-control" id="lName" placeholder="jhondoe" asp-for="LastName">
+                                    <label asp-for="LastName"></label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="email" class="form-control" id="eMail" placeholder="name@example.com" name="email">
-                                    <label for="floatingInput">Email address</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="phone" class="form-control" id="phone" placeholder="123123123" name="phone">
-                                    <label for="floatingInput">Phone</label>
+                                    <input type="email" class="form-control" id="eMail" placeholder="name@example.com" asp-for="Email">
+                                    <label asp-for="Email"></label>
                                 </div>
                                 <div class="form-floating mb-4">
-                                    <input type="password" class="form-control" id="pass" placeholder="Password" name="password">
-                                    <label for="floatingPassword">Password</label>
+                                    <input type="password" class="form-control" id="pass" placeholder="Password" asp-for="Password">
+                                    <label asp-for="Password"></label>
                                 </div>
-                                <div id="successInfo" class="d-none align-items-center justify-content-between flex-wrap">
-                                    <h1>Success</h1>
-                                </div>
-                                <div id="existAdminInfo" class="d-none align-items-center justify-content-between flex-wrap">
-                                    <h1>User already exist</h1>
+                                <div class="form-floating mb-4">
+                                    <input type="password" class="form-control" id="pass" placeholder="Password" asp-for="ConfirmPassword">
+                                    <label asp-for="ConfirmPassword"></label>
                                 </div>
                                 <button id="subBtn" type="submit" class="btn shadow-none btn-primary py-3 w-100 mb-4">Add new Admin</button>
                             </form>
@@ -126,59 +120,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Table Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <div class="col-12">
-                        <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Daily info from past year</h6>
-                            <div class="table-responsive overflow-auto logs-dropdown">
-                                <table id="dtDynamicVerticalScrollExample" class="table mb-2">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Message</th>
-                                            <th scope="col">Level</th>
-                                            <th scope="col">Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tableBody" class="">
-                                    <?php
-                                        $serverName = "(localdb)\MSSQLLocalDB";
-                                        $connectionInfo = array( "Database"=>"StockSystemDB", "UID"=>"", "PWD"=>"");
-
-                                        $conn = sqlsrv_connect($serverName, $connectionInfo);
-
-                                        $sql = "SELECT * FROM logs WHERE Level != 'Warning' ORDER BY Id DESC ";
-                                        $stmt = sqlsrv_query( $conn, $sql );
-                                        if( $stmt === false) {
-                                            die( print_r( sqlsrv_errors(), true) );
-                                        }
-
-                                        while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
-                                            $Date = $row['TimeStamp']->format('Y-m-d H:m');
-                                            ?>
-                                                <tr>
-                                                    <th scope="row"><?php echo $row['Id'];?></th>
-                                                    <td><?php echo  $row['Message'];?></td>
-                                                    <td><?php echo  $row['Level'];?></td>
-                                                    <td><?php echo $Date;?></td>
-                                                </tr>
-                                            <?php
-                                        }
-
-                                    ?>
-
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Table End -->
 
 
     <script>
